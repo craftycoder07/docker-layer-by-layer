@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layer by Layer — an interactive Docker course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4ebe0; --paper2:#ece1d2; --card:#fbf6ef; --ink:#1f1a17; --muted:#6b5f55;
+  --blue:#2f6fdb; --orange:#e0703a; --green:#3d8a5a; --red:#c9463d; --purple:#7a5ccc; --yellow:#d79b1c;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:16px;padding:12px 24px;background:rgba(244,235,224,.92);backdrop-filter:blur(6px);border-bottom:2px solid var(--ink)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Fraunces',serif;font-weight:800;font-size:21px;letter-spacing:-.01em}
+.logo svg{width:30px;height:30px}
+.top .spacer{flex:1}
+.prog{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.prog .bar{width:110px;height:8px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--card)}
+.prog .bar i{display:block;height:100%;background:var(--green);transition:width .4s}
+
+/* home */
+.home{max-width:1120px;margin:0 auto;padding:48px 24px 80px}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;margin-bottom:56px}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);font-weight:600}
+.hero h1{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(40px,6vw,68px);line-height:1;letter-spacing:-.025em;margin:10px 0 18px}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero p{font-size:19px;color:#3b332d;max-width:540px;margin:0 0 26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border:2px solid var(--ink);border-radius:10px;background:var(--ink);color:var(--paper);font-weight:600;text-decoration:none;box-shadow:4px 4px 0 var(--orange);transition:transform .12s, box-shadow .12s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--orange)}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.hero-art svg{width:100%;height:auto;overflow:visible}
+.hero-art .lay{animation:float 4s ease-in-out infinite}
+.hero-art .lay:nth-child(2){animation-delay:-.6s}.hero-art .lay:nth-child(3){animation-delay:-1.2s}.hero-art .lay:nth-child(4){animation-delay:-1.8s}
+@keyframes float{50%{transform:translateY(-6px)}}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:22px}
+.section-h h2{font-family:'Fraunces',serif;font-size:28px;margin:0}
+.section-h span{font-size:14px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{position:relative;display:block;text-decoration:none;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:18px 18px 16px;box-shadow:5px 5px 0 var(--ink);transition:transform .12s, box-shadow .12s}
+.card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.card .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.card h3{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;margin:6px 0 6px}
+.card p{margin:0;font-size:14.5px;color:#4a4039}
+.card .meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12.5px}
+.tag{display:inline-block;padding:2px 9px;border:1.5px solid var(--ink);border-radius:20px;font-weight:600;font-size:11.5px;letter-spacing:.03em}
+.t-Foundations{background:#e6dccd}.t-Build{background:#d3e1fb}.t-Run{background:#d2e8d8}.t-Ship{background:#f6e3ad}.t-Scale{background:#e2d9f6}
+.done-badge{color:var(--green);font-weight:700}
+.howto{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.howto div{border-top:2px solid var(--ink);padding-top:12px}
+.howto b{font-family:'Fraunces',serif;font-size:19px;display:block;margin-bottom:4px}
+.howto p{margin:0;color:#4a4039;font-size:15px}
+kbd{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var(--ink);border-bottom-width:3px;border-radius:5px;padding:0 5px;background:var(--card)}
+
+/* lesson layout */
+.lesson{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1240px;margin:0 auto}
+.side{position:sticky;top:58px;align-self:start;height:calc(100vh - 58px);overflow:auto;padding:26px 14px 26px 24px;border-right:2px solid var(--ink)}
+.side h4{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.side a{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:8px;text-decoration:none;font-size:14.5px;line-height:1.3;border:1.5px solid transparent}
+.side a:hover{background:var(--paper2)}
+.side a.cur{background:var(--card);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink);font-weight:600}
+.side a .n{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);min-width:18px}
+.side a .ck{margin-left:auto;color:var(--green);font-weight:700}
+.main{padding:30px 32px 80px;min-width:0}
+.crumb{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.main h1{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(30px,4.2vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0 0 8px}
+.lede{font-size:18px;color:#3b332d;margin:0 0 22px;max-width:720px}
+.stage{background:var(--card);border:2px solid var(--ink);border-radius:16px;box-shadow:7px 7px 0 var(--ink);overflow:hidden}
+.canvas{background-color:#fbf6ef;background-image:radial-gradient(#d9ccbb 1.1px,transparent 1.2px);background-size:20px 20px;overflow-x:auto;border-bottom:2px solid var(--ink)}
+.canvas{position:relative}
+.canvas svg{display:block;width:100%;height:auto}
+.canvas.zoom svg{min-width:780px}
+.zoombtn{display:none;position:sticky;left:8px;top:8px;margin:8px 0 -38px 8px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:4px 9px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card)}
+.caption{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:18px 22px 6px;min-height:118px}
+.stepno{font-family:'Fraunces',serif;font-size:40px;font-weight:800;line-height:1;color:var(--orange)}
+.stepno small{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);font-weight:400;margin-top:4px;text-align:center}
+.caption h3{margin:2px 0 4px;font-size:20px;line-height:1.25}
+.caption p{margin:0;color:#3b332d;font-size:16px;max-width:760px}
+.caption .fade{animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}}
+.controls{display:flex;align-items:center;gap:10px;padding:12px 22px 18px;flex-wrap:wrap}
+.cbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);font-weight:600;font-size:14.5px;box-shadow:3px 3px 0 var(--ink);transition:transform .1s, box-shadow .1s}
+.cbtn:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.cbtn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.cbtn:disabled{opacity:.35;cursor:default}
+.cbtn.primary{background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--orange)}
+.dots{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.dots button{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;padding:0}
+.dots button.past{background:var(--ink)}
+.dots button.cur{background:var(--orange);transform:scale(1.25)}
+.term{margin-top:22px;background:#1f1a17;color:#efe5d8;border:2px solid var(--ink);border-radius:14px;box-shadow:7px 7px 0 var(--blue);overflow:hidden}
+.term-bar{display:flex;align-items:center;gap:7px;padding:9px 14px;border-bottom:1px solid #3a322c;font-family:'JetBrains Mono',monospace;font-size:12px;color:#a89a8b}
+.term-bar i{width:11px;height:11px;border-radius:50%;background:#e0703a}.term-bar i:nth-child(2){background:#d79b1c}.term-bar i:nth-child(3){background:#3d8a5a}
+.term-bar span{margin-left:8px}
+.term-bar .copy{margin-left:auto;background:none;border:1px solid #5a4f46;border-radius:6px;color:#efe5d8;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:3px 9px}
+.term pre{margin:0;padding:14px 18px 18px;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;min-height:96px;max-height:260px;overflow:auto}
+.term .old{opacity:.42}
+.term .p{color:#7fd29a}.term .o{color:#a89a8b}.term .c{color:#8a7d70}
+.cursor{display:inline-block;width:8px;height:15px;background:#efe5d8;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.pager{display:flex;justify-content:space-between;gap:14px;margin-top:34px}
+.pager a{flex:1;max-width:48%;text-decoration:none;border:2px solid var(--ink);border-radius:12px;padding:12px 16px;background:var(--card);box-shadow:4px 4px 0 var(--ink)}
+.pager a small{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+.pager a b{font-family:'Fraunces',serif;font-size:18px}
+.pager a.next{text-align:right;margin-left:auto}
+.hint{font-size:13px;color:var(--muted);margin-top:14px}
+
+/* svg diagram styling */
+.canvas svg text{font-family:'Space Grotesk',sans-serif;fill:var(--ink)}
+.canvas svg text.mono{font-family:'JetBrains Mono',monospace}
+.canvas svg text.muted{fill:var(--muted)}
+.canvas svg text.cap{font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.06em;fill:var(--muted)}
+.canvas svg text.lbl{paint-order:stroke;stroke:#fbf6ef;stroke-width:5px;stroke-linejoin:round}
+.bx .sh{fill:var(--ink)}
+.bx .bd{stroke:var(--ink);stroke-width:1.6}
+.hl>.bd{stroke:var(--orange);stroke-width:3.2}
+.hl>.sh{fill:var(--orange)}
+.frr{stroke:var(--ink);stroke-width:1.4;stroke-dasharray:7 6}
+.ar{fill:none;stroke-width:1.9}
+.dash{stroke-dasharray:6 5;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-22}}
+.divider{stroke:var(--ink);stroke-width:1.2;stroke-dasharray:3 6}
+.cl .clbg{fill:rgba(224,112,58,.38);opacity:0;transition:opacity .3s}
+.cl.hl .clbg{opacity:1}
+[data-in],[data-out]{opacity:0;transform:translateY(7px);transition:opacity .45s ease, transform .45s ease;transform-box:fill-box;transform-origin:center}
+.on{opacity:1;transform:none}
+.hl{transform-box:fill-box;transform-origin:center;animation:pop .55s ease}
+@keyframes pop{0%{transform:scale(1.06)}100%{transform:none}}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-art{max-width:380px}
+  .howto{grid-template-columns:1fr}
+  .lesson{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-right:0;border-bottom:2px solid var(--ink);padding:12px 16px;display:flex;gap:6px;overflow-x:auto}
+  .side h4{display:none}
+  .side a{flex:0 0 auto;font-size:13px;padding:6px 10px}
+  .main{padding:22px 16px 60px}
+  .top{padding:10px 16px}
+  .prog .bar{width:60px}
+  .caption{padding:16px 16px 4px;gap:12px}
+  .controls{padding:10px 16px 16px}
+  .dots{margin-left:0;width:100%}
+  .zoombtn{display:inline-block}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#home">
+    <svg viewBox="0 0 32 32"><rect x="5" y="19" width="22" height="7" rx="2" fill="#e6dccd" stroke="#1f1a17" stroke-width="2"/><rect x="5" y="11" width="22" height="7" rx="2" fill="#d3e1fb" stroke="#1f1a17" stroke-width="2"/><rect x="5" y="3" width="22" height="7" rx="2" fill="#e0703a" stroke="#1f1a17" stroke-width="2"/></svg>
+    Layer by Layer
+  </a>
+  <span class="spacer"></span>
+  <div class="prog"><span id="progTxt">0 / 10</span><span class="bar"><i id="progBar" style="width:0"></i></span></div>
+</header>
+<div id="app"></div>
+
+<script>
+/* ---------- palette ---------- */
+const COL={gray:'#e6dccd',blue:'#d3e1fb',orange:'#f8d6c1',green:'#d2e8d8',yellow:'#f6e3ad',purple:'#e2d9f6',red:'#f5cdc8',white:'#fffaf3'};
+const SOL={blue:'#2f6fdb',orange:'#e0703a',green:'#3d8a5a',yellow:'#d79b1c',purple:'#7a5ccc',red:'#c9463d',ink:'#1f1a17',gray:'#8a7d70'};
+
+/* ---------- svg helpers ---------- */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function V(o){let s='';if(o.in!=null)s+=` data-in="${o.in}"`;if(o.out!=null)s+=` data-out="${o.out}"`;if(o.hl!=null)s+=` data-hl="${[].concat(o.hl).join(' ')}"`;return s;}
+function boxText(x,y,w,h,label,o){
+  const fs=o.fs||15,sfs=o.sfs||12,lh=fs*1.2,slh=sfs*1.3;
+  const lines=label?String(label).split('\n'):[],subs=o.sub?String(o.sub).split('\n'):[];
+  const tot=lines.length*lh+subs.length*slh;let top=y+h/2-tot/2,t='';
+  const cx=o.left?x+12:x+w/2,an=o.left?'start':'middle';
+  lines.forEach((l,i)=>{t+=`<text x="${cx}" y="${(top+i*lh+fs*.88).toFixed(1)}" font-size="${fs}" text-anchor="${an}" font-weight="${o.w||600}"${o.mono?' class="mono"':''}>${esc(l)}</text>`});
+  top+=lines.length*lh;
+  subs.forEach((l,i)=>{t+=`<text x="${cx}" y="${(top+i*slh+sfs*.95).toFixed(1)}" font-size="${sfs}" text-anchor="${an}" class="muted${o.smono?' mono':''}">${esc(l)}</text>`});
+  return t;
+}
+function B(x,y,w,h,label,o={}){
+  const r=o.r??7,dash=o.dashed?' stroke-dasharray="6 5"':'';
+  const sh=o.noshadow?'':`<rect class="sh" x="${x+4}" y="${y+4}" width="${w}" height="${h}" rx="${r}"/>`;
+  const head=o.head?`<text x="${x+14}" y="${y+26}" font-size="${o.hfs||14}" font-weight="700">${esc(o.head)}</text>`:'';
+  return `<g class="bx"${V(o)}>${sh}<rect class="bd" x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${COL[o.c||'white']}"${dash}/>${head}${boxText(x,y,w,h,label,o)}${o.extra||''}</g>`;
+}
+function FR(x,y,w,h,title,o={}){
+  return `<g${V(o)}><rect class="frr" x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${o.c?COL[o.c]:'none'}" fill-opacity=".55"/><text x="${x+14}" y="${y+21}" font-size="11.5" class="cap">${esc(title)}</text>${o.extra||''}</g>`;
+}
+function T(x,y,s,o={}){
+  const fs=o.fs||14;
+  return `<g${V(o)}>${String(s).split('\n').map((l,i)=>`<text x="${x}" y="${y+i*fs*1.28}" font-size="${fs}" text-anchor="${o.a==='middle'?'middle':o.a==='end'?'end':'start'}" font-weight="${o.w||400}"${o.cls?` class="${o.cls}"`:''}${o.fill?` style="fill:${o.fill}"`:''}${o.rot?` transform="rotate(${o.rot} ${x} ${y})"`:''}>${esc(l)}</text>`).join('')}</g>`;
+}
+function A(d,o={}){
+  const c=o.c||'ink';
+  const lbl=o.label?`<text x="${o.lx}" y="${o.ly}" font-size="${o.fs||12.5}" text-anchor="${o.la||'middle'}" font-weight="600" class="lbl${o.mono?' mono':''}">${esc(o.label)}</text>`:'';
+  return `<g${V(o)}><path d="${d}" class="ar${o.dash?' dash':''}" style="stroke:${SOL[c]}" marker-end="url(#ah-${c})"${o.both?` marker-start="url(#ah-${c})"`:''}/>${lbl}</g>`;
+}
+function P(d,o={}){
+  const fill=SOL[o.c||'orange'];
+  const shape=o.sq?`<rect x="-7" y="-7" width="14" height="14" rx="2" fill="${fill}" stroke="#1f1a17" stroke-width="1.5">`:`<circle r="${o.r||6}" fill="${fill}" stroke="#1f1a17" stroke-width="1.5">`;
+  return `<g${V(o)}>${shape}<animateMotion dur="${o.dur||'1.8s'}" begin="${o.begin||'0s'}" repeatCount="indefinite" path="${d}"/>${o.sq?'</rect>':'</circle>'}</g>`;
+}
+function CY(x,y,w,h,label,o={}){
+  const ry=o.ry||10,f=COL[o.c||'blue'];
+  const p=(x,y)=>`M${x},${y+ry} A${w/2},${ry} 0 0 0 ${x+w},${y+ry} V${y+h-ry} A${w/2},${ry} 0 0 1 ${x},${y+h-ry} Z`;
+  const tt=o.ty!=null?boxText(x,o.ty-20,w,40,label,o):boxText(x,y+ry,w,h-ry,label,o);
+  return `<g class="bx"${V(o)}><path class="sh" d="${p(x+4,y+4)}"/><path class="bd" d="${p(x,y)}" fill="${f}"/><ellipse class="bd" cx="${x+w/2}" cy="${y+ry}" rx="${w/2}" ry="${ry}" fill="${f}"/>${tt}${o.extra||''}</g>`;
+}
+function hilite(t){
+  let s=esc(t);
+  if(/^\s*#/.test(t))return `<tspan style="fill:#8a7d70">${s}</tspan>`;
+  s=s.replace(/^(\s*)(FROM|WORKDIR|COPY|RUN|CMD|USER|ENV|EXPOSE)\b/,'$1<tspan style="fill:#f0a272">$2</tspan>');
+  s=s.replace(/^(\s*-?\s*)([\w_]+):/,'$1<tspan style="fill:#8fb4f5">$2</tspan>:');
+  return s;
+}
+function CODE(x,y,w,lines,o={}){
+  const lh=o.lh||26,fs=o.fs||13,pad=o.title?38:12,h=lines.length*lh+pad+12;
+  let s=`<g${V(o)}><rect x="${x+4}" y="${y+4}" width="${w}" height="${h}" rx="10" fill="#1f1a17"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#26201c" stroke="#1f1a17" stroke-width="1.6"/>`;
+  if(o.title)s+=`<circle cx="${x+16}" cy="${y+17}" r="4" fill="#e0703a"/><circle cx="${x+29}" cy="${y+17}" r="4" fill="#d79b1c"/><circle cx="${x+42}" cy="${y+17}" r="4" fill="#3d8a5a"/><text x="${x+56}" y="${y+21}" font-size="11.5" class="mono" style="fill:#a89a8b">${esc(o.title)}</text>`;
+  lines.forEach((l,i)=>{if(typeof l==='string')l={t:l};const ly=y+pad+i*lh;
+    s+=`<g class="cl"${l.hl!=null?` data-hl="${[].concat(l.hl).join(' ')}"`:''}><rect class="clbg" x="${x+6}" y="${ly}" width="${w-12}" height="${lh}" rx="4"/><text x="${x+14}" y="${(ly+lh*.68).toFixed(1)}" font-size="${fs}" class="mono" xml:space="preserve" style="fill:#efe5d8;white-space:pre">${hilite(l.t)}</text></g>`;});
+  return s+'</g>';
+}
+function BD(x,y,t,o={}){
+  const fs=o.fs||12,w=o.w||Math.round(t.length*fs*(o.mono?.62:.6)+20),h=fs+12;
+  const ax=o.a==='end'?x-w:o.a==='middle'?x-w/2:x;
+  return `<g${V(o)}><rect x="${ax}" y="${y}" width="${w}" height="${h}" rx="${h/2}" fill="${SOL[o.c||'ink']}" stroke="#1f1a17" stroke-width="1.4"/><text x="${ax+w/2}" y="${y+fs+3.3}" font-size="${fs}" text-anchor="middle" font-weight="700"${o.mono?' class="mono"':''} style="fill:#fff">${esc(t)}</text></g>`;
+}
+function XM(cx,cy,s,o={}){
+  return `<g${V(o)}><path d="M${cx-s} ${cy-s} L${cx+s} ${cy+s} M${cx+s} ${cy-s} L${cx-s} ${cy+s}" stroke="#c9463d" stroke-width="7" stroke-linecap="round"/></g>`;
+}
+const LY=(x,y,w,label,c,o={})=>B(x,y,w,26,label,Object.assign({c,fs:12,noshadow:1,r:5},o));
+const DEFS=`<defs>${Object.entries(SOL).map(([k,v])=>`<marker id="ah-${k}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${v}"/></marker>`).join('')}</defs>`;
+
+/* ---------- lessons ---------- */
+const LESSONS=[
+{id:'containers-vs-vms',title:'Containers vs VMs',tag:'Foundations',lede:'Why containers took over: the same isolation idea as a virtual machine, at a fraction of the weight.',
+scene(){let s='';
+  s+=T(205,40,'Virtual machines',{fs:18,w:700,a:'middle'})+T(595,40,'Containers',{fs:18,w:700,a:'middle'});
+  s+=`<line x1="400" y1="22" x2="400" y2="445" class="divider"/>`;
+  [30,420].forEach(x0=>{s+=B(x0,402,350,40,'Hardware',{c:'gray'});s+=B(x0,354,350,40,'Host OS · kernel',{c:'gray',hl:x0===420?4:null});});
+  s+=B(30,306,350,40,'Hypervisor',{c:'purple',in:1});
+  ['A','B','C'].forEach((l,i)=>{const x=30+i*120;s+=B(x,216,110,82,'Guest OS',{c:'yellow',sub:'full kernel',in:1,hl:3});s+=B(x,152,110,56,'App '+l,{c:'blue',sub:'bins / libs',in:1});});
+  s+=T(205,130,'≈ GBs each · boots in minutes',{in:3,a:'middle',fs:14,w:700,fill:SOL.red});
+  s+=B(420,306,350,40,'Docker Engine  (containerd + runc)',{c:'blue',in:2,fs:14});
+  ['A','B','C'].forEach((l,i)=>{const x=420+i*120;s+=B(x,232,110,66,'App '+l,{c:'green',sub:'bins / libs',in:2,hl:3});});
+  s+=T(595,210,'≈ MBs each · starts in ms',{in:3,a:'middle',fs:14,w:700,fill:SOL.green});
+  [0,1,2].forEach(i=>{const x=475+i*120;s+=A(`M${x} 300 L${x} 352`,{in:4,c:'orange',dash:1});});
+  s+=BD(430,118,'namespaces → isolation (pid, net, mnt…)',{in:4,c:'purple'});
+  s+=BD(430,152,'cgroups → limits (cpu, memory)',{in:4,c:'orange'});
+  return s;},
+steps:[
+ {t:'Same hardware, two strategies',d:'Every server has hardware and a host operating system with one kernel. The question is how to isolate many apps on top of it.',cmd:'docker version'},
+ {t:'VMs virtualize the hardware',d:'A hypervisor carves the machine into virtual machines. Each VM boots a full guest OS and kernel just to run one app.'},
+ {t:'Containers virtualize the OS',d:'A container is an isolated process. The Docker Engine starts it straight on the host — no guest OS, no boot.',cmd:'docker run --rm hello-world'},
+ {t:'The payoff: weight and speed',d:'No guest OS means images measured in megabytes and start-up in milliseconds, so you can pack far more apps onto each machine.',cmd:'time docker run --rm alpine true'},
+ {t:'One kernel, fenced off',d:'Every container shares the host kernel. Linux namespaces give each its own view of processes, network and files; cgroups cap its CPU and memory.',cmd:'docker run --rm --memory 256m --cpus 0.5 alpine cat /sys/fs/cgroup/memory.max\n> 268435456'}
+]},
+
+{id:'images-and-layers',title:'Images & layers',tag:'Build',lede:'What an image really is: a stack of read-only filesystem diffs, plus a little metadata.',
+scene(){let s='';
+  s+=CODE(30,40,330,[{t:'FROM node:20-alpine',hl:1},{t:'WORKDIR /app',hl:2},{t:'COPY package*.json ./',hl:2},{t:'RUN npm ci --omit=dev',hl:3},{t:'COPY . .',hl:4},{t:'CMD ["node", "server.js"]',hl:5}],{title:'Dockerfile',lh:30,fs:13.5});
+  const L=[[400,'gray','base: node:20-alpine','48 MB',1,1],[356,'blue','WORKDIR /app','0 B',2,2],[312,'blue','package*.json','4 KB',2,2],[268,'purple','node_modules','38 MB',3,3],[224,'yellow','app source','1.2 MB',4,4]];
+  L.forEach(([y,c,l,sz,i,h])=>{s+=B(430,y,300,38,l,{c,left:1,fs:14,in:i,hl:h,extra:`<text x="718" y="${y+24}" text-anchor="end" font-size="12" class="mono muted">${sz}</text>`});});
+  s+=`<g data-in="5"><path d="M744 226 h10 v212 h-10" fill="none" stroke="#1f1a17" stroke-width="1.6"/></g>`;
+  s+=T(774,332,'read-only image',{in:5,a:'middle',fs:12.5,w:700,rot:90});
+  s+=BD(30,296,'myapp:1.0 → sha256:9f3c…',{in:5,mono:1,c:'ink'});
+  s+=T(30,346,'CMD only sets metadata — 0 B, no layer.',{in:5,fs:13,cls:'muted'});
+  s+=T(580,150,'copy-on-write: writes land here, image untouched',{in:6,a:'middle',fs:12.5,cls:'muted'});
+  s+=B(430,164,145,46,'container A',{c:'orange',sub:'writable layer',in:6,hl:6,fs:14,sfs:11});
+  s+=B(585,164,145,46,'container B',{c:'orange',sub:'writable layer',in:7,hl:7,fs:14,sfs:11});
+  s+=T(30,392,'2 containers → the 87 MB of image layers\nare stored once and shared by both.',{in:7,fs:14,w:600});
+  return s;},
+steps:[
+ {t:'A Dockerfile is a recipe',d:'Instructions run top to bottom, and most of them produce a filesystem layer. The finished stack of layers is your image.',cmd:'cat Dockerfile'},
+ {t:'FROM: start from a base',d:'The base image (Alpine Linux + Node 20) is itself a stack someone else built. Docker pulls it once and reuses it everywhere.',cmd:'docker pull node:20-alpine'},
+ {t:'WORKDIR & COPY add thin layers',d:'Each layer records only what changed — a new directory, a couple of files. Layers are diffs, not full copies.',cmd:'docker build -t myapp:1.0 .'},
+ {t:'RUN bakes in dependencies',d:'RUN executes a command at build time and snapshots the result. The installed node_modules become a 38 MB layer.'},
+ {t:'COPY your source last',d:'Application code goes on top. It changes most often, so keeping it high in the stack matters — that’s the next lesson.'},
+ {t:'CMD is metadata',d:'CMD just sets the default start command. The finished read-only stack gets a tag and a content digest that identifies it exactly.',cmd:'docker history myapp:1.0'},
+ {t:'Run it: a writable layer on top',d:'A container is the image layers plus one thin writable layer. Changes are copy-on-write, so the image underneath never changes.',cmd:'docker run -d --name a myapp:1.0'},
+ {t:'Many containers, one image',d:'A second container gets its own writable layer but shares every image layer. Ten containers don’t cost ten copies.',cmd:'docker run -d --name b myapp:1.0\ndocker ps --size'}
+]},
+
+{id:'build-cache',title:'The build cache',tag:'Build',lede:'Why the order of your Dockerfile decides whether a rebuild takes 2 seconds or 50.',
+scene(){let s='';
+  s+=BD(400,14,'✎  you changed one line in server.js',{a:'middle',c:'orange',fs:13});
+  s+=T(205,80,'✗  Copy everything, then install',{a:'middle',fs:15.5,w:700,fill:SOL.red});
+  s+=T(595,80,'✓  Install deps, then copy source',{a:'middle',fs:15.5,w:700,fill:SOL.green});
+  const row=(x,w,y,label,ok,step)=>B(x,y,w,40,label,{c:'white',left:1,mono:1,fs:13,w:500,hl:ok?null:step,
+     extra:`<g data-in="${step}">${BD(x+w-12,y+8,ok?'CACHED':'REBUILD',{a:'end',c:ok?'green':'orange',fs:11})}</g>`});
+  [['FROM node:20-alpine',1,1],['WORKDIR /app',1,1],['COPY . .',0,1],['RUN npm ci',0,2]].forEach(([l,ok,st],i)=>s+=row(30,350,100+i*50,l,ok,st));
+  s+=A('M22 232 C 8 250, 8 264, 22 278',{in:2,c:'red'});
+  s+=BD(205,312,'⏱  48 s rebuild',{a:'middle',c:'red',in:2,fs:14});
+  [['FROM node:20-alpine',1],['WORKDIR /app',1],['COPY package*.json ./',1],['RUN npm ci',1],['COPY . .',0]].forEach(([l,ok],i)=>s+=row(420,350,100+i*50,l,ok,3));
+  s+=BD(595,362,'⏱  2 s rebuild',{a:'middle',c:'green',in:3,fs:14});
+  s+=CODE(30,350,350,['# .dockerignore','node_modules','.git','.env'],{in:4,lh:20,fs:12.5});
+  s+=T(595,420,'smaller build context → faster builds,\nno secrets baked into layers',{in:4,a:'middle',fs:13,cls:'muted'});
+  return s;},
+steps:[
+ {t:'One tiny edit, then rebuild',d:'Docker reuses a cached layer only if the instruction and its inputs are unchanged. For COPY, the inputs are the checksums of the files being copied.',cmd:'echo "// tweak" >> server.js'},
+ {t:'COPY . . sees a change',d:'Your edit changes the checksum of everything in COPY . . — so that layer has to be rebuilt.',cmd:'docker build -t myapp .'},
+ {t:'Misses cascade downward',d:'Once one layer is rebuilt, every layer after it is too. npm ci reinstalls every dependency even though package.json never changed.',cmd:'> => [4/4] RUN npm ci          47.9s'},
+ {t:'Reorder: dependencies first',d:'Copy only the manifest, install, then copy the source. A code edit now invalidates just the last layer; npm ci stays cached.',cmd:'docker build -t myapp .\n> => CACHED [4/5] RUN npm ci\n> => [5/5] COPY . .              0.3s'},
+ {t:'Trim the build context',d:'A .dockerignore keeps node_modules, .git and secrets out of the build context: less to upload, less to checksum, nothing sensitive in a layer.',cmd:'printf "node_modules\\n.git\\n.env\\n" > .dockerignore'}
+]},
+
+{id:'lifecycle',title:'Container lifecycle',tag:'Run',lede:'create, start, stop, rm — and what actually happens at each step.',
+scene(){let s='';
+  s+=B(30,200,120,60,'Image',{c:'gray',sub:'nginx:1.27',smono:1,hl:0});
+  s+=A('M150 230 L196 230',{in:1,label:'create',lx:173,ly:220});
+  s+=B(200,200,130,60,'Created',{c:'blue',in:1,hl:1});
+  s+=A('M330 230 L386 230',{in:2,label:'start',lx:358,ly:220});
+  s+=B(390,200,140,60,'Running',{c:'green',sub:'PID 1 = your app',in:2,hl:[2,5]});
+  s+=T(265,296,'docker run =\ncreate + start',{in:2,a:'middle',fs:13,cls:'muted'});
+  s+=A('M440 200 L440 114',{in:3,label:'pause',lx:432,ly:162,la:'end'});
+  s+=A('M480 114 L480 196',{in:3,label:'unpause',lx:488,ly:162,la:'start'});
+  s+=B(390,50,140,60,'Paused',{c:'yellow',sub:'processes frozen',in:3,hl:3});
+  s+=A('M530 230 L596 230',{in:4,label:'stop',lx:563,ly:220});
+  s+=BD(670,150,'SIGTERM → 10 s → SIGKILL',{a:'middle',c:'red',in:4,fs:11,mono:1});
+  s+=B(600,200,140,60,'Exited',{c:'orange',sub:'exit code 0 / 137',smono:1,in:4,hl:4});
+  s+=A('M620 264 C 620 334, 470 334, 470 268',{in:5,c:'green',dash:1,label:'restart policy',lx:545,ly:350});
+  s+=A('M690 260 L690 366',{in:6,label:'rm',lx:700,ly:318,la:'start'});
+  s+=B(600,370,140,60,'Removed',{c:'red',sub:'writable layer gone',in:6,hl:6});
+  return s;},
+steps:[
+ {t:'Start with an image',d:'An image is an inert template: layers plus a default command. Nothing is running yet.',cmd:'docker image ls nginx'},
+ {t:'create: prepare a container',d:'Docker allocates the writable layer, network settings and config — but starts no process.',cmd:'docker create --name web nginx:1.27'},
+ {t:'start: your process becomes PID 1',d:'The image’s command runs inside its namespaces as PID 1. When that process exits, the container exits.',cmd:'docker start web'},
+ {t:'pause / unpause',d:'The cgroup freezer suspends every process in place — memory kept, CPU released.',cmd:'docker pause web && docker unpause web'},
+ {t:'stop: graceful, then forced',d:'Docker sends SIGTERM, waits 10 s, then SIGKILL. Handle SIGTERM to shut down cleanly; exit code 137 means it was killed.',cmd:'docker stop web\ndocker ps -a'},
+ {t:'Restart policies',d:'With --restart unless-stopped (or on-failure), the daemon brings a crashed container straight back to Running.',cmd:'docker update --restart unless-stopped web'},
+ {t:'rm: gone for good',d:'Removing a container deletes its writable layer. Anything not in a volume is lost — which is exactly the next lesson.',cmd:'docker rm web'}
+]},
+
+{id:'volumes',title:'Volumes & storage',tag:'Run',lede:'Containers are disposable. Your data shouldn’t be.',
+scene(){let s='';
+  s+=FR(20,30,760,420,'DOCKER HOST');
+  s+=B(60,70,270,150,'',{head:'postgres · container #1',in:0,out:2,extra:B(80,130,230,64,'writable layer',{c:'orange',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
+  s+=XM(195,150,46,{in:1,out:2});
+  s+=T(195,252,'docker rm → data lost',{in:1,out:2,a:'middle',fill:SOL.red,w:700,fs:15});
+  s+=B(60,70,270,150,'',{head:'postgres · container #2',in:2,out:3,extra:B(80,130,230,64,'mount point',{c:'white',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
+  s+=B(60,70,270,150,'',{head:'postgres · container #3',in:3,extra:B(80,130,230,64,'mount point',{c:'white',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
+  s+=A('M195 198 L195 286',{in:2,c:'blue',both:1,dash:1});
+  s+=BD(210,234,'data still there ✓',{c:'green',in:3});
+  s+=CY(105,290,180,120,'pgdata',{c:'blue',sub:'named volume',in:2,hl:[2,3]});
+  s+=T(195,432,'/var/lib/docker/volumes/pgdata',{in:2,a:'middle',cls:'mono muted',fs:11});
+  s+=B(450,70,300,160,'',{head:'web · dev container',in:4,extra:B(470,140,130,44,'/app/src',{c:'white',mono:1,fs:13,noshadow:1})});
+  s+=B(614,140,118,44,'tmpfs /tmp',{c:'purple',mono:1,fs:12.5,noshadow:1,in:5,hl:5});
+  s+=T(673,206,'RAM only, gone on stop',{in:5,a:'middle',fs:11,cls:'muted'});
+  s+=B(450,330,300,70,'~/project/src',{c:'yellow',mono:1,fs:14,sub:'your editor saves here',in:4});
+  s+=A('M535 326 L535 192',{in:4,both:1,c:'orange',dash:1,label:'-v ./src:/app/src',lx:548,ly:282,la:'start',mono:1});
+  return s;},
+steps:[
+ {t:'Containers write to their own layer',d:'By default Postgres stores its data files inside the container’s writable layer.',cmd:'docker run -d --name db -e POSTGRES_PASSWORD=pw postgres:16'},
+ {t:'Remove the container, lose the data',d:'The writable layer lives and dies with the container. docker rm takes your database with it.',cmd:'docker rm -f db'},
+ {t:'Named volumes live outside',d:'A volume is storage managed by Docker on the host. Mount it at the data path and writes go there instead.',cmd:'docker run -d --name db -e POSTGRES_PASSWORD=pw \\\n  -v pgdata:/var/lib/postgresql/data postgres:16'},
+ {t:'Containers are disposable, volumes are not',d:'Delete and recreate the container — say, to upgrade the image. Mount the same volume and the data is right where you left it.',cmd:'docker rm -f db\ndocker run -d --name db -e POSTGRES_PASSWORD=pw \\\n  -v pgdata:/var/lib/postgresql/data postgres:16'},
+ {t:'Bind mounts for development',d:'A bind mount maps a host folder straight into the container. Edit in your IDE and see the change live — no rebuild.',cmd:'docker run -d -v ./src:/app/src myapp:dev'},
+ {t:'tmpfs for scratch & secrets',d:'A tmpfs mount lives only in memory: never written to disk, gone when the container stops.',cmd:'docker run -d --tmpfs /tmp myapp'}
+]},
+
+{id:'networking',title:'Networking',tag:'Run',lede:'Private IPs, published ports, and finding other containers by name.',
+scene(){let s='';
+  s+=B(10,195,100,62,'Browser',{c:'white',sub:'your laptop'});
+  s+=FR(170,30,610,420,'DOCKER HOST · 203.0.113.5');
+  s+=FR(260,140,505,150,'NETWORK appnet · 172.18.0.0/16',{c:'blue'});
+  s+=B(280,180,140,70,'web',{c:'green',sub:'172.18.0.2 :80',smono:1,hl:2});
+  s+=B(445,180,140,70,'api',{c:'green',sub:'172.18.0.3 :3000',smono:1,hl:3});
+  s+=B(610,180,140,70,'db',{c:'green',sub:'172.18.0.4 :5432',smono:1,hl:[3,4]});
+  s+=A('M110 238 L274 238',{in:1,out:2,c:'red',dash:1});
+  s+=XM(190,238,13,{in:1,out:2});
+  s+=T(190,280,'no route in',{in:1,out:2,a:'middle',fill:SOL.red,w:700,fs:13});
+  s+=A('M110 220 L138 220',{in:2});
+  s+=B(142,203,64,34,':8080',{c:'orange',mono:1,fs:13,in:2,hl:2});
+  s+=A('M210 220 L274 220',{in:2});
+  s+=P('M110 220 L280 220',{in:2,dur:'1.4s'});
+  s+=B(450,64,130,52,'Docker DNS',{c:'purple',sub:'127.0.0.11',smono:1,fs:14,in:3});
+  s+=A('M515 176 L515 120',{in:3,c:'purple',dash:1,both:1,label:'db → 172.18.0.4',lx:526,ly:154,la:'start',mono:1,fs:11.5});
+  s+=A('M585 215 L606 215',{in:3});
+  s+=P('M585 215 L610 215',{in:3,dur:'.8s',c:'green',r:5});
+  s+=BD(350,302,'published :8080',{a:'middle',c:'orange',in:4});
+  s+=BD(680,302,'no -p → private',{a:'middle',c:'ink',in:4});
+  s+=T(475,380,'Only what you publish is reachable from outside.\nEverything else talks over the private network.',{in:4,a:'middle',fs:14,w:600});
+  return s;},
+steps:[
+ {t:'Every container gets its own network stack',d:'On a user-defined network, each container gets a private IP, its own ports, and a virtual link to a bridge on the host.',cmd:'docker network create appnet\ndocker run -d --name web --network appnet nginx'},
+ {t:'Private by default',d:'Those 172.18.x.x addresses exist only inside the host. Your browser can’t reach the container’s port 80 directly.',cmd:'curl http://172.18.0.2      # from your laptop\n> curl: (28) Connection timed out'},
+ {t:'Publish a port',d:'-p 8080:80 tells Docker to forward traffic hitting the host on 8080 into the container on port 80.',cmd:'docker run -d --name web --network appnet -p 8080:80 nginx'},
+ {t:'Containers find each other by name',d:'Docker’s embedded DNS resolves container names on user-defined networks. The api connects to db:5432 — no hard-coded IPs.',cmd:'docker exec api getent hosts db\n> 172.18.0.4      db'},
+ {t:'Expose only the front door',d:'Publish only what users need. The database has no -p, so only containers on appnet can reach it.',cmd:'docker port web\n> 80/tcp -> 0.0.0.0:8080'}
+]},
+
+{id:'compose',title:'Docker Compose',tag:'Ship',lede:'Describe a multi-container app in one file and bring it up with one command.',
+scene(){let s='';
+  s+=CODE(20,24,350,[
+    'services:',{t:'  web:',hl:4},{t:'    build: ./web',hl:4},{t:'    ports: ["8080:80"]',hl:4},{t:'    depends_on: [api]',hl:4},
+    {t:'  api:',hl:4},{t:'    build: ./api',hl:4},{t:'    depends_on:',hl:4},{t:'      db: { condition: service_healthy }',hl:4},
+    {t:'  db:',hl:3},{t:'    image: postgres:16',hl:3},{t:'    volumes:',hl:2},{t:'      - dbdata:/var/lib/postgresql/data',hl:2},
+    {t:'    healthcheck:',hl:3},{t:'      test: ["CMD", "pg_isready"]',hl:3},{t:'volumes:',hl:2},{t:'  dbdata:',hl:2}],{title:'compose.yaml',lh:21,fs:12});
+  s+=FR(390,24,390,420,'PROJECT · shop',{in:1});
+  s+=FR(405,62,190,350,'shop_default',{c:'blue',in:1,out:5});
+  s+=B(420,100,160,58,'web',{c:'green',sub:'shop-web-1',smono:1,in:4,out:5,hl:4});
+  s+=A('M500 162 L500 196',{in:4,out:5});
+  s+=B(420,200,160,58,'api',{c:'green',sub:'shop-api-1',smono:1,in:4,out:5,hl:4});
+  s+=A('M500 262 L500 296',{in:4,out:5});
+  s+=B(420,300,160,58,'db',{c:'green',sub:'shop-db-1',smono:1,in:3,out:5,hl:3});
+  s+=BD(500,372,'healthy ✓',{a:'middle',c:'green',in:3,out:5,fs:11});
+  s+=CY(620,290,140,104,'dbdata',{c:'blue',sub:'shop_dbdata',smono:1,in:2,hl:[2,5]});
+  s+=A('M584 330 L616 336',{in:3,out:5,c:'blue',dash:1,both:1});
+  s+=B(620,106,140,46,':8080 → web:80',{c:'orange',mono:1,fs:12,in:4,out:5});
+  s+=A('M616 129 L584 129',{in:4,out:5});
+  s+=T(500,170,'containers & network\nremoved',{in:5,a:'middle',fs:15,w:700});
+  s+=T(690,430,'volume kept · down -v deletes it',{in:5,a:'middle',fs:12,cls:'muted'});
+  return s;},
+steps:[
+ {t:'One file, the whole app',d:'compose.yaml declares the services, how they depend on each other, and the storage they need. It replaces a page of docker run flags.',cmd:'cat compose.yaml'},
+ {t:'up: create the network',d:'Compose namespaces everything with the project name and creates a private network every service joins automatically.',cmd:'docker compose up -d\n> ✔ Network shop_default      Created'},
+ {t:'Create named volumes',d:'Declared volumes are created once and reused on every up.',cmd:'> ✔ Volume "shop_dbdata"     Created'},
+ {t:'Start in dependency order',d:'db starts first. Because api waits on service_healthy, Compose holds off until pg_isready passes.',cmd:'> ✔ Container shop-db-1      Healthy'},
+ {t:'Then the rest',d:'api starts, then web, which publishes port 8080. Services reach each other by service name — api connects to db:5432.',cmd:'> ✔ Container shop-api-1     Started\n> ✔ Container shop-web-1     Started\ndocker compose ps'},
+ {t:'down: tear it all down',d:'Containers and the network are removed; the volume stays so your data survives. Add -v to wipe it too.',cmd:'docker compose down'}
+]},
+
+{id:'multi-stage',title:'Multi-stage builds',tag:'Ship',lede:'Ship the binary, not the toolchain.',
+scene(){let s='';
+  s+=FR(30,30,330,250,'STAGE 1 · build',{c:'orange'});
+  s+=T(46,74,'FROM golang:1.23 AS build',{cls:'mono',fs:12.5,w:600});
+  s+=B(48,92,140,40,'Go compiler',{fs:13,hl:1});s+=B(202,92,140,40,'git · make · gcc',{fs:13});
+  s+=B(48,144,140,40,'source code',{fs:13,hl:1});s+=B(202,144,140,40,'module cache',{fs:13});
+  s+=B(115,208,160,46,'/out/app',{c:'green',mono:1,fs:14,in:1,hl:1});
+  s+=`<g data-in="3"><rect x="30" y="30" width="330" height="250" rx="12" fill="#fbf6ef" fill-opacity=".78"/></g>`;
+  s+=T(195,175,'NOT SHIPPED',{in:3,a:'middle',fs:32,w:800,fill:SOL.red,rot:-11,cls:'lbl'});
+  s+=FR(440,30,330,250,'STAGE 2 · runtime',{c:'green',in:2});
+  s+=T(456,74,'FROM gcr.io/distroless/static',{in:2,cls:'mono',fs:12.5,w:600});
+  s+=B(458,92,140,40,'CA certs',{fs:13,in:2});s+=B(612,92,140,40,'tzdata',{fs:13,in:2});
+  s+=B(458,144,140,40,'USER nonroot',{c:'purple',mono:1,fs:12,in:4,hl:4});s+=B(612,144,140,40,'@sha256 pinned',{c:'purple',mono:1,fs:12,in:4,hl:4});
+  s+=B(525,208,160,46,'/app',{c:'green',mono:1,fs:14,in:2,hl:2});
+  s+=A('M279 231 L519 231',{in:2,label:'COPY --from=build',lx:400,ly:221,mono:1,fs:12});
+  s+=P('M279 231 L521 231',{in:2,sq:1,c:'green',dur:'1.6s'});
+  s+=T(30,322,'single-stage image',{fs:13,w:600});
+  s+=`<rect x="30" y="330" width="700" height="26" rx="5" fill="${COL.red}" stroke="#1f1a17" stroke-width="1.5"/><text x="718" y="348" text-anchor="end" font-size="13" font-weight="700" class="mono">912 MB</text>`;
+  s+=T(30,388,'multi-stage image',{in:3,fs:13,w:600});
+  s+=`<g data-in="3"><rect x="30" y="396" width="12" height="26" rx="4" fill="${COL.green}" stroke="#1f1a17" stroke-width="1.5"/><text x="52" y="414" font-size="13" font-weight="700" class="mono">12 MB</text></g>`;
+  s+=T(450,414,'≈ 75× smaller · faster pulls · fewer CVEs',{in:3,a:'middle',fs:14,w:700,fill:SOL.green});
+  return s;},
+steps:[
+ {t:'The fat image problem',d:'Build in a single stage and the final image carries the whole toolchain — compiler, git, sources, caches — none of which you need at runtime.',cmd:'docker images myapp:fat\n> myapp   fat   912MB'},
+ {t:'Stage 1 compiles',d:'The build stage has every tool it needs and produces one static binary.',cmd:'docker build --target build -t myapp:build .'},
+ {t:'Stage 2 copies just the artifact',d:'A fresh, minimal base. COPY --from=build brings over /out/app and nothing else from stage 1.',cmd:'docker build -t myapp:slim .'},
+ {t:'Only the last stage ships',d:'Earlier stages are build-time scaffolding. The image you push is just the final runtime stage.',cmd:'docker images myapp\n> myapp   slim   12.4MB\n> myapp   fat    912MB'},
+ {t:'Harden while you’re here',d:'Run as a non-root user, pin the base image by digest, and scan what you ship.',cmd:'docker scout cves myapp:slim'}
+]},
+
+{id:'registries',title:'Registries, tags & digests',tag:'Ship',lede:'How an image travels from your laptop to every server that runs it.',
+scene(){let s='';
+  const stack=(x,y,o1,o2)=>LY(x,y,140,'app',  'orange',o1)+LY(x,y+32,140,'deps','blue',o1)+LY(x,y+64,140,'base','gray',o2||o1);
+  s+=B(20,130,180,190,'',{head:'💻 laptop',extra:stack(40,190,{})});
+  s+=BD(110,334,'myapp:1.0',{a:'middle',mono:1,out:1,fs:11});
+  s+=BD(110,334,'ghcr.io/acme/myapp:1.0',{a:'middle',mono:1,in:1,hl:1,fs:11});
+  s+=CY(300,110,200,230,'Registry',{c:'purple',sub:'ghcr.io · Docker Hub',ty:160,ry:14});
+  s+=LY(330,200,140,'app','orange',{in:2})+LY(330,232,140,'deps','blue',{in:2})+LY(330,264,140,'base','gray',{});
+  s+=BD(400,298,'base: already exists ✓',{a:'middle',c:'green',in:2,out:4,fs:10.5});
+  s+=A('M204 228 L296 228',{in:2,label:'push',lx:250,ly:218});
+  s+=P('M180 203 L340 213',{in:2,out:3,sq:1,c:'orange'});s+=P('M180 235 L340 245',{in:2,out:3,sq:1,c:'blue',begin:'-.9s'});
+  s+=B(600,30,180,180,'',{head:'🖥 server 1',extra:stack(620,90,{in:3})});
+  s+=B(600,240,180,180,'',{head:'🖥 server 2',extra:stack(620,300,{in:3})});
+  s+=A('M504 205 L596 140',{in:3,label:'pull',lx:546,ly:160});
+  s+=A('M504 265 L596 330',{in:3,label:'pull',lx:546,ly:316});
+  s+=P('M470 213 L630 103',{in:3,out:4,sq:1,c:'orange'});s+=P('M470 245 L630 313',{in:3,out:4,sq:1,c:'blue',begin:'-.9s'});
+  s+=BD(400,366,':1.0 → sha256:4be1c9…',{a:'middle',mono:1,in:4,hl:4,c:'ink',fs:11.5});
+  s+=T(290,440,'tag = movable pointer · digest = exact bytes',{in:4,a:'middle',fs:13,w:700});
+  return s;},
+steps:[
+ {t:'Images start on your machine',d:'You’ve built myapp:1.0 — three layers stored locally. Nobody else can run it yet.',cmd:'docker build -t myapp:1.0 .'},
+ {t:'Tag it with an address',d:'A full image name is registry/namespace/repo:tag. Tagging just adds another name pointing at the same image.',cmd:'docker tag myapp:1.0 ghcr.io/acme/myapp:1.0'},
+ {t:'push uploads only what’s missing',d:'Layers are content-addressed. The registry already has the base layer, so only your deps and app layers travel.',cmd:'docker push ghcr.io/acme/myapp:1.0\n> 3f2a9c1e: Layer already exists\n> 9b1d77a0: Pushed'},
+ {t:'pull anywhere',d:'Any machine can pull the image. Each layer is verified against its sha256 digest, so what runs is exactly what you built.',cmd:'docker pull ghcr.io/acme/myapp:1.0'},
+ {t:'Tags move, digests don’t',d:'Anyone can re-push :1.0 or :latest to point at a different image. A digest always means the same bytes — pin it in production.',cmd:'docker pull ghcr.io/acme/myapp@sha256:4be1c9…'}
+]},
+
+{id:'scaling',title:'Scaling out',tag:'Scale',lede:'Replicas, load balancing and health checks — the road to Kubernetes.',
+scene(){let s='';
+  s+=B(20,196,100,68,'Users',{c:'white',sub:'requests'});
+  s+=A('M120 230 L416 230',{out:2});
+  s+=P('M120 230 L420 230',{out:2,dur:'1.6s'});
+  s+=T(268,290,'one container =\nsingle point of failure',{out:2,a:'middle',fill:SOL.red,fs:13,w:600});
+  s+=A('M120 230 L181 230',{in:2});
+  s+=P('M120 230 L185 230',{in:2,dur:'.7s'});
+  s+=B(185,190,130,80,'Load\nbalancer',{c:'purple',in:2,fs:14});
+  s+=A('M315 212 L416 100',{in:2});s+=A('M315 248 L416 362',{in:2});
+  s+=A('M315 230 L416 230',{in:2,out:3});s+=A('M315 230 L416 230',{in:4,c:'green'});
+  s+=P('M315 212 L420 95',{in:2,dur:'1.4s'});s+=P('M315 248 L420 365',{in:2,dur:'1.4s',begin:'-.7s'});
+  s+=P('M315 230 L420 230',{in:2,out:3,dur:'1.4s',begin:'-.35s'});s+=P('M315 230 L420 230',{in:4,dur:'1.4s',c:'green'});
+  s+=B(420,60,160,70,'api · 1',{c:'green',sub:'healthy',in:1});
+  s+=B(420,195,160,70,'api · 2',{c:'green',sub:'healthy',out:3});
+  s+=B(420,195,160,70,'api · 2',{c:'red',sub:'unhealthy',in:3,out:4,hl:3});
+  s+=XM(558,214,9,{in:3,out:4});
+  s+=B(420,195,160,70,'api · 2',{c:'green',sub:'replacement',in:4,hl:4});
+  s+=B(420,330,160,70,'api · 3',{c:'green',sub:'healthy',in:1});
+  s+=B(640,175,140,110,'Orchestrator',{c:'yellow',sub:'desired 3\nactual 3',smono:1,fs:14,in:1,out:3});
+  s+=B(640,175,140,110,'Orchestrator',{c:'yellow',sub:'desired 3\nactual 2',smono:1,fs:14,in:3,out:4,hl:3});
+  s+=B(640,175,140,110,'Orchestrator',{c:'yellow',sub:'desired 3\nactual 3',smono:1,fs:14,in:4,hl:4});
+  s+=A('M584 220 L636 220',{in:3,out:4,c:'red',label:'health ✗',lx:610,ly:208});
+  s+=A('M636 240 L584 240',{in:4,c:'green',label:'replace',lx:610,ly:262});
+  s+=BD(400,424,'same loop across many machines → Kubernetes / Swarm',{a:'middle',c:'ink',in:5});
+  return s;},
+steps:[
+ {t:'One container hits a ceiling',d:'A single replica means one crash takes you down, and throughput is capped at what one container can do.',cmd:'docker run -d -p 8080:3000 api'},
+ {t:'Run replicas',d:'Declare how many copies you want. Replicas are identical and stateless — state lives in the database or a volume.',cmd:'docker compose up -d --scale api=3'},
+ {t:'Spread the load',d:'A load balancer (nginx, Traefik, or the orchestrator’s built-in one) sends each request to a replica.',cmd:'docker compose ps     # 3 × api running'},
+ {t:'A replica goes bad',d:'Its HEALTHCHECK starts failing. Traffic stops flowing to it, and the orchestrator notices actual ≠ desired.',cmd:'docker inspect -f "{{.State.Health.Status}}" shop-api-2\n> unhealthy'},
+ {t:'Reconcile to desired state',d:'The orchestrator replaces the unhealthy replica and traffic reaches all three again — nobody gets paged.',cmd:'docker service ps api     # swarm: 3/3 running'},
+ {t:'Next stop: orchestration',d:'Kubernetes and Swarm run this same declare-and-reconcile loop across a whole cluster of machines. You now have the mental model.',cmd:'kubectl scale deployment/api --replicas=10'}
+]}
+];
+LESSONS.forEach((l,i)=>l.n=i+1);
+
+/* ---------- progress ---------- */
+let done={};
+try{done=JSON.parse(localStorage.getItem('lbl-done')||'{}')}catch(e){}
+function saveDone(){try{localStorage.setItem('lbl-done',JSON.stringify(done))}catch(e){}updateProg();}
+function updateProg(){const n=LESSONS.filter(l=>done[l.id]).length;document.getElementById('progTxt').textContent=`${n} / ${LESSONS.length} done`;document.getElementById('progBar').style.width=(n/LESSONS.length*100)+'%';}
+
+/* ---------- views ---------- */
+const app=document.getElementById('app');
+let state={lesson:null,step:0,timer:null,typer:null};
+
+function heroArt(){
+  const iso=(cy,fill,label,i)=>{const cx=200,w=250,h=110,d=24;
+    return `<g class="lay"><polygon points="${cx-w/2},${cy} ${cx},${cy+h/2} ${cx},${cy+h/2+d} ${cx-w/2},${cy+d}" fill="${fill}" stroke="#1f1a17" stroke-width="2" style="filter:brightness(.88)"/><polygon points="${cx},${cy+h/2} ${cx+w/2},${cy} ${cx+w/2},${cy+d} ${cx},${cy+h/2+d}" fill="${fill}" stroke="#1f1a17" stroke-width="2" style="filter:brightness(.76)"/><polygon points="${cx},${cy-h/2} ${cx+w/2},${cy} ${cx},${cy+h/2} ${cx-w/2},${cy}" fill="${fill}" stroke="#1f1a17" stroke-width="2"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" font-weight="600" fill="#1f1a17" transform="rotate(0)">${label}</text></g>`;};
+  return `<svg viewBox="0 0 400 440">${iso(345,'#e6dccd','FROM alpine',0)}${iso(253,'#d3e1fb','RUN npm ci',1)}${iso(161,'#f6e3ad','COPY . .',2)}${iso(69,'#f8d6c1','container (rw)',3)}</svg>`;
+}
+
+function renderHome(){
+  stopPlay();
+  const first=LESSONS.find(l=>!done[l.id])||LESSONS[0];
+  app.innerHTML=`<div class="home">
+   <section class="hero">
+     <div>
+       <div class="eyebrow">An interactive Docker course</div>
+       <h1>Learn Docker,<br><em>layer by layer.</em></h1>
+       <p>Ten animated diagrams that take you from “what is a container?” to replicas behind a load balancer. Step through each one, watch it change, and copy the real commands as you go.</p>
+       <a class="btn" href="#${first.id}">${Object.keys(done).length?'Continue':'Start'} with ${first.title} →</a>
+       <a class="btn ghost" href="#${LESSONS[0].id}" style="margin-left:10px">From the top</a>
+     </div>
+     <div class="hero-art">${heroArt()}</div>
+   </section>
+   <div class="section-h"><h2>The course</h2><span>${LESSONS.reduce((a,l)=>a+l.steps.length,0)} steps · ~40 minutes</span></div>
+   <div class="grid">${LESSONS.map(l=>`<a class="card" href="#${l.id}"><div class="num">${String(l.n).padStart(2,'0')}</div><h3>${l.title}</h3><p>${l.lede}</p><div class="meta"><span class="tag t-${l.tag}">${l.tag}</span>${done[l.id]?'<span class="done-badge">✓ done</span>':`<span class="mono" style="color:var(--muted)">${l.steps.length} steps</span>`}</div></a>`).join('')}</div>
+   <div class="howto">
+     <div><b>Step, don’t scroll</b><p>Each lesson is one diagram that evolves. Use <kbd>←</kbd> <kbd>→</kbd> or the buttons, or hit Play.</p></div>
+     <div><b>Real commands</b><p>Every step pairs with the command that does it. Copy them into your own terminal and try it.</p></div>
+     <div><b>Build a mental model</b><p>Images → containers → storage → networks → Compose → registries → scale. Each idea builds on the last.</p></div>
+   </div></div>`;
+  window.scrollTo(0,0);
+}
+
+function renderLesson(l){
+  stopPlay();
+  state.lesson=l;state.step=0;
+  const prev=LESSONS[l.n-2],next=LESSONS[l.n];
+  app.innerHTML=`<div class="lesson">
+   <nav class="side"><h4>Lessons</h4>${LESSONS.map(x=>`<a href="#${x.id}" class="${x===l?'cur':''}"><span class="n">${String(x.n).padStart(2,'0')}</span><span>${x.title}</span>${done[x.id]?'<span class="ck">✓</span>':''}</a>`).join('')}</nav>
+   <main class="main">
+     <div class="crumb"><span class="tag t-${l.tag}">${l.tag}</span><span class="mono" style="font-size:12px;color:var(--muted)">LESSON ${String(l.n).padStart(2,'0')} / ${LESSONS.length}</span></div>
+     <h1>${l.title}</h1>
+     <p class="lede">${l.lede}</p>
+     <div class="stage">
+       <div class="canvas" id="canvas"><button class="zoombtn" id="bZoom">⤢ zoom</button><svg viewBox="0 0 800 460" role="img" aria-label="${l.title} diagram">${DEFS}${l.scene()}</svg></div>
+       <div class="caption"><div class="stepno" id="stepno"></div><div id="captxt"></div></div>
+       <div class="controls">
+         <button class="cbtn" id="bPrev">← Back</button>
+         <button class="cbtn primary" id="bNext">Next →</button>
+         <button class="cbtn" id="bPlay">▶ Play</button>
+         <button class="cbtn" id="bReset" title="Restart">↺</button>
+         <div class="dots" id="dots">${l.steps.map((_,i)=>`<button aria-label="Step ${i+1}" data-i="${i}"></button>`).join('')}</div>
+       </div>
+     </div>
+     <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>~/demo — zsh</span><button class="copy" id="bCopy">copy</button></div><pre id="term"></pre></div>
+     <div class="hint">Tip: <kbd>←</kbd> <kbd>→</kbd> to step, <kbd>space</kbd> to play.</div>
+     <div class="pager">${prev?`<a href="#${prev.id}"><small>← PREVIOUS</small><b>${prev.title}</b></a>`:'<span></span>'}${next?`<a class="next" href="#${next.id}"><small>NEXT →</small><b>${next.title}</b></a>`:`<a class="next" href="#home"><small>FINISHED 🎉</small><b>Back to all lessons</b></a>`}</div>
+   </main></div>`;
+  document.getElementById('bPrev').onclick=()=>{stopPlay();go(state.step-1)};
+  document.getElementById('bNext').onclick=()=>{stopPlay();go(state.step+1)};
+  document.getElementById('bReset').onclick=()=>{stopPlay();go(0)};
+  document.getElementById('bPlay').onclick=togglePlay;
+  document.getElementById('dots').onclick=e=>{const i=e.target.dataset.i;if(i!=null){stopPlay();go(+i)}};
+  document.getElementById('bCopy').onclick=copyCmds;
+  document.getElementById('bZoom').onclick=()=>{const c=document.getElementById('canvas');const z=c.classList.toggle('zoom');document.getElementById('bZoom').textContent=z?'⤡ fit':'⤢ zoom';};
+  window.scrollTo(0,0);
+  go(0,true);
+}
+
+function go(i,first){
+  const l=state.lesson;if(!l)return;
+  i=Math.max(0,Math.min(l.steps.length-1,i));
+  state.step=i;
+  const svg=app.querySelector('.canvas svg');
+  // reflow so entrance transitions play on first paint
+  if(first)void svg.getBoundingClientRect();
+  svg.querySelectorAll('[data-in],[data-out]').forEach(el=>{
+    const a=+(el.dataset.in||0),b=el.dataset.out!=null?+el.dataset.out:1e9;
+    el.classList.toggle('on',i>=a&&i<b);
+  });
+  svg.querySelectorAll('[data-hl]').forEach(el=>{
+    const on=el.dataset.hl.split(' ').map(Number).includes(i);
+    if(on&&!el.classList.contains('hl')){el.classList.add('hl');}else if(!on)el.classList.remove('hl');
+  });
+  const st=l.steps[i];
+  document.getElementById('stepno').innerHTML=`${i+1}<small>of ${l.steps.length}</small>`;
+  document.getElementById('captxt').innerHTML=`<div class="fade"><h3>${st.t}</h3><p>${st.d}</p></div>`;
+  document.getElementById('bPrev').disabled=i===0;
+  const last=i===l.steps.length-1;
+  const bn=document.getElementById('bNext');bn.disabled=last;
+  [...document.querySelectorAll('#dots button')].forEach((b,k)=>{b.className=k<i?'past':k===i?'cur':''});
+  renderTerm(i);
+  if(last&&!done[l.id]){done[l.id]=1;saveDone();const a=app.querySelector(`.side a[href="#${l.id}"]`);if(a&&!a.querySelector('.ck'))a.insertAdjacentHTML('beforeend','<span class="ck">✓</span>');}
+}
+
+function lineHTML(line){
+  if(line.startsWith('> '))return `<span class="o">${esc(line.slice(2))}</span>`;
+  const m=line.match(/^(.*?)(\s+#.*)?$/);
+  return `<span class="p">$</span> ${esc(m[1])}${m[2]?`<span class="c">${esc(m[2])}</span>`:''}`;
+}
+function renderTerm(i){
+  clearInterval(state.typer);
+  const l=state.lesson,term=document.getElementById('term');
+  const prevLines=[];l.steps.slice(0,i).forEach(s=>{if(s.cmd)prevLines.push(...s.cmd.split('\n'))});
+  const cur=l.steps[i].cmd?l.steps[i].cmd.split('\n'):[];
+  const old=prevLines.slice(-8).map(x=>`<div class="old">${lineHTML(x)}</div>`).join('');
+  if(!cur.length){term.innerHTML=old+`<div><span class="p">$</span> <span class="cursor"></span></div>`;term.scrollTop=term.scrollHeight;return;}
+  // type the first command line, then reveal the rest
+  const firstCmdIdx=cur.findIndex(x=>!x.startsWith('> '));
+  if(firstCmdIdx<0){term.innerHTML=old+cur.map(x=>`<div>${lineHTML(x)}</div>`).join('');term.scrollTop=term.scrollHeight;return;}
+  const before=cur.slice(0,firstCmdIdx).map(x=>`<div>${lineHTML(x)}</div>`).join('');
+  const full=cur[firstCmdIdx],after=cur.slice(firstCmdIdx+1).map(x=>`<div>${lineHTML(x)}</div>`).join('');
+  let n=0;
+  const tick=()=>{
+    n=Math.min(full.length,n+2);
+    const done=n>=full.length;
+    term.innerHTML=old+before+`<div>${done?lineHTML(full):`<span class="p">$</span> ${esc(full.slice(0,n))}<span class="cursor"></span>`}</div>`+(done?after:'');
+    term.scrollTop=term.scrollHeight;
+    if(done)clearInterval(state.typer);
+  };
+  tick();state.typer=setInterval(tick,22);
+}
+function copyCmds(){
+  const st=state.lesson.steps[state.step];const b=document.getElementById('bCopy');
+  const txt=(st.cmd||'').split('\n').filter(x=>!x.startsWith('> ')).join('\n');
+  if(!txt){b.textContent='nothing to copy';setTimeout(()=>b.textContent='copy',1200);return;}
+  try{navigator.clipboard.writeText(txt).then(()=>{b.textContent='copied ✓';setTimeout(()=>b.textContent='copy',1200)},()=>{b.textContent='copy blocked';setTimeout(()=>b.textContent='copy',1400)})}catch(e){b.textContent='copy blocked'}
+}
+function togglePlay(){
+  if(state.timer){stopPlay();return;}
+  const l=state.lesson;if(state.step>=l.steps.length-1)go(0);
+  document.getElementById('bPlay').textContent='❚❚ Pause';
+  state.timer=setInterval(()=>{if(state.step>=l.steps.length-1){stopPlay();return;}go(state.step+1)},3600);
+}
+function stopPlay(){clearInterval(state.timer);state.timer=null;const b=document.getElementById('bPlay');if(b)b.textContent='▶ Play';}
+
+document.addEventListener('keydown',e=>{
+  if(!state.lesson||!document.getElementById('bNext'))return;
+  if(e.target.closest&&e.target.closest('input,textarea'))return;
+  if(e.key==='ArrowRight'){stopPlay();go(state.step+1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){stopPlay();go(state.step-1);e.preventDefault();}
+  else if(e.key===' '){togglePlay();e.preventDefault();}
+});
+
+function route(){
+  const id=location.hash.slice(1);
+  const l=LESSONS.find(x=>x.id===id);
+  if(l)renderLesson(l);else{state.lesson=null;renderHome();}
+}
+window.addEventListener('hashchange',route);
+updateProg();route();
+</script>
+</body>
+</html>
