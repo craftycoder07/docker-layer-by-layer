@@ -1683,8 +1683,16 @@ function showBuild(r){
    Paste the web-app config from the Firebase console into FIREBASE_CONFIG.
    While it is null, sign-in stays hidden and progress lives in this browser only.
    ===================================================================== */
-const FIREBASE_CONFIG=null;
-const AUTH_PROVIDERS=['github','google','microsoft','email']; // remove any you haven't enabled in Firebase
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyC5kA7FmbrF9f7Y6SBLE3pwXeIQO3t7UT0",
+  authDomain:"layer-by-layer-e7cd3.firebaseapp.com",
+  projectId:"layer-by-layer-e7cd3",
+  storageBucket:"layer-by-layer-e7cd3.firebasestorage.app",
+  messagingSenderId:"958721232537",
+  appId:"1:958721232537:web:9cc2997ca646ae3d95b208",
+  measurementId:"G-JE823GQQDV"
+};
+const AUTH_PROVIDERS=['google','email']; // remove any you haven't enabled in Firebase
 const FB_VER='10.14.1';
 let FB=null,USER=null,AUTH_STATE='off',cloudTimer=null,lastSync=null;
 const PROVIDER_LABEL={github:'GitHub',google:'Google',microsoft:'Microsoft'};

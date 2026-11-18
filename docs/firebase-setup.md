@@ -17,12 +17,12 @@ Throughout, `PROJECT_ID` is your Firebase project ID and the **auth handler URL*
 ## 3. Turn on sign-in methods (Authentication → Sign-in method)
 - **Google:** enable, pick a support email, save.
 - **Email link:** enable **Email/Password**, then switch on **Email link (passwordless sign-in)**. Save.
-- **GitHub:**
+- **GitHub** (not enabled on the live site):
   1. On GitHub: **Settings → Developer settings → OAuth Apps → New OAuth App**
      - Homepage URL: `https://craftycoder07.github.io/docker-layer-by-layer/`
      - Authorization callback URL: the auth handler URL above
   2. Generate a client secret, then paste the **Client ID** and **Client secret** into Firebase's GitHub provider and save.
-- **Microsoft:**
+- **Microsoft** (not enabled on the live site):
   1. https://portal.azure.com → **Microsoft Entra ID → App registrations → New registration**
      - Supported account types: *Accounts in any organizational directory and personal Microsoft accounts*
      - Redirect URI: platform **Web**, value = the auth handler URL above
