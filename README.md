@@ -6,6 +6,10 @@ Examples switch between **Node.js, .NET, Python, Java, Go and Rust** (picker in 
 
 Single self-contained `index.html` — no build step. Deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`.
 
+## Practice area
+
+`#practice` on the site is a browser-only Docker simulator (terminal + live diagram), a Dockerfile playground that simulates layer caching and image size, and 11 auto-checked challenges. For real Docker, the repo ships a dev container: **Code → Codespaces → Create codespace**, then follow `practice/README.md`.
+
 ## Run locally
 
 Open `index.html` in a browser, or:

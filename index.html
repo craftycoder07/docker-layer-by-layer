@@ -159,6 +159,104 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var
 .toast{position:fixed;bottom:22px;left:50%;background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;box-shadow:4px 4px 0 var(--orange);animation:toast 2.2s ease forwards;pointer-events:none}
 @keyframes toast{0%{opacity:0;transform:translate(-50%,8px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
 
+/* ---------- practice area ---------- */
+.practice{max-width:1280px;margin:0 auto;padding:30px 24px 70px}
+.phead{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:end;margin-bottom:22px}
+.phead h1{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(34px,5vw,54px);margin:6px 0 8px;line-height:1;letter-spacing:-.02em}
+.phead .lede{margin:0}
+.realcard{display:block;text-decoration:none;border:2px solid var(--ink);border-radius:14px;padding:14px 16px;background:var(--card);box-shadow:5px 5px 0 var(--blue);transition:transform .12s}
+.realcard:hover{transform:translate(-1px,-1px)}
+.realcard b{display:block;font-size:16px;margin-bottom:4px}.realcard span{font-size:13.5px;color:#4a4039}
+.pgrid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+.chal{position:sticky;top:76px;background:var(--card);border:2px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 var(--ink);padding:14px;max-height:calc(100vh - 96px);overflow:auto}
+.chal-h{display:flex;justify-content:space-between;align-items:baseline;font-size:15px}
+.chal-h span{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.chbar{height:7px;border:1.5px solid var(--ink);border-radius:6px;margin:8px 0 10px;overflow:hidden}.chbar i{display:block;height:100%;background:var(--green);transition:width .4s}
+details.ch{border-top:1px dashed #cbbda9;padding:8px 2px;border-radius:6px}
+details.ch>summary{display:flex;gap:10px;align-items:center;cursor:pointer;font-weight:600;font-size:14.5px;list-style:none}
+details.ch>summary::-webkit-details-marker{display:none}
+.cn{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-size:12px;font-family:'JetBrains Mono',monospace}
+details.ch.done .cn{background:var(--green);color:#fff;border-color:var(--green)}
+details.ch.done>summary span:last-child{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+details.ch p{margin:8px 0 6px 34px;font-size:14px;color:#3b332d}
+.hint2{margin:4px 0 0 34px;font-size:13px}.hint2 summary{cursor:pointer;color:var(--blue);font-weight:600}
+.hint2 p{margin:4px 0!important}
+.hint2 code{display:block;background:#26201c;color:#efe5d8;padding:8px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;margin:6px 0;white-space:pre-wrap;word-break:break-word}
+.tryit{font-size:12px;border:1.5px solid var(--ink);background:var(--card);border-radius:7px;padding:2px 8px}
+details.ch.flash{animation:flash 1.4s ease}
+@keyframes flash{0%{background:#bfe0c9}100%{background:transparent}}
+.ghostbtn{border:1.5px solid var(--ink);background:var(--card);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:600}
+.ghostbtn:hover{background:var(--paper2)}
+.ghostbtn.small{margin-top:10px;font-size:11.5px;color:var(--muted);border-style:dashed}
+.tabs{display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.tabs [data-tab]{border:2px solid var(--ink);background:var(--card);border-radius:10px;padding:7px 14px;font-weight:600;font-size:14.5px}
+.tabs [data-tab].cur{background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--orange)}
+.tabs .spacer{flex:1}
+.sbox{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px}
+.xterm{background:#1f1a17;color:#efe5d8;border:2px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--blue);height:540px;overflow:auto;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.55;cursor:text}
+.xout div{white-space:pre-wrap;word-break:break-word}
+.xout .cmd{color:#fff;margin-top:6px}.xout .cmd::before{content:'$ ';color:#7fd29a}
+.xout .err{color:#ff9b8a}.xout .dim{color:#a89a8b}.xout .ok{color:#7fd29a}
+.xin{display:flex;gap:8px;align-items:center;margin-top:4px}.xin .p{color:#7fd29a}
+.xin input{flex:1;background:transparent;border:0;outline:0;color:#fff;font:inherit;caret-color:#e0703a;min-width:0}
+.xin input::placeholder{color:#6b5f55}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.quick button{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var(--ink);background:var(--card);border-radius:7px;padding:3px 9px}
+.world{background-color:var(--card);background-image:radial-gradient(#d9ccbb 1.1px,transparent 1.2px);background-size:18px 18px;border:2px dashed var(--ink);border-radius:14px;padding:12px;height:540px;overflow:auto}
+.wl{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.07em;color:var(--muted);font-weight:600;display:flex;justify-content:space-between;margin-bottom:8px}
+.hports{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.hp{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--orange);color:#fff;border:1.5px solid var(--ink);border-radius:20px;padding:2px 9px;font-weight:600}
+.lane{border:1.5px solid var(--ink);border-radius:12px;background:rgba(211,225,251,.6);padding:8px;margin-bottom:10px}
+.lane.builtin{background:rgba(230,220,205,.65)}
+.lh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}.lh b{font-family:'JetBrains Mono',monospace;font-size:13px}.lh span{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right}
+.cs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.cs em{font-size:12px;color:var(--muted)}
+.ctr{background:#fffaf3;border:1.6px solid var(--ink);border-radius:9px;box-shadow:3px 3px 0 var(--ink);padding:7px 9px;font-size:12.5px;min-width:0}
+.ctr small{display:block;color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctop{display:flex;align-items:center;gap:6px}.ctop b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctop i{width:9px;height:9px;border-radius:50%;flex:none;border:1.3px solid var(--ink);background:#bbb}
+.st-running{background:#e6f3ea}.st-running .ctop i{background:var(--green)}
+.st-paused{background:#fbf0cf}.st-paused .ctop i{background:var(--yellow)}
+.st-exited{opacity:.72}.st-exited .ctop i{background:#9a8f84}
+.st-bad{background:#f8dcd7}.st-bad .ctop i{background:var(--red)}
+.st-created .ctop i{background:var(--blue)}
+.bdg{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.bdg span{font-family:'JetBrains Mono',monospace;font-size:10px;border:1px solid var(--ink);border-radius:5px;padding:0 4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bp{background:#f8d6c1}.bv{background:#d3e1fb}
+.shelf{margin-top:10px}.sh-h{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:5px}
+.shelf>div:last-child{display:flex;flex-wrap:wrap;gap:6px}.shelf em{font-size:12px;color:var(--muted)}
+.im,.vo{font-family:'JetBrains Mono',monospace;font-size:11.5px;border:1.5px solid var(--ink);border-radius:6px;padding:2px 7px;background:#e6dccd}
+.im small{color:var(--muted)}.im.mine{background:#f6e3ad}.vo{background:#d3e1fb;border-radius:12px}.vo.used{box-shadow:2px 2px 0 var(--blue)}
+.new{animation:pop2 .6s ease}
+@keyframes pop2{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.04)}100%{transform:none;opacity:1}}
+.world .empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14px}
+.world code{font-family:'JetBrains Mono',monospace;background:var(--paper2);padding:1px 5px;border-radius:4px}
+.dfbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.dfbar .spacer{flex:1}
+.lab{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tagin{font-family:'JetBrains Mono',monospace;font-size:13px;display:flex;align-items:center;gap:6px;border:1.5px solid var(--ink);border-radius:8px;padding:3px 8px;background:var(--card)}
+.tagin input{border:0;background:transparent;font:inherit;width:130px;outline:0}
+.dfgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.edhead{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:6px}
+#dfText{width:100%;height:390px;resize:vertical;background:#26201c;color:#efe5d8;border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink);padding:14px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;tab-size:2;white-space:pre;overflow:auto}
+.dfedit{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px}
+.pending{margin-top:8px;font-size:13px;color:var(--orange);font-weight:600;min-height:18px}
+.dfout{background:var(--card);border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink);padding:14px;min-height:420px;overflow:auto}
+.dfout .empty{color:var(--muted);text-align:center;padding:60px 20px;font-size:14px}
+.bsum{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}.bsum b{font-family:'JetBrains Mono',monospace;font-size:15px;display:block}.bsum span{font-size:13px;color:var(--muted)}
+.bsum em{font-style:normal;font-weight:700;font-size:13px;padding:3px 9px;border-radius:20px;border:1.5px solid var(--ink)}.bsum em.good{background:#d2e8d8}.bsum em.bad{background:#f5cdc8}
+.blog{background:#1f1a17;color:#d8cdbf;border-radius:10px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.55;overflow:auto;margin:0 0 12px;white-space:pre}
+.blog .c{color:#7fd29a}.blog .m{color:#f0c38e}.blog .e{color:#ff9b8a;white-space:pre-wrap}
+.layers{margin-bottom:12px}.lyr{margin-bottom:6px}.lt{display:flex;justify-content:space-between;gap:10px;font-size:12px}.lt span:first-child{font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb{height:8px;background:var(--paper2);border-radius:5px;overflow:hidden;margin-top:2px}.lb i{display:block;height:100%;background:var(--purple);border-radius:5px}
+.lyr.base .lb i{background:#8a7d70}.cc{font-style:normal;color:var(--green);font-weight:700;font-size:10.5px}
+.tips{display:grid;gap:6px}.tip{font-size:13px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--ink)}.tip.warn{background:#f8d6c1}.tip.info{background:#e6dccd}.tip.ok{background:#d2e8d8}
+.next{margin-top:12px;font-size:13px}.next code{font-family:'JetBrains Mono',monospace;background:var(--paper2);padding:2px 6px;border-radius:5px}
+.navlink{font-weight:600;font-size:14.5px;text-decoration:none;padding:6px 10px;border-radius:8px;border:1.5px solid transparent}
+.navlink.cur,.navlink:hover{border-color:var(--ink);background:var(--card)}
+.practice-cta{margin-top:40px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;border:2px solid var(--ink);border-radius:16px;padding:22px 24px;background:#1f1a17;color:var(--paper);box-shadow:7px 7px 0 var(--orange)}
+.practice-cta h3{font-family:'Fraunces',serif;font-size:26px;margin:0 0 4px}.practice-cta p{margin:0;color:#d8cdbf}
+.practice-cta .btn{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 var(--orange)}
+.side .practice-link{margin-top:14px;border:1.5px dashed var(--ink)}
+@media (max-width:1100px){.sbox{grid-template-columns:1fr}.xterm{height:380px}.world{height:auto}.dfgrid{grid-template-columns:1fr}}
+@media (max-width:900px){.pgrid{grid-template-columns:1fr}.pmain{order:1}.chal{order:2;position:static;max-height:none}.phead{grid-template-columns:1fr}.practice{padding:20px 16px 60px}.practice-cta{grid-template-columns:1fr}}
+@media (max-width:560px){.logo .logo-t{display:none}.navlink{padding:5px 8px;font-size:13.5px}}
+
 @media (max-width:900px){
   .hero{grid-template-columns:1fr}
   .hero-art{max-width:380px}
@@ -187,9 +285,10 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var
 <header class="top">
   <a class="logo" href="#home">
     <svg viewBox="0 0 32 32"><rect x="5" y="19" width="22" height="7" rx="2" fill="#e6dccd" stroke="#1f1a17" stroke-width="2"/><rect x="5" y="11" width="22" height="7" rx="2" fill="#d3e1fb" stroke="#1f1a17" stroke-width="2"/><rect x="5" y="3" width="22" height="7" rx="2" fill="#e0703a" stroke="#1f1a17" stroke-width="2"/></svg>
-    Layer by Layer
+    <span class="logo-t">Layer by Layer</span>
   </a>
   <span class="spacer"></span>
+  <a class="navlink" href="#practice" id="navPractice">Practice</a>
   <div class="stackpick"><button class="stackbtn" id="stackBtn" aria-haspopup="true" aria-expanded="false"><i class="sdot" id="stackDot"></i><span id="stackName">Node.js</span><b>▾</b></button><div class="stackmenu" id="stackMenu" hidden></div></div>
   <div class="prog"><span id="progTxt">0 / 10</span><span class="bar"><i id="progBar" style="width:0"></i></span></div>
 </header>
@@ -683,6 +782,7 @@ function renderHome(){
    </section>
    <div class="section-h"><h2>The course</h2><span>${LESSONS.reduce((a,l)=>a+l.steps(S).length,0)} steps · ~40 minutes · ${S.name} examples</span></div>
    <div class="grid">${LESSONS.map(l=>`<a class="card" href="#${l.id}"><div class="num">${String(l.n).padStart(2,'0')}</div><h3>${l.title}</h3><p>${l.lede}</p><div class="meta"><span class="tag t-${l.tag}">${l.tag}</span>${done[l.id]?'<span class="done-badge">✓ done</span>':`<span class="mono" style="color:var(--muted)">${l.steps(S).length} steps</span>`}</div></a>`).join('')}</div>
+   <div class="practice-cta"><div><h3>Practice area</h3><p>A simulated Docker terminal with a live diagram, a Dockerfile playground for ${S.name}, and ${CHALLENGES.length} auto-checked challenges${Object.keys(CH).length?` — ${Object.keys(CH).length} done`:''}.</p></div><a class="btn" href="#practice">Open the sandbox →</a></div>
    <div class="howto">
      <div><b>Pick your stack</b><p>Node.js, .NET, Python, Java, Go or Rust — Dockerfiles, ports, build caching and multi-stage examples all follow your choice.</p></div>
      <div><b>Step, don’t scroll</b><p>Each lesson is one diagram that evolves. Use <kbd>←</kbd> <kbd>→</kbd> or the buttons, or hit Play.</p></div>
@@ -696,7 +796,7 @@ function renderLesson(l,keepStep){
   state.lesson=l;state.steps=l.steps(S);
   const prev=LESSONS[l.n-2],next=LESSONS[l.n];
   app.innerHTML=`<div class="lesson">
-   <nav class="side"><h4>Lessons</h4>${LESSONS.map(x=>`<a href="#${x.id}" class="${x===l?'cur':''}"><span class="n">${String(x.n).padStart(2,'0')}</span><span>${x.title}</span>${done[x.id]?'<span class="ck">✓</span>':''}</a>`).join('')}</nav>
+   <nav class="side"><h4>Lessons</h4>${LESSONS.map(x=>`<a href="#${x.id}" class="${x===l?'cur':''}"><span class="n">${String(x.n).padStart(2,'0')}</span><span>${x.title}</span>${done[x.id]?'<span class="ck">✓</span>':''}</a>`).join('')}<a href="#practice" class="practice-link"><span class="n">▸</span><span>Practice area</span></a></nav>
    <main class="main">
      <div class="crumb"><span class="tag t-${l.tag}">${l.tag}</span><span class="mono" style="font-size:12px;color:var(--muted)">LESSON ${String(l.n).padStart(2,'0')} / ${LESSONS.length}</span>
        ${l.neutral?`<span class="stackinline neutral">same for every stack</span>`:`<button class="stackinline" id="crumbStack"><i class="sdot" style="background:${S.dot}"></i>${S.name} examples ▾</button>`}</div>
@@ -713,7 +813,7 @@ function renderLesson(l,keepStep){
          <div class="dots" id="dots">${state.steps.map((_,i)=>`<button aria-label="Step ${i+1}" data-i="${i}"></button>`).join('')}</div>
        </div>
      </div>
-     <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>~/demo — zsh</span><button class="copy" id="bCopy">copy</button></div><pre id="term"></pre></div>
+     <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>~/demo — zsh</span><button class="copy" id="bTry" title="Open this step’s command in the practice sandbox">try it ▸</button><button class="copy" id="bCopy" style="margin-left:6px">copy</button></div><pre id="term"></pre></div>
      <div class="hint">Tip: <kbd>←</kbd> <kbd>→</kbd> to step, <kbd>space</kbd> to play.</div>
      <div class="pager">${prev?`<a href="#${prev.id}"><small>← PREVIOUS</small><b>${prev.title}</b></a>`:'<span></span>'}${next?`<a class="next" href="#${next.id}"><small>NEXT →</small><b>${next.title}</b></a>`:`<a class="next" href="#home"><small>FINISHED 🎉</small><b>Back to all lessons</b></a>`}</div>
    </main></div>`;
@@ -723,6 +823,9 @@ function renderLesson(l,keepStep){
   document.getElementById('bPlay').onclick=togglePlay;
   document.getElementById('dots').onclick=e=>{const i=e.target.dataset.i;if(i!=null){stopPlay();go(+i)}};
   document.getElementById('bCopy').onclick=copyCmds;
+  document.getElementById('bTry').onclick=()=>{const st=state.steps[state.step];const cmds=[];let buf='';
+    (st.cmd||'').split('\n').filter(isCmd).forEach(x=>{if(/\\\s*$/.test(x)){buf+=x.replace(/\\\s*$/,' ');}else{cmds.push((buf+x).replace(/\s+#.*$/,'').replace(/\s+/g,' ').trim());buf='';}});
+    pendingCmd=cmds.filter(Boolean).join(' && ')||null;location.hash='practice';};
   document.getElementById('bZoom').onclick=()=>{const c=document.getElementById('canvas');const z=c.classList.toggle('zoom');document.getElementById('bZoom').textContent=z?'⤡ fit':'⤢ zoom';};
   const cs=document.getElementById('crumbStack');if(cs)cs.onclick=e=>{e.stopPropagation();toggleMenu();};
   if(keepStep==null)window.scrollTo(0,0);
@@ -799,6 +902,746 @@ function togglePlay(){
 }
 function stopPlay(){clearInterval(state.timer);state.timer=null;const b=document.getElementById('bPlay');if(b)b.textContent='▶ Play';}
 
+/* =====================================================================
+   PRACTICE AREA — a simulated Docker engine, Dockerfile playground and
+   auto-checked challenges. Nothing here talks to a real Docker daemon.
+   ===================================================================== */
+const hex=n=>Array.from({length:n},()=>'0123456789abcdef'[Math.random()*16|0]).join('');
+const rid=()=>hex(12);
+const ADJ=['brave','eager','quirky','jolly','sleepy','vigilant','zealous','nifty','hungry','lucid','festive','pensive'];
+const NOUN=['turing','hopper','lovelace','knuth','ritchie','torvalds','hamilton','liskov','dijkstra','wozniak','curie','babbage'];
+
+const CATALOG={
+ 'hello-world':{tags:['latest'],size:0.02,kind:'hello',cmd:'/hello'},
+ 'nginx':{tags:['latest','1.27','alpine'],size:190,alpine:48,kind:'nginx',port:80,cmd:'/docker-entrypoint.sh nginx'},
+ 'postgres':{tags:['latest','16','17'],size:430,kind:'postgres',port:5432,cmd:'docker-entrypoint.sh postgres'},
+ 'redis':{tags:['latest','7'],size:117,kind:'redis',port:6379,cmd:'docker-entrypoint.sh redis-server'},
+ 'alpine':{tags:['latest','3.20'],size:8,kind:'shell',cmd:'/bin/sh'},
+ 'busybox':{tags:['latest'],size:4,kind:'shell',cmd:'sh'},
+ 'ubuntu':{tags:['latest','24.04'],size:78,kind:'shell',cmd:'/bin/bash'},
+ 'debian':{tags:['latest','12-slim'],size:75,kind:'shell',cmd:'bash'},
+ 'node':{tags:['20','20-alpine','22','latest'],size:1050,alpine:48,kind:'runtime',cmd:'node'},
+ 'python':{tags:['3.12','3.12-slim','latest'],size:1000,slim:125,kind:'runtime',cmd:'python3'},
+ 'golang':{tags:['1.23','1.23-alpine','latest'],size:800,alpine:260,kind:'runtime',cmd:'bash'},
+ 'rust':{tags:['1.82','1.82-slim','latest'],size:1400,slim:800,kind:'runtime',cmd:'bash'},
+ 'maven':{tags:['3.9-eclipse-temurin-21'],size:520,kind:'runtime',cmd:'mvn'},
+ 'eclipse-temurin':{tags:['21-jre-alpine','21'],size:190,kind:'runtime',cmd:'jshell'},
+ 'mcr.microsoft.com/dotnet/sdk':{tags:['9.0'],size:880,kind:'runtime',cmd:'dotnet'},
+ 'mcr.microsoft.com/dotnet/aspnet':{tags:['9.0'],size:218,kind:'runtime',cmd:'dotnet'},
+ 'gcr.io/distroless/static':{tags:['latest','nonroot'],size:2,kind:'runtime',cmd:''},
+ 'gcr.io/distroless/cc-debian12':{tags:['latest','nonroot'],size:24,kind:'runtime',cmd:''}
+};
+function parseRef(ref){
+  ref=String(ref).replace(/^docker\.io\/(library\/)?/,'');
+  let repo=ref,tag='latest';const at=ref.indexOf('@');
+  if(at>0){repo=ref.slice(0,at);tag=ref.slice(at+1);}
+  else{const i=ref.lastIndexOf(':');if(i>ref.lastIndexOf('/')){repo=ref.slice(0,i);tag=ref.slice(i+1);}}
+  return{repo,tag,full:repo+':'+tag};
+}
+function catalogImage(ref){
+  const r=parseRef(ref),c=CATALOG[r.repo];if(!c)return null;
+  if(!c.tags.includes(r.tag)&&!/^sha256:/.test(r.tag))return null;
+  let size=c.size;if(/alpine/.test(r.tag)&&c.alpine)size=c.alpine;if(/slim/.test(r.tag)&&c.slim)size=c.slim;
+  return{ref:r.full,size,kind:c.kind,port:c.port,cmd:c.cmd};
+}
+const APPLOG={node:'Server listening on port 3000',dotnet:'Now listening on: http://[::]:8080',python:'Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)',java:'Tomcat started on port 8080 (http) with context path \'/\'',go:'listening on :8080',rust:'listening on 0.0.0.0:3000'};
+const APPCMD={node:'node server.js',dotnet:'dotnet Api.dll',python:'fastapi run main.py',java:'java -jar app.jar',go:'/app',rust:'/app'};
+
+/* ---------- simulator state ---------- */
+function freshSim(){return{images:{},containers:[],networks:{bridge:{driver:'bridge',o:17,next:2,builtin:1,id:rid()},host:{driver:'host',builtin:1,id:rid()},none:{driver:'null',builtin:1,id:rid()}},volumes:{},nextNet:18,flags:{}};}
+let SIM=null;try{SIM=JSON.parse(localStorage.getItem('lbl-sim')||'null')}catch(e){}
+if(!SIM||!SIM.networks)SIM=freshSim();
+const saveSim=()=>{try{localStorage.setItem('lbl-sim',JSON.stringify(SIM))}catch(e){}};
+const findC=k=>SIM.containers.find(c=>c.name===k)||(k&&k.length>=2?SIM.containers.find(c=>c.id.startsWith(k)):null);
+function findImg(ref){const r=parseRef(ref);if(SIM.images[r.full])return r.full;const byId=Object.keys(SIM.images).find(k=>SIM.images[k].id.startsWith(ref));return byId||null;}
+function ago(ts){const s=Math.max(1,Math.round((Date.now()-ts)/1000));if(s<60)return s+' seconds';const m=Math.round(s/60);if(m<60)return m===1?'About a minute':m+' minutes';const h=Math.round(m/60);return h===1?'About an hour':h+' hours';}
+function statusText(c){if(c.status==='running')return'Up '+ago(c.started);if(c.status==='paused')return'Up '+ago(c.started)+' (Paused)';if(c.status==='exited')return`Exited (${c.exit}) ${ago(c.ended)} ago`;return'Created';}
+const fmtSize=mbv=>mbv<1?Math.round(mbv*1000)+'kB':mbv>=1000?(mbv/1000).toFixed(2)+'GB':(mbv<10?mbv.toFixed(1):Math.round(mbv))+'MB';
+function table(rows){const w=rows[0].map((_,i)=>Math.max(...rows.map(r=>String(r[i]).length)));return rows.map(r=>r.map((x,i)=>i===r.length-1?x:String(x).padEnd(w[i]+3)).join(''));}
+const portsText=c=>c.ports.map(p=>`0.0.0.0:${p[0]}->${p[1]}/tcp`).join(', ');
+function assignIp(net){const n=SIM.networks[net];if(!n||n.driver!=='bridge')return'';return`172.${n.o}.0.${n.next++}`;}
+const userNet=n=>SIM.networks[n]&&SIM.networks[n].driver==='bridge'&&!SIM.networks[n].builtin;
+function usedHostPorts(except){const s=new Set();SIM.containers.forEach(c=>{if(c!==except&&(c.status==='running'||c.status==='paused'))c.ports.forEach(p=>s.add(+p[0]))});return s;}
+
+/* ---------- tokenizing ---------- */
+function tokenize(s){const out=[];let cur='',q=null,has=false;
+  for(const ch of s){if(q){if(ch===q)q=null;else cur+=ch;continue;}
+    if(ch==='"'||ch==="'"){q=ch;has=true;continue;}
+    if(/\s/.test(ch)){if(cur||has){out.push(cur);cur='';has=false;}continue;}cur+=ch;}
+  if(cur||has)out.push(cur);return out;}
+function splitChain(s){const parts=[];let cur='',q=null;
+  for(let i=0;i<s.length;i++){const ch=s[i];if(q){cur+=ch;if(ch===q)q=null;continue;}
+    if(ch==='"'||ch==="'"){q=ch;cur+=ch;continue;}
+    if(ch==='&'&&s[i+1]==='&'){parts.push([cur,'&&']);cur='';i++;continue;}
+    if(ch===';'){parts.push([cur,';']);cur='';continue;}cur+=ch;}
+  parts.push([cur,'']);return parts.filter(p=>p[0].trim());}
+
+/* ---------- output helpers ---------- */
+let OUT=[];let ERR=false;
+const o=(t,c)=>{String(t).split('\n').forEach(x=>OUT.push({t:x,c}))};
+const err=t=>{ERR=true;o(t,'err')};
+
+/* ---------- container behaviour ---------- */
+function startLogs(c){
+  const k=c.kind;
+  if(k==='nginx')return['/docker-entrypoint.sh: Configuration complete; ready for start up','nginx: start worker processes'];
+  if(k==='postgres')return(c.env.POSTGRES_PASSWORD||c.env.POSTGRES_HOST_AUTH_METHOD)?['PostgreSQL init process complete; ready for start up.','LOG:  database system is ready to accept connections']:['Error: Database is uninitialized and superuser password is not specified.','       Set one with -e POSTGRES_PASSWORD=... on docker run.'];
+  if(k==='redis')return['* Ready to accept connections tcp'];
+  if(k==='app')return[APPLOG[c.stack]||'listening'];
+  if(k==='hello')return['','Hello from Docker!','This message shows that your installation appears to be working correctly.','','(simulated) The client asked the daemon to create a container from the','"hello-world" image, the container ran /hello, and its output was','streamed back to your terminal. Then it exited.',''];
+  return[];
+}
+function resolveName(from,name){
+  if(name==='localhost'||name==='127.0.0.1')return{c:from,ip:'127.0.0.1'};
+  for(const n of from.nets){if(!userNet(n.net))continue;
+    const t=SIM.containers.find(x=>(x.name===name||x.id.startsWith(name))&&x.status==='running'&&x.nets.some(m=>m.net===n.net));
+    if(t){const ip=t.nets.find(m=>m.net===n.net).ip;if(from.name==='api'&&t.name==='db')SIM.flags.dns=1;return{c:t,ip};}}
+  return null;
+}
+function httpTo(target,port,path){
+  const im=target.kind;
+  if(target.status==='paused')return{err:`curl: (28) Operation timed out`};
+  if(im==='nginx'&&+port===80)return{body:'<!DOCTYPE html>\n<html><head><title>Welcome to nginx!</title></head>\n<body><h1>Welcome to nginx!</h1> … </body></html>'};
+  if(im==='app'&&+port===+target.appPort){
+    if(path&&/health/.test(path))return{body:target.stack==='java'?'{"status":"UP"}':'Healthy'};
+    return{body:`Hello from myapp (${STACKS[target.stack]?STACKS[target.stack].name:'app'}) 👋`,app:1};}
+  if(im==='postgres'||im==='redis')return{err:'curl: (52) Empty reply from server'};
+  return{err:`curl: (7) Failed to connect to port ${port}: Connection refused`};
+}
+function parseUrl(u){const m=String(u).match(/^(?:https?:\/\/)?([^/:]+)(?::(\d+))?(\/.*)?$/);return m?{host:m[1],port:m[2]||'80',path:m[3]||'/'}:null;}
+function shellRun(c,argv,tty){
+  if(!argv.length)return tty?{out:['(interactive shells aren’t simulated — run single commands, e.g. docker exec '+c.name+' ls /)'],exit:0}:{out:[],exit:0};
+  const [cmd,...a]=argv;
+  if(['sh','bash','/bin/sh','/bin/bash','ash'].includes(cmd)){if(a[0]==='-c'&&a[1])return shellRun(c,tokenize(a[1]),tty);return shellRun(c,[],true);}
+  if(cmd==='echo')return{out:[a.join(' ')],exit:0};
+  if(cmd==='sleep'||(cmd==='tail'&&a.includes('-f')))return{out:[],exit:0,keep:1};
+  if(cmd==='true')return{out:[],exit:0};
+  if(cmd==='false')return{out:[],exit:1};
+  if(cmd==='exit')return{out:[],exit:+(a[0]||0)};
+  if(cmd==='hostname')return{out:[c.id],exit:0};
+  if(cmd==='whoami')return{out:['root'],exit:0};
+  if(cmd==='date')return{out:[new Date().toUTCString()],exit:0};
+  if(cmd==='uname')return{out:[a.includes('-a')?`Linux ${c.id} 6.8.0 #1 SMP x86_64 GNU/Linux`:'Linux'],exit:0};
+  if(cmd==='env'||cmd==='printenv')return{out:['PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',`HOSTNAME=${c.id}`,...Object.entries(c.env).map(([k,v])=>`${k}=${v}`)],exit:0};
+  if(cmd==='ps')return{out:['PID   USER     COMMAND','    1 root     '+(c.cmd||'sh'),`   ${7+Math.floor(Math.random()*20)} root     ps`],exit:0};
+  if(cmd==='cat'&&a[0]==='/etc/os-release'){const os=/ubuntu/.test(c.image)?'PRETTY_NAME="Ubuntu 24.04.1 LTS"':/debian|postgres|redis|nginx:(latest|1)/.test(c.image)?'PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"':'NAME="Alpine Linux"\nVERSION_ID=3.20.3';return{out:os.split('\n'),exit:0};}
+  if(cmd==='cat'&&a[0]==='/etc/hosts')return{out:['127.0.0.1\tlocalhost',...c.nets.filter(n=>n.ip).map(n=>`${n.ip}\t${c.id}`)],exit:0};
+  if(cmd==='ls'){const p=(a.find(x=>!x.startsWith('-'))||'/').replace(/\/$/,'')||'/';
+    const m=c.vols.find(v=>v.dst===p);
+    if(m)return{out:[m.type==='bind'?'(files from your host folder '+m.src+')':(c.kind==='postgres'?'PG_VERSION  base  global  pg_wal  pg_xact  postgresql.conf':'(empty volume)')],exit:0};
+    if(p==='/')return{out:['bin  dev  etc  home  lib  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var'],exit:0};
+    if(p==='/usr/share/nginx/html'&&c.kind==='nginx')return{out:['50x.html  index.html'],exit:0};
+    return{out:[],exit:0};}
+  if(cmd==='getent'&&a[0]==='hosts'){const r=resolveName(c,a[1]);return r?{out:[`${r.ip}      ${a[1]}`],exit:0}:{out:[c.nets.some(n=>userNet(n.net))?'':'(no answer — on the default bridge network containers can’t look each other up by name; use a user-defined network)'].filter(Boolean),exit:2};}
+  if(cmd==='nslookup'){const r=resolveName(c,a[0]);return r?{out:['Server:    127.0.0.11',`Name:      ${a[0]}`,`Address:   ${r.ip}`],exit:0}:{out:[`** server can't find ${a[0]}: NXDOMAIN`],exit:1};}
+  if(cmd==='ping'){const h=a.filter(x=>!x.startsWith('-')&&!/^\d+$/.test(x))[0];const r=resolveName(c,h);
+    return r?{out:[`PING ${h} (${r.ip}): 56 data bytes`,`64 bytes from ${r.ip}: seq=0 ttl=64 time=0.081 ms`,`--- ${h} ping statistics ---`,'1 packets transmitted, 1 packets received, 0% packet loss'],exit:0}:{out:[`ping: bad address '${h}'`],exit:1};}
+  if(cmd==='curl'||cmd==='wget'){const u=parseUrl(a.find(x=>!x.startsWith('-')));if(!u)return{out:['curl: no URL specified'],exit:2};
+    const r=resolveName(c,u.host);if(!r)return{out:[`curl: (6) Could not resolve host: ${u.host}`],exit:6};
+    const h=httpTo(r.c,u.port,u.path);return h.err?{out:[h.err],exit:7}:{out:h.body.split('\n'),exit:0};}
+  return{out:[`sh: ${cmd}: not found`],exit:127};
+}
+function newName(){let n;do{n=ADJ[Math.random()*ADJ.length|0]+'_'+NOUN[Math.random()*NOUN.length|0];}while(findC(n));return n;}
+function startContainer(c,attached){
+  // decide what the main process does
+  c.started=Date.now();c.logs=c.logs||[];
+  if(c.kind==='hello'){c.logs.push(...startLogs(c));c.status='exited';c.exit=0;c.ended=Date.now();SIM.flags.hello=1;return attached?startLogs(c):[];}
+  if(c.kind==='shell'||c.kind==='runtime'){
+    const r=shellRun(c,c.args,c.tty);c.logs.push(...r.out);
+    if(r.keep){c.status='running';return attached?r.out:[];}
+    c.status='exited';c.exit=r.exit;c.ended=Date.now();return attached?r.out:[];}
+  const lg=startLogs(c);c.logs.push(...lg);
+  if(c.kind==='postgres'&&!(c.env.POSTGRES_PASSWORD||c.env.POSTGRES_HOST_AUTH_METHOD)){c.status='exited';c.exit=1;c.ended=Date.now();return attached?lg:[];}
+  c.status='running';return attached?lg:[];
+}
+function removeContainer(c){
+  SIM.containers=SIM.containers.filter(x=>x!==c);
+  SIM.volumes&&c.vols.forEach(v=>{if(v.type==='anon')delete SIM.volumes[v.src];});
+  if(c.name==='web'&&c.wasRunning&&CH.port)SIM.flags.removedWeb=1;
+}
+function ensureImage(ref,quiet){
+  const have=findImg(ref);if(have)return have;
+  const cat=catalogImage(ref);const r=parseRef(ref);
+  if(!cat){err(`Unable to find image '${r.full}' locally`);err(`docker: Error response from daemon: pull access denied for ${r.repo}, repository does not exist or may require 'docker login'.`);return null;}
+  if(!quiet)o(`Unable to find image '${r.full}' locally`,'dim');
+  o(`${r.tag}: Pulling from ${r.repo.includes('/')?r.repo:'library/'+r.repo}`,'dim');
+  o(`Digest: sha256:${hex(64)}`,'dim');o(`Status: Downloaded newer image for ${r.full}`,'dim');
+  SIM.images[r.full]={id:hex(12),size:cat.size,kind:cat.kind,port:cat.port,cmd:cat.cmd,created:Date.now()};return r.full;
+}
+
+/* ---------- docker run ---------- */
+const RUN_VAL=new Set(['--name','-p','--publish','-v','--volume','-e','--env','--network','--net','--restart','-w','--workdir','-m','--memory','--cpus','--tmpfs','--entrypoint','-u','--user','-h','--hostname','-l','--label','--env-file','--health-cmd','--mount','--platform','--pull','--network-alias']);
+function parseRunOpts(a){
+  const opt={ports:[],vols:[],env:{},nets:[],d:0,rm:0,tty:0,P:0,name:null,restart:'no',tmpfs:[]};let i=0;
+  for(;i<a.length;i++){let t=a[i];if(!t.startsWith('-'))break;
+    let v=null;if(t.startsWith('--')&&t.includes('=')){v=t.slice(t.indexOf('=')+1);t=t.slice(0,t.indexOf('='));}
+    if(RUN_VAL.has(t)){if(v==null){v=a[++i];if(v==null)return{error:`flag needs an argument: ${t}`};}
+      if(t==='--name')opt.name=v;else if(t==='-p'||t==='--publish')opt.ports.push(v);else if(t==='-v'||t==='--volume')opt.vols.push(v);
+      else if(t==='-e'||t==='--env'){const k=v.split('=')[0];opt.env[k]=v.includes('=')?v.slice(k.length+1):'';}
+      else if(t==='--network'||t==='--net')opt.nets.push(v);else if(t==='--restart')opt.restart=v;else if(t==='--tmpfs')opt.tmpfs.push(v);
+      continue;}
+    if(t==='--rm'){opt.rm=1;continue;}if(t==='-d'||t==='--detach'){opt.d=1;continue;}if(t==='-P'||t==='--publish-all'){opt.P=1;continue;}
+    if(['-i','-t','--interactive','--tty','--init','--privileged','--read-only'].includes(t)){if(t==='-t'||t==='--tty')opt.tty=1;continue;}
+    if(/^-[dit]+$/.test(t)){if(t.includes('d'))opt.d=1;if(t.includes('t'))opt.tty=1;continue;}
+    return{error:`unknown flag: ${t}`};}
+  opt.image=a[i];opt.args=a.slice(i+1);return opt;
+}
+function dockerRun(a,createOnly){
+  const opt=parseRunOpts(a);if(opt.error)return err(opt.error);
+  if(!opt.image)return err(`"docker ${createOnly?'create':'run'}" requires at least 1 argument.`);
+  if(opt.name&&findC(opt.name)&&findC(opt.name).name===opt.name){const ex=findC(opt.name);return err(`docker: Error response from daemon: Conflict. The container name "/${opt.name}" is already in use by container "${ex.id}". You have to remove (or rename) that container to be able to reuse that name.`);}
+  if(opt.name&&!/^[a-zA-Z0-9][a-zA-Z0-9_.-]*$/.test(opt.name))return err(`docker: Error response from daemon: Invalid container name (${opt.name}).`);
+  const net=opt.nets[0]||'bridge';if(!SIM.networks[net])return err(`docker: Error response from daemon: network ${net} not found.`);
+  if(!['no','always','unless-stopped','on-failure'].includes(opt.restart.split(':')[0]))return err(`docker: invalid restart policy: ${opt.restart}`);
+  // ports
+  const ports=[];const used=usedHostPorts();
+  for(const p of opt.ports){const m=String(p).match(/^(?:\d+\.\d+\.\d+\.\d+:)?(?:(\d+):)?(\d+)(?:\/(tcp|udp))?$/);if(!m)return err(`docker: invalid publish spec: ${p}`);
+    const host=m[1]?+m[1]:32768+Math.floor(Math.random()*1000);const cont=+m[2];
+    if(used.has(host)||ports.some(x=>x[0]===host))return err(`docker: Error response from daemon: driver failed programming external connectivity: Bind for 0.0.0.0:${host} failed: port is already allocated.`);
+    ports.push([host,cont]);}
+  const ref=ensureImage(opt.image);if(!ref)return;
+  const img=SIM.images[ref];
+  if(opt.P&&img.port&&!ports.length)ports.push([32768+Math.floor(Math.random()*1000),img.port]);
+  // volumes
+  const vols=[];
+  for(const v of opt.vols){const parts=v.split(':');let src,dst;
+    if(parts.length===1){src=hex(16)+hex(16);dst=parts[0];vols.push({src,dst,type:'anon'});SIM.volumes[src]={created:Date.now(),anon:1};continue;}
+    [src,dst]=parts;if(!dst||!dst.startsWith('/'))return err(`docker: Error response from daemon: invalid volume specification: '${v}'.`);
+    if(/^[./~]/.test(src))vols.push({src,dst,type:'bind'});
+    else{if(!SIM.volumes[src]){SIM.volumes[src]={created:Date.now()};}vols.push({src,dst,type:'volume'});}}
+  opt.tmpfs.forEach(t=>vols.push({src:'tmpfs',dst:t.split(':')[0],type:'tmpfs'}));
+  const c={id:hex(12),name:opt.name||newName(),image:ref,kind:img.kind,stack:img.stack,appPort:img.port,cmd:opt.args.length?opt.args.join(' '):(img.cmd||''),args:opt.args,
+    env:opt.env,ports,vols,nets:[{net,ip:assignIp(net)}],rm:opt.rm,restart:opt.restart,tty:opt.tty,status:'created',exit:0,created:Date.now(),logs:[]};
+  if(c.kind==='postgres')c.env=Object.assign({PGDATA:'/var/lib/postgresql/data'},c.env);
+  SIM.containers.push(c);
+  if(createOnly){o(c.id+hex(52));return;}
+  const shown=startContainer(c,!opt.d);
+  if(c.status==='running')c.wasRunning=1;
+  if(opt.d)o(c.id+hex(52));else{shown.forEach(x=>o(x));
+    if(c.status==='running')o(`(simulator: a real “docker run” without -d would stay attached here — next time add -d to run ${c.name} in the background)`,'dim');}
+  if(c.kind==='postgres'&&c.status==='exited')o(`hint: the container exited with code 1 — check “docker logs ${c.name}”`,'dim');
+  if(c.status==='exited'&&c.rm)removeContainer(c);
+}
+
+/* ---------- docker build (uses the Dockerfile playground) ---------- */
+function dockerBuild(a){
+  let tag=null;const rest=[];
+  for(let i=0;i<a.length;i++){if(a[i]==='-t'||a[i]==='--tag')tag=a[++i];else if(a[i].startsWith('--tag='))tag=a[i].slice(6);else if(a[i]==='-f'||a[i]==='--target'||a[i]==='--build-arg'){i++;}else rest.push(a[i]);}
+  if(!rest.length)return err('ERROR: "docker buildx build" requires exactly 1 argument.\nUsage:  docker build [OPTIONS] PATH');
+  const r=pgBuild(tag);
+  if(r.error){r.log.forEach(x=>o(x,'dim'));return err(r.error);}
+  r.log.forEach(x=>o(x,/CACHED/.test(x)?'ok':'dim'));
+  o('(simulated — using the Dockerfile from the Dockerfile tab)','dim');
+}
+
+/* ---------- the docker CLI ---------- */
+function docker(a){
+  let [cmd,...r]=a;
+  if(!cmd||cmd==='--help'||cmd==='help'){helpText();return;}
+  if(cmd==='container'||cmd==='image'&&r[0]!=='ls'&&r[0]!=='list'&&r[0]!=='rm'&&r[0]!=='prune'&&r[0]!=='inspect'&&r[0]!=='pull'&&r[0]!=='push'&&r[0]!=='tag'&&r[0]!=='build'&&r[0]!=='history'){
+    if(cmd==='container'){const sub=r.shift();const map={ls:'ps',list:'ps',run:'run',create:'create',start:'start',stop:'stop',rm:'rm',prune:'cprune',logs:'logs',inspect:'inspect',exec:'exec',restart:'restart',kill:'kill',pause:'pause',unpause:'unpause',port:'port',stats:'stats',top:'top'};
+      if(!map[sub])return err(`docker: 'container ${sub||''}' is not supported in the simulator`);cmd=map[sub];}
+  }
+  if(cmd==='image'){const sub=r.shift();cmd={ls:'images',list:'images',rm:'rmi',prune:'iprune',inspect:'inspect',pull:'pull',push:'push',tag:'tag',build:'build',history:'history'}[sub]||'?';}
+  switch(cmd){
+  case 'version':o('Client:\n Version:    27.3.1 (simulated)\nServer: Docker Engine - Community\n Engine:\n  Version:   27.3.1 (simulated)\n  OS/Arch:   linux/amd64');return;
+  case 'info':o(`Containers: ${SIM.containers.length}\n Running: ${SIM.containers.filter(c=>c.status==='running').length}\n Paused: ${SIM.containers.filter(c=>c.status==='paused').length}\n Stopped: ${SIM.containers.filter(c=>c.status==='exited'||c.status==='created').length}\nImages: ${Object.keys(SIM.images).length}\nServer Version: 27.3.1 (simulated)\nStorage Driver: overlay2\nCgroup Version: 2`);return;
+  case 'run':return dockerRun(r);
+  case 'create':return dockerRun(r,true);
+  case 'pull':{if(!r[0])return err('"docker pull" requires exactly 1 argument.');const cat=catalogImage(r[0]);const pr=parseRef(r[0]);
+    if(!cat){if(SIM.images[pr.full])return o(`Status: Image is up to date for ${pr.full}`);return err(`Error response from daemon: pull access denied for ${pr.repo}, repository does not exist or may require 'docker login'`);}
+    if(SIM.images[pr.full])return o(`${pr.tag}: Pulling from ${pr.repo}\nDigest: sha256:${hex(64)}\nStatus: Image is up to date for ${pr.full}`,'dim');
+    ensureImage(r[0],true);return;}
+  case 'images':{const q=r.includes('-q');const keys=Object.keys(SIM.images);
+    if(q){keys.forEach(k=>o(SIM.images[k].id));return;}
+    const rows=[['REPOSITORY','TAG','IMAGE ID','CREATED','SIZE']];keys.forEach(k=>{const i=SIM.images[k],p=parseRef(k);rows.push([p.repo,p.tag,i.id,ago(i.created)+' ago',fmtSize(i.size)]);});table(rows).forEach(x=>o(x));return;}
+  case 'ps':{const all=r.includes('-a')||r.includes('--all')||r.includes('-aq')||r.includes('-qa');const q=r.some(x=>/^-\w*q/.test(x)||x==='--quiet');
+    const list=SIM.containers.filter(c=>all||c.status==='running'||c.status==='paused');
+    if(q){list.forEach(c=>o(c.id));return;}
+    const rows=[['CONTAINER ID','IMAGE','COMMAND','STATUS','PORTS','NAMES']];
+    list.forEach(c=>{const cm='"'+(c.cmd.length>18?c.cmd.slice(0,17)+'…':c.cmd)+'"';rows.push([c.id,parseRef(c.image).repo.split('/').pop()+(parseRef(c.image).tag!=='latest'?':'+parseRef(c.image).tag:''),cm,statusText(c),portsText(c)||' ',c.name]);});
+    table(rows).forEach(x=>o(x));return;}
+  case 'start':case 'restart':{if(!r.length)return err(`"docker ${cmd}" requires at least 1 argument.`);
+    for(const k of r.filter(x=>!x.startsWith('-'))){const c=findC(k);if(!c){err(`Error response from daemon: No such container: ${k}`);continue;}
+      if(cmd==='start'&&(c.status==='running'||c.status==='paused')){o(k);continue;}
+      const used=usedHostPorts(c);const clash=c.ports.find(p=>used.has(+p[0]));if(clash){err(`Error response from daemon: Bind for 0.0.0.0:${clash[0]} failed: port is already allocated`);continue;}
+      c.logs.push(cmd==='restart'?'(restarted)':'(started)');startContainer(c,false);if(c.status==='running')c.wasRunning=1;o(k);
+      if(c.status==='exited'&&c.rm)removeContainer(c);}
+    return;}
+  case 'stop':case 'kill':{if(!r.length)return err(`"docker ${cmd}" requires at least 1 argument.`);
+    for(const k of r.filter(x=>!x.startsWith('-'))){const c=findC(k);if(!c){err(`Error response from daemon: No such container: ${k}`);continue;}
+      if(c.status==='running'||c.status==='paused'){
+        const sleeper=(c.kind==='shell'||c.kind==='runtime');
+        c.status='exited';c.ended=Date.now();c.exit=cmd==='kill'?137:sleeper?137:0;
+        c.logs.push(cmd==='kill'?'(killed with SIGKILL)':sleeper?'(ignored SIGTERM as PID 1 — killed after 10s grace period)':'(received SIGTERM, shut down gracefully)');
+        if(cmd==='stop'&&sleeper)o(`(${c.name}’s PID 1 ignored SIGTERM, so Docker waited 10 s and sent SIGKILL → exit 137)`,'dim');}
+      o(k);if(c.rm)removeContainer(c);}
+    return;}
+  case 'pause':case 'unpause':{for(const k of r){const c=findC(k);if(!c){err(`Error response from daemon: No such container: ${k}`);continue;}
+      if(cmd==='pause'){if(c.status!=='running'){err(`Error response from daemon: container ${c.id} is not running`);continue;}c.status='paused';}
+      else{if(c.status!=='paused'){err(`Error response from daemon: Container ${c.id} is not paused`);continue;}c.status='running';}o(k);}return;}
+  case 'rm':{const f=r.some(x=>/^-\w*f/.test(x)||x==='--force');const ks=r.filter(x=>!x.startsWith('-'));if(!ks.length)return err('"docker rm" requires at least 1 argument.');
+    for(const k of ks){const c=findC(k);if(!c){if(!f)err(`Error response from daemon: No such container: ${k}`);continue;}
+      if((c.status==='running'||c.status==='paused')&&!f){err(`Error response from daemon: cannot remove container "/${c.name}": container is running: stop the container before removing or force remove`);continue;}
+      removeContainer(c);o(k);}return;}
+  case 'cprune':{const gone=SIM.containers.filter(c=>c.status==='exited'||c.status==='created');gone.forEach(removeContainer);o('Deleted Containers:');gone.forEach(c=>o(c.id));o(`\nTotal reclaimed space: ${gone.length?'12.3kB':'0B'}`);return;}
+  case 'logs':{const k=r.filter(x=>!x.startsWith('-'))[0];const c=findC(k);if(!c)return err(`Error response from daemon: No such container: ${k||''}`);c.logs.forEach(x=>o(x));return;}
+  case 'exec':{let i=0,tty=false;while(r[i]&&r[i].startsWith('-')){if(/t/.test(r[i]))tty=true;if(['-e','--env','-w','--workdir','-u','--user'].includes(r[i]))i++;i++;}
+    const c=findC(r[i]);if(!c)return err(`Error response from daemon: No such container: ${r[i]||''}`);
+    if(c.status!=='running')return err(`Error response from daemon: container ${c.id} is not running`);
+    const res=shellRun(c,r.slice(i+1),tty);res.out.forEach(x=>o(x));if(res.exit)ERR=true;return;}
+  case 'inspect':{const f=r.indexOf('-f')>=0?r[r.indexOf('-f')+1]:r.indexOf('--format')>=0?r[r.indexOf('--format')+1]:null;
+    const k=r.filter((x,i)=>!x.startsWith('-')&&!(i>0&&(r[i-1]==='-f'||r[i-1]==='--format')))[0];const c=findC(k);
+    if(c){if(f){const m={'.State.Status':c.status,'.State.ExitCode':c.exit,'.Config.Image':c.image,'.Name':'/'+c.name,'.State.Running':c.status==='running','.HostConfig.RestartPolicy.Name':c.restart,'.State.Health.Status':c.status==='running'?'healthy':'unhealthy'};
+        const key=(f.match(/{{\s*([^}]+?)\s*}}/)||[])[1];if(key&&key in m)return o(String(m[key]));if(key&&/IPAddress/.test(key))return o(c.nets.map(n=>n.ip).join(' '));return err(`template: unsupported in simulator: ${f}`);}
+      o(JSON.stringify([{Id:c.id+hex(52),Name:'/'+c.name,State:{Status:c.status,Running:c.status==='running',Paused:c.status==='paused',ExitCode:c.exit},Image:c.image,Config:{Cmd:c.cmd.split(' '),Env:Object.entries(c.env).map(([a,b])=>a+'='+b)},HostConfig:{RestartPolicy:{Name:c.restart},PortBindings:Object.fromEntries(c.ports.map(p=>[p[1]+'/tcp',[{HostIp:'',HostPort:String(p[0])}]]))},Mounts:c.vols.map(v=>({Type:v.type,Name:v.type==='volume'?v.src:undefined,Source:v.type==='bind'?v.src:v.type==='volume'?`/var/lib/docker/volumes/${v.src}/_data`:'',Destination:v.dst})),NetworkSettings:{Networks:Object.fromEntries(c.nets.map(n=>[n.net,{IPAddress:n.ip}]))}}],null,2));return;}
+    const im=k&&findImg(k);if(im){const i=SIM.images[im];o(JSON.stringify([{Id:'sha256:'+i.id+hex(52),RepoTags:[im],Size:Math.round(i.size*1e6)}],null,2));return;}
+    if(k&&SIM.volumes[k]){o(JSON.stringify([{Name:k,Driver:'local',Mountpoint:`/var/lib/docker/volumes/${k}/_data`}],null,2));return;}
+    if(k&&SIM.networks[k]){return docker(['network','inspect',k]);}
+    return err(`Error: No such object: ${k||''}`);}
+  case 'port':{const c=findC(r[0]);if(!c)return err(`Error response from daemon: No such container: ${r[0]||''}`);c.ports.forEach(p=>o(`${p[1]}/tcp -> 0.0.0.0:${p[0]}`));return;}
+  case 'stats':{const rows=[['CONTAINER ID','NAME','CPU %','MEM USAGE / LIMIT','NET I/O']];SIM.containers.filter(c=>c.status==='running').forEach(c=>rows.push([c.id,c.name,(Math.random()*3).toFixed(2)+'%',(5+Math.random()*60).toFixed(1)+'MiB / 7.6GiB',(Math.random()*9).toFixed(1)+'kB / 0B']));table(rows).forEach(x=>o(x));o('(snapshot — the simulator doesn’t stream)','dim');return;}
+  case 'top':{const c=findC(r[0]);if(!c)return err(`Error response from daemon: No such container: ${r[0]||''}`);if(c.status!=='running')return err(`Error response from daemon: container ${c.id} is not running`);table([['UID','PID','CMD'],['root',String(4000+Math.floor(Math.random()*999)),c.cmd||'sh']]).forEach(x=>o(x));return;}
+  case 'rmi':{const f=r.some(x=>/^-\w*f/.test(x));for(const k of r.filter(x=>!x.startsWith('-'))){const im=findImg(k);if(!im){err(`Error response from daemon: No such image: ${k}`);continue;}
+      const user=SIM.containers.find(c=>c.image===im);if(user&&!f){err(`Error response from daemon: conflict: unable to remove repository reference "${k}" (must force) - container ${user.id} is using its referenced image ${SIM.images[im].id}`);continue;}
+      o(`Untagged: ${im}`);o(`Deleted: sha256:${SIM.images[im].id}${hex(52)}`);delete SIM.images[im];}return;}
+  case 'iprune':{const all=r.includes('-a')||r.includes('--all');const inUse=new Set(SIM.containers.map(c=>c.image));const gone=Object.keys(SIM.images).filter(k=>all?!inUse.has(k):k.startsWith('<none>'));gone.forEach(k=>{o('deleted: sha256:'+SIM.images[k].id);delete SIM.images[k];});o(`Total reclaimed space: ${gone.length?'yes, some':'0B'}`);return;}
+  case 'tag':{if(r.length<2)return err('"docker tag" requires exactly 2 arguments.');const src=findImg(r[0]);if(!src)return err(`Error response from daemon: No such image: ${r[0]}`);const t=parseRef(r[1]).full;SIM.images[t]=Object.assign({},SIM.images[src],{created:SIM.images[src].created});return;}
+  case 'push':{if(!r[0])return err('"docker push" requires exactly 1 argument.');const im=findImg(r[0]);if(!im)return err(`An image does not exist locally with the tag: ${r[0]}`);
+    const p=parseRef(im);if(!p.repo.includes('/'))return err(`denied: requested access to the resource is denied\n(hint: push to a namespace you own, e.g. docker tag ${im} ghcr.io/<you>/${p.repo}:${p.tag})`);
+    o(`The push refers to repository [${p.repo.includes('.')?p.repo:'docker.io/'+p.repo}]`,'dim');o(`${hex(12)}: Layer already exists`,'dim');o(`${hex(12)}: Pushed`,'dim');o(`${p.tag}: digest: sha256:${hex(64)} size: 1576`);
+    if(SIM.images[im].kind==='app')SIM.flags.pushed=1;return;}
+  case 'history':{const im=findImg(r[0]||'');if(!im)return err(`Error response from daemon: No such image: ${r[0]||''}`);const L=SIM.images[im].layers;
+    if(!L)return o('(history is only tracked for images you build in the Dockerfile tab)','dim');
+    table([['CREATED BY','SIZE'],...L.slice().reverse().map(l=>[l.label.length>46?l.label.slice(0,45)+'…':l.label,fmtSize(l.size)])]).forEach(x=>o(x));return;}
+  case 'build':return dockerBuild(r);
+  case 'network':{const sub=r.shift();
+    if(sub==='ls'||sub==='list'){table([['NETWORK ID','NAME','DRIVER','SCOPE'],...Object.entries(SIM.networks).map(([k,n])=>[n.id,k,n.driver,'local'])]).forEach(x=>o(x));return;}
+    if(sub==='create'){const name=r.filter(x=>!x.startsWith('-')&&!['bridge','overlay'].includes(x)).pop();if(!name)return err('"docker network create" requires exactly 1 argument.');if(SIM.networks[name])return err(`Error response from daemon: network with name ${name} already exists`);
+      SIM.networks[name]={driver:'bridge',o:SIM.nextNet++,next:2,id:hex(12)};o(hex(64));return;}
+    if(sub==='rm'||sub==='remove'){for(const k of r){const n=SIM.networks[k];if(!n){err(`Error response from daemon: network ${k} not found`);continue;}if(n.builtin){err(`Error response from daemon: ${k} is a pre-defined network and cannot be removed`);continue;}
+        const u=SIM.containers.find(c=>c.nets.some(m=>m.net===k)&&c.status!=='exited'&&c.status!=='created');if(u){err(`Error response from daemon: error while removing network: network ${k} has active endpoints (${u.name})`);continue;}
+        SIM.containers.forEach(c=>c.nets=c.nets.filter(m=>m.net!==k));delete SIM.networks[k];o(k);}return;}
+    if(sub==='connect'||sub==='disconnect'){const [n,k]=r.filter(x=>!x.startsWith('-'));const c=findC(k);if(!SIM.networks[n])return err(`Error response from daemon: network ${n} not found`);if(!c)return err(`Error response from daemon: No such container: ${k}`);
+      if(sub==='connect'){if(c.nets.some(m=>m.net===n))return err(`Error response from daemon: endpoint with name ${c.name} already exists in network ${n}`);c.nets.push({net:n,ip:assignIp(n)});}
+      else c.nets=c.nets.filter(m=>m.net!==n);return;}
+    if(sub==='inspect'){const n=SIM.networks[r[0]];if(!n)return err(`Error response from daemon: network ${r[0]} not found`);o(JSON.stringify([{Name:r[0],Driver:n.driver,IPAM:n.o?{Config:[{Subnet:`172.${n.o}.0.0/16`}]}:{},Containers:Object.fromEntries(SIM.containers.filter(c=>c.nets.some(m=>m.net===r[0])).map(c=>[c.id,{Name:c.name,IPv4Address:c.nets.find(m=>m.net===r[0]).ip+'/16'}]))}],null,2));return;}
+    if(sub==='prune'){Object.keys(SIM.networks).forEach(k=>{if(!SIM.networks[k].builtin&&!SIM.containers.some(c=>c.nets.some(m=>m.net===k))){delete SIM.networks[k];o('Deleted Networks:\n'+k);}});return;}
+    return err(`docker network ${sub||''}: supported here → ls, create, rm, connect, disconnect, inspect, prune`);}
+  case 'volume':{const sub=r.shift();
+    if(sub==='ls'||sub==='list'){table([['DRIVER','VOLUME NAME'],...Object.keys(SIM.volumes).map(k=>['local',k])]).forEach(x=>o(x));return;}
+    if(sub==='create'){const name=r.filter(x=>!x.startsWith('-'))[0]||hex(32);if(!SIM.volumes[name])SIM.volumes[name]={created:Date.now()};o(name);return;}
+    if(sub==='rm'||sub==='remove'){for(const k of r.filter(x=>!x.startsWith('-'))){if(!SIM.volumes[k]){err(`Error response from daemon: get ${k}: no such volume`);continue;}
+        const u=SIM.containers.find(c=>c.vols.some(v=>v.src===k));if(u){err(`Error response from daemon: remove ${k}: volume is in use - [${u.id}]`);continue;}delete SIM.volumes[k];o(k);}return;}
+    if(sub==='inspect'){return docker(['inspect',r[0]]);}
+    if(sub==='prune'){const inUse=new Set(SIM.containers.flatMap(c=>c.vols.map(v=>v.src)));const gone=Object.keys(SIM.volumes).filter(k=>!inUse.has(k)&&(r.includes('-a')||r.includes('--all')||SIM.volumes[k].anon));gone.forEach(k=>delete SIM.volumes[k]);o('Deleted Volumes:');gone.forEach(k=>o(k));if(!r.includes('-a')&&Object.keys(SIM.volumes).some(k=>!inUse.has(k)))o('(named volumes are kept unless you add -a)','dim');return;}
+    return err(`docker volume ${sub||''}: supported here → ls, create, rm, inspect, prune`);}
+  case 'system':{if(r[0]==='df'){const imgs=Object.values(SIM.images);table([['TYPE','TOTAL','ACTIVE','SIZE'],['Images',imgs.length,new Set(SIM.containers.map(c=>c.image)).size,fmtSize(imgs.reduce((a,b)=>a+b.size,0))],['Containers',SIM.containers.length,SIM.containers.filter(c=>c.status==='running').length,'—'],['Local Volumes',Object.keys(SIM.volumes).length,'—','—']]).forEach(x=>o(x));return;}
+    if(r[0]==='prune'){docker(['container','prune']);docker(['network','prune']);if(r.includes('-a'))docker(['image','prune','-a']);if(r.includes('--volumes'))docker(['volume','prune','-a']);return;}
+    return err('docker system: supported here → df, prune');}
+  case 'update':{const i=r.indexOf('--restart');const c=findC(r[r.length-1]);if(!c)return err(`Error response from daemon: No such container: ${r[r.length-1]||''}`);if(i>=0)c.restart=r[i+1];o(c.name);return;}
+  case 'service':case 'swarm':case 'stack':return err('Swarm isn’t simulated — Lesson 10 explains what it does; try it for real in Codespaces.');
+  case 'scout':return o('(docker scout isn’t simulated — in real Docker it lists known CVEs in your image’s packages)','dim');
+  case 'compose':return err('Compose isn’t simulated here — try it for real with “Open in Codespaces” above.');
+  case 'login':o('Login Succeeded (simulated)');return;
+  case 'search':o('(search isn’t simulated — images you can pull here: '+Object.keys(CATALOG).join(', ')+')','dim');return;
+  default:return err(`docker: '${cmd}' is not a docker command (or isn’t simulated yet). Type help.`);
+  }
+}
+function helpText(){
+  [['Containers','run, create, start, stop, restart, kill, pause, unpause, rm, ps, logs, exec, inspect, port, stats, top, container prune'],
+   ['Images','pull, images, build, tag, push, rmi, history, image prune'],
+   ['Networks','network ls | create | rm | connect | disconnect | inspect'],
+   ['Volumes','volume ls | create | rm | inspect | prune'],
+   ['System','version, info, system df | prune'],
+   ['Host','curl localhost:PORT · clear · reset · history · cat Dockerfile'],
+   ['Pullable','hello-world, nginx, postgres, redis, alpine, busybox, ubuntu, debian, node, python, golang, rust, maven, eclipse-temurin, dotnet sdk/aspnet — plus anything you build']]
+  .forEach(([a,b])=>o(`${a.padEnd(11)}${b}`));
+  o('Chain commands with && or ;  ·  ↑/↓ for history  ·  Tab completes','dim');
+}
+let HIST=[];try{HIST=JSON.parse(localStorage.getItem('lbl-hist')||'[]')}catch(e){}
+function hostCmd(a){
+  const [cmd,...r]=a;
+  if(cmd==='docker')return docker(r);
+  if(cmd==='curl'||cmd==='wget'){const u=parseUrl(r.find(x=>!x.startsWith('-')));if(!u)return err('curl: try “curl localhost:8080”');
+    if(!['localhost','127.0.0.1','0.0.0.0'].includes(u.host)){if(findC(u.host))return err(`curl: (6) Could not resolve host: ${u.host}\n(container names only resolve inside a user-defined network — from your laptop, use localhost and a published port)`);return err(`curl: (6) Could not resolve host: ${u.host}`);}
+    const t=SIM.containers.find(c=>(c.status==='running'||c.status==='paused')&&c.ports.some(p=>+p[0]===+u.port));
+    if(!t)return err(`curl: (7) Failed to connect to localhost port ${u.port}: Connection refused`);
+    const p=t.ports.find(p=>+p[0]===+u.port);const h=httpTo(t,p[1],u.path);if(h.err)return err(h.err);
+    if(t.kind==='nginx'&&+u.port===8080)SIM.flags.nginx8080=1;if(h.app)SIM.flags.curlApp=1;
+    return o(h.body);}
+  if(cmd==='cat'&&r[0]==='Dockerfile')return o(pgText());
+  if(cmd==='ls')return o('Dockerfile  '+(S.id==='dotnet'?'Api.csproj  Program.cs':S.id==='java'?'pom.xml  src/':S.id==='go'?'go.mod  go.sum  main.go':S.id==='rust'?'Cargo.toml  Cargo.lock  src/':S.id==='python'?'requirements.txt  main.py':'package.json  package-lock.json  server.js'));
+  if(cmd==='echo')return o(r.join(' '));
+  if(cmd==='history')return HIST.slice(-20).forEach((h,i)=>o(String(i+1).padStart(4)+'  '+h));
+  if(cmd==='pwd')return o('/home/you/myapp');
+  if(cmd==='whoami')return o('you');
+  if(cmd==='sudo')return hostCmd(r);
+  if(cmd==='time'){hostCmd(r);o(`\nreal\t0m0.${300+Math.floor(Math.random()*200)}s`,'dim');return;}
+  if(cmd==='printf'||cmd==='touch'||cmd==='vim'||cmd==='nano'||cmd==='code')return o('(file edits aren’t simulated — use the Dockerfile tab’s “Edit” buttons)','dim');
+  if(cmd==='kubectl')return err('kubectl isn’t part of this simulator — that’s a whole other playground.');
+  if(cmd==='podman')return err('Nice try 😉 — this one only speaks docker.');
+  return err(`zsh: command not found: ${cmd}`);
+}
+function runLine(line){
+  OUT=[];
+  line=line.replace(/\$\(\s*docker ps -a?q\s*\)/g,()=>SIM.containers.map(c=>c.id).join(' ')).replace(/\$\(\s*docker ps -q\s*\)/g,()=>SIM.containers.filter(c=>c.status==='running').map(c=>c.id).join(' '));
+  for(const [part,op] of splitChain(line)){ERR=false;const a=tokenize(part.trim());
+    if(a[0]==='#')continue;
+    try{hostCmd(a);}catch(e){err('simulator error: '+e.message);}
+    if(ERR&&op==='&&')break;}
+  saveSim();return OUT;
+}
+
+/* ===================== Dockerfile playground ===================== */
+const MSFILE={
+node:`FROM node:20 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=build /app/dist ./dist
+USER node
+CMD ["node", "dist/server.js"]`,
+dotnet:`FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY *.csproj ./
+RUN dotnet restore
+COPY . .
+RUN dotnet publish -c Release -o /out
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /out .
+USER $APP_UID
+ENTRYPOINT ["dotnet", "Api.dll"]`,
+python:`FROM python:3.12 AS build
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+FROM python:3.12-slim
+COPY --from=build /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+WORKDIR /app
+COPY . .
+USER nobody
+CMD ["fastapi", "run", "main.py"]`,
+java:`FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn -o package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/app.jar app.jar
+USER 1000
+CMD ["java", "-jar", "app.jar"]`,
+go:`FROM golang:1.23 AS build
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o /out/app .
+
+FROM gcr.io/distroless/static
+COPY --from=build /out/app /app
+USER nonroot
+ENTRYPOINT ["/app"]`,
+rust:`FROM rust:1.82 AS build
+WORKDIR /app
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && echo "fn main(){}" > src/main.rs && cargo build --release
+COPY . .
+RUN touch src/main.rs && cargo build --release
+
+FROM gcr.io/distroless/cc-debian12
+COPY --from=build /app/target/release/app /app
+USER nonroot
+ENTRYPOINT ["/app"]`};
+const singleFile=st=>st.l2.map(x=>x[0]).join('\n');
+const PG={srcVer:1,manVer:1,cache:[],builtSrc:0,builtMan:0,last:null,texts:{}};
+try{Object.assign(PG,JSON.parse(localStorage.getItem('lbl-pg')||'{}'))}catch(e){}
+const savePG=()=>{try{localStorage.setItem('lbl-pg',JSON.stringify(PG))}catch(e){}};
+const pgText=()=>PG.texts[S.id]!=null?PG.texts[S.id]:singleFile(S);
+const MANIFEST_RE=/(^|\/)(package(-lock)?\.json|package\*\.json|\*?[\w.-]*\.csproj|\*\.csproj|[\w.-]*\.sln|requirements[\w.-]*\.txt|pom\.xml|go\.(mod|sum)|Cargo\.(toml|lock)|yarn\.lock|pnpm-lock\.yaml|poetry\.lock|pyproject\.toml|build\.gradle(\.kts)?)$/;
+const HEAVY_RE=/(dotnet\/sdk|^maven|^gradle|^golang|^rust(:|$)|^node:\d+$|^node:latest$|^node$|^python:\d+(\.\d+)?$|^python$|^openjdk|eclipse-temurin:\d+$)/;
+const RUNK=[
+ {re:/npm (ci|install)|yarn( install)?$|pnpm i/,kind:'deps',t:47.9,s:38},
+ {re:/dotnet restore/,kind:'deps',t:36.2,s:24},
+ {re:/pip install|poetry install/,kind:'deps',t:41.3,s:46},
+ {re:/mvn dependency|gradle dependencies/,kind:'deps',t:78.4,s:85},
+ {re:/go mod download/,kind:'deps',t:31.0,s:55},
+ {re:/cargo fetch/,kind:'deps',t:22.0,s:90},
+ {re:/cargo build.*fn main|fn main.*cargo build/,kind:'deps',t:241.7,s:400},
+ {re:/apt-get (update|install)/,kind:'deps',t:18.4,s:60},
+ {re:/apk add/,kind:'deps',t:3.1,s:8},
+ {re:/npm run build|tsc/,kind:'build',t:6.2,s:2,full:54},
+ {re:/dotnet (publish|build)/,kind:'build',t:9.4,s:11,full:58},
+ {re:/mvn .*package|gradle .*build/,kind:'build',t:12.1,s:38,full:95},
+ {re:/go build/,kind:'build',t:6.3,s:140,full:47},
+ {re:/cargo build/,kind:'build',t:25.4,s:420,full:241.7},
+ {re:/python -m venv/,kind:'misc',t:2.1,s:20}];
+const META=new Set(['ENV','ARG','LABEL','EXPOSE','USER','CMD','ENTRYPOINT','HEALTHCHECK','VOLUME','SHELL','STOPSIGNAL','ONBUILD','MAINTAINER']);
+const LAYER=new Set(['RUN','COPY','ADD','WORKDIR']);
+function parseDF(text){
+  const raw=text.split('\n');const ins=[];let buf='',start=0;
+  for(let i=0;i<raw.length;i++){let l=raw[i];if(!buf)start=i+1;if(/^\s*#/.test(l)&&!buf)continue;
+    if(/\\\s*$/.test(l)){buf+=l.replace(/\\\s*$/,' ');continue;}buf+=l;const t=buf.trim();buf='';if(!t)continue;
+    const m=t.match(/^(\S+)\s*(.*)$/);ins.push({n:start,ins:m[1].toUpperCase(),args:m[2],raw:t});}
+  return ins;
+}
+function pgBuild(tagArg){
+  const text=pgText();const tag=tagArg?parseRef(tagArg).full:null;const ins=parseDF(text);const log=[];
+  if(!ins.length)return{log,error:'ERROR: failed to solve: the Dockerfile cannot be empty'};
+  for(const i of ins){if(!META.has(i.ins)&&!LAYER.has(i.ins)&&i.ins!=='FROM')return{log,error:`ERROR: failed to solve: dockerfile parse error on line ${i.n}: unknown instruction: ${i.ins}`};}
+  if(ins[0].ins!=='FROM'&&!(ins[0].ins==='ARG'))return{log,error:`ERROR: failed to solve: no build stage in current context (line ${ins[0].n} comes before any FROM)`};
+  const stages=[];let cur=null;
+  for(const i of ins){if(i.ins==='FROM'){const m=i.args.match(/^(?:--platform=\S+\s+)?(\S+)(?:\s+AS\s+(\S+))?/i);if(!m)return{log,error:`ERROR: dockerfile parse error on line ${i.n}: FROM requires an image`};
+      cur={base:m[1],name:m[2]||null,steps:[],n:i.n};stages.push(cur);}else if(cur)cur.steps.push(i);}
+  const cache=new Set(PG.cache),newKeys=[];const stageKey={},stageArt={};let total=0,anyDepsCached=false,depsRan=false;
+  stages.forEach((st,si)=>{st.label=stages.length>1?(st.name||`stage-${si}`)+' ':'';});
+  const lines=[];let missing=null;
+  stages.forEach((st,si)=>{
+    let base=st.base;const fromStage=stages.find(x=>x.name===base&&x!==st);
+    let baseSize,known=true;
+    if(fromStage){baseSize=fromStage.size;}else{const local=findImg(base);const cat=catalogImage(base);
+      if(local)baseSize=SIM.images[local].size;else if(cat)baseSize=cat.size;else{baseSize=100;known=false;}}
+    st.baseKnown=known;st.baseSize=baseSize;
+    const layerSteps=st.steps.filter(s=>LAYER.has(s.ins));const N=layerSteps.length+1;
+    let key='FROM '+(fromStage?stageKey[fromStage.name]:base);
+    lines.push(`=> [${st.label}1/${N}] FROM ${fromStage?fromStage.name:(parseRef(base).full.includes('/')?parseRef(base).full:'docker.io/library/'+parseRef(base).full)}`);
+    let k=1;st.layers=[{label:'FROM '+base,size:fromStage?0:baseSize,base:1,cached:true}];
+    let depsInStage=false;st.size=baseSize;st.meta={user:null};st.art=fromStage?stageArt[fromStage.name]:0;
+    for(const s of st.steps){
+      if(META.has(s.ins)){key+='|'+s.raw;if(s.ins==='USER')st.meta.user=s.args;continue;}
+      k++;let inputs='',size=0,time=0.1,kind='misc';
+      if(s.ins==='COPY'||s.ins==='ADD'){
+        const fm=s.args.match(/--from=(\S+)/);
+        if(fm){const src=stages.find(x=>x.name===fm[1])||stages[+fm[1]];
+          if(!src&&!catalogImage(fm[1])){missing=`ERROR: failed to solve: ${fm[1]}: not found (no stage named “${fm[1]}” — did you forget “AS ${fm[1]}”?)`;break;}
+          inputs='from:'+(src?stageKey[src.name||stages.indexOf(src)]:fm[1]);size=src?(src.art||5):5;time=0.2;kind='copyfrom';}
+        else{const toks=s.args.split(/\s+/).filter(x=>!x.startsWith('--'));const srcs=toks.slice(0,-1);
+          const onlyMan=srcs.length&&srcs.every(x=>MANIFEST_RE.test(x));
+          inputs=onlyMan?'man'+PG.manVer:'src'+PG.srcVer+'man'+PG.manVer;size=onlyMan?0.004:1.2;time=onlyMan?0.1:0.3;kind=onlyMan?'copyman':'copysrc';}
+      }else if(s.ins==='RUN'){const rk=RUNK.find(r=>r.re.test(s.args))||{kind:'misc',t:0.6,s:0.5};kind=rk.kind;size=rk.s;
+        time=rk.kind==='build'&&!depsInStage?rk.full:rk.t;
+        if(rk.kind==='build'){st.art=/go build/.test(s.args)?8:/cargo build/.test(s.args)?9:/dotnet/.test(s.args)?11:/mvn|gradle/.test(s.args)?38:/npm|tsc/.test(s.args)?2:5;}
+        if(/pip install/.test(s.args)&&/venv/.test(st.steps.map(x=>x.raw).join(' ')))st.art=66;}
+      else if(s.ins==='WORKDIR'){size=0;time=0.0;}
+      key+='|'+s.raw+'|'+inputs;
+      const cached=cache.has(key);if(!cached)newKeys.push(key);
+      if(kind==='deps'){depsInStage=true;depsRan=true;if(cached)anyDepsCached=true;}
+      if(!cached)total+=time;
+      const short=s.raw.length>52?s.raw.slice(0,51)+'…':s.raw;
+      lines.push(`=> ${cached?'CACHED ':''}[${st.label}${k}/${N}] ${short}`.padEnd(54)+(cached?'':` ${time.toFixed(1)}s`));
+      st.layers.push({label:s.raw,size,cached,kind});st.size+=size;st.kind=kind;
+    }
+    stageKey[st.name||si]=key;stageKey[si]=key;if(st.name)stageArt[st.name]=st.art;
+  });
+  if(missing)return{log:lines,error:missing};
+  const fin=stages[stages.length-1];
+  const size=Math.round(fin.size*10)/10;
+  // tips
+  const tips=[];
+  stages.forEach(st=>{const iSrc=st.layers.findIndex(l=>l.kind==='copysrc'),iDeps=st.layers.findIndex(l=>l.kind==='deps');
+    if(iSrc>=0&&iDeps>iSrc)tips.push(['warn',`${st.label?st.label.trim()+': ':''}the whole source is copied before dependencies are installed, so every code edit re-runs “${st.layers[iDeps].label.slice(0,40)}”. Copy ${S.manifest} first.`]);
+    if(/:latest$/.test(st.base)||(!st.base.includes(':')&&!stages.some(x=>x.name===st.base)&&!st.base.includes('@')))tips.push(['warn',`“${st.base}” isn’t pinned to a version — builds can change underneath you.`]);
+    if(st.steps.some(x=>x.ins==='ADD'&&!/https?:|\.tar/.test(x.args)))tips.push(['info','Prefer COPY over ADD for local files — ADD also unpacks archives and fetches URLs.']);
+    if(!st.baseKnown)tips.push(['info',`The simulator doesn’t know “${st.base}”, so its size is a 100 MB guess.`]);});
+  const finHeavy=HEAVY_RE.test(parseRef(fin.base).repo+':'+parseRef(fin.base).tag)||HEAVY_RE.test(fin.base);
+  if(finHeavy)tips.push(['warn',`The final image is built on a full toolchain image (${fin.base}). Try a multi-stage build so only the runtime ships.`]);
+  if(!fin.meta.user)tips.push(['info','The container runs as root. Add a USER instruction to the final stage.']);
+  if(!tips.length)tips.push(['ok','Looks good: dependencies cached separately, pinned bases, non-root user.']);
+  // bookkeeping
+  const srcChanged=PG.last&&(PG.srcVer!==PG.builtSrc);
+  const prev=PG.last;
+  newKeys.forEach(k=>cache.add(k));PG.cache=[...cache].slice(-400);PG.builtSrc=PG.srcVer;PG.builtMan=PG.manVer;
+  const imgTag=tag||'<none>:<none>'+hex(4);
+  const id=hex(12);
+  SIM.images[tag||`<none>:${id}`]={id,size,kind:'app',port:S.port,stack:S.id,cmd:APPCMD[S.id],created:Date.now(),layers:fin.layers};
+  if(srcChanged&&anyDepsCached)SIM.flags.cacheFriendly=1;
+  if(stages.length>1&&!finHeavy)SIM.flags.multiOk=1;
+  const res={log:[`[+] Building ${total.toFixed(1)}s (${lines.length+2}/${lines.length+2}) FINISHED`,...lines,'=> exporting to image'.padEnd(54)+' 0.3s',`=> => naming to docker.io/library/${tag||'<untagged>'}`],
+    layers:fin.layers,size,tips,multi:stages.length>1,time:total,tag:tag,prevSize:prev?prev.size:null,prevTag:prev?prev.tag:null,srcChanged,anyDepsCached,depsRan};
+  res.stack=S.id;PG.lastResult=res;PG.last={size,tag,time:total};savePG();saveSim();
+  return res;
+}
+
+/* ===================== Challenges ===================== */
+const CHALLENGES=[
+ {id:'hello',t:'Hello, container',g:'Run the hello-world image.',h:'docker run IMAGE runs a container from an image (pulling it first if needed).',sol:()=>'docker run hello-world',ok:()=>SIM.flags.hello},
+ {id:'web',t:'Background web server',g:'Run nginx in the background, named web.',h:'-d detaches; --name sets the name.',sol:()=>'docker run -d --name web nginx',ok:()=>SIM.containers.some(c=>c.name==='web'&&c.status==='running'&&c.kind==='nginx')},
+ {id:'port',t:'Open the front door',g:'Make nginx answer on localhost:8080, then curl it.',h:'Publish with -p HOST:CONTAINER. nginx listens on 80. You can’t add -p to a running container — remove and re-run it.',sol:()=>'docker rm -f web && docker run -d --name web -p 8080:80 nginx && curl localhost:8080',ok:()=>SIM.flags.nginx8080},
+ {id:'clean',t:'Clean sweep',g:'Stop and remove the web container.',h:'docker stop, then docker rm — or docker rm -f in one go.',sol:()=>'docker stop web && docker rm web',ok:()=>SIM.flags.removedWeb},
+ {id:'db',t:'Data that survives',g:'Run postgres:16 named db with the named volume pgdata mounted at /var/lib/postgresql/data.',h:'Postgres refuses to start without POSTGRES_PASSWORD. Mount with -v NAME:PATH.',sol:()=>'docker run -d --name db -e POSTGRES_PASSWORD=pw -v pgdata:/var/lib/postgresql/data postgres:16',ok:()=>SIM.containers.some(c=>c.name==='db'&&c.status==='running'&&c.vols.some(v=>v.src==='pgdata'&&v.dst==='/var/lib/postgresql/data'))},
+ {id:'dns',t:'Talk by name',g:'Put db and a container named api on a network called appnet, then resolve db from inside api.',h:'docker network create, then --network on run (or docker network connect). Name lookup only works on user-defined networks. For api, alpine with “sleep infinity” stays running.',sol:()=>'docker network create appnet && docker network connect appnet db && docker run -d --name api --network appnet alpine sleep infinity && docker exec api getent hosts db',ok:()=>SIM.flags.dns},
+ {id:'build',t:'Build your own',g:'Build the Dockerfile (Dockerfile tab) and tag it myapp:1.0.',h:'Use the Build button, or run docker build -t TAG . in the terminal.',sol:()=>'docker build -t myapp:1.0 .',ok:()=>!!SIM.images['myapp:1.0']},
+ {id:'cache',t:'Cache-friendly',g:()=>`Edit ${S.src}, rebuild, and keep the dependency layer CACHED.`,h:()=>`In the Dockerfile tab, press “Edit ${S.src}”, then Build. If the dependency step re-runs, copy ${S.manifest} and install dependencies before COPY . .`,sol:()=>'(Dockerfile tab) Edit source → Build — with dependencies copied and installed before the source',ok:()=>SIM.flags.cacheFriendly},
+ {id:'multi',t:'Go multi-stage',g:'Build a multi-stage image whose final stage isn’t a full toolchain image.',h:'Load the “Multi-stage” template in the Dockerfile tab, read it, then Build.',sol:()=>'(Dockerfile tab) Load template: Multi-stage → Build',ok:()=>SIM.flags.multiOk},
+ {id:'ship',t:'Ship it',g:()=>`Run myapp:1.0 with host port 8080 mapped to the app’s port (${S.port}), then curl it.`,h:()=>`Your ${S.name} app listens on ${S.port} inside the container.`,sol:()=>`docker run -d --name app -p 8080:${S.port} myapp:1.0 && curl localhost:8080`,ok:()=>SIM.flags.curlApp},
+ {id:'push',t:'Push-ready',g:'Tag myapp:1.0 for a registry namespace you own and push it.',h:'docker push myapp:1.0 is denied — official-image names belong to Docker. Tag it as ghcr.io/YOU/myapp:1.0 first.',sol:()=>'docker tag myapp:1.0 ghcr.io/you/myapp:1.0 && docker push ghcr.io/you/myapp:1.0',ok:()=>SIM.flags.pushed}
+];
+let CH={};try{CH=JSON.parse(localStorage.getItem('lbl-ch')||'{}')}catch(e){}
+const val=v=>typeof v==='function'?v():v;
+function checkChallenges(){
+  const newly=[];CHALLENGES.forEach(c=>{if(!CH[c.id]&&c.ok()){CH[c.id]=1;newly.push(c);}});
+  if(newly.length){try{localStorage.setItem('lbl-ch',JSON.stringify(CH))}catch(e){}
+    newly.forEach(c=>toast(`✓ Challenge complete: ${c.t}`));renderChallenges(newly.map(c=>c.id));updateProg();}
+}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2300);}
+
+/* ===================== Practice page UI ===================== */
+let PTAB='term',pendingCmd=null,seenIds=new Set();
+const CODESPACES='https://codespaces.new/craftycoder07/docker-layer-by-layer?quickstart=1';
+function renderPractice(){
+  stopPlay();state.lesson=null;
+  const n=Object.keys(CH).length;
+  app.innerHTML=`<div class="practice">
+   <div class="phead">
+     <div><div class="eyebrow">Practice area</div><h1>Break things safely.</h1>
+       <p class="lede">A simulated Docker engine that runs in your browser: type real commands, watch the diagram react, build Dockerfiles for <b>${S.name}</b>, and clear the challenges. Nothing here touches a real daemon.</p></div>
+     <a class="realcard" href="${CODESPACES}" target="_blank" rel="noopener"><b>Want real Docker? ↗</b><span>Open this repo in GitHub Codespaces — a cloud VM with Docker preinstalled and the same challenges in practice/README.md.</span></a>
+   </div>
+   <div class="pgrid">
+     <aside class="chal"><div class="chal-h"><b>Challenges</b><span id="chCount">${n} / ${CHALLENGES.length}</span></div><div class="chbar"><i style="width:${n/CHALLENGES.length*100}%"></i></div><div id="chList"></div></aside>
+     <section class="pmain">
+       <div class="tabs"><button data-tab="term" class="${PTAB==='term'?'cur':''}">⌨ Terminal</button><button data-tab="df" class="${PTAB==='df'?'cur':''}">📄 Dockerfile</button><span class="spacer"></span><button class="ghostbtn" id="resetSim" title="Remove all containers, images, networks and volumes">↺ Reset sandbox</button></div>
+       <div id="tabTerm" ${PTAB==='term'?'':'hidden'}>
+         <div class="sbox">
+           <div class="xterm" id="xterm"><div class="xout" id="xout"></div>
+             <div class="xin"><span class="p">$</span><input id="xinput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="docker run hello-world"></div></div>
+           <div class="world" id="world"></div>
+         </div>
+         <div class="quick" id="quick">${['docker ps -a','docker images','docker network ls','docker volume ls','help','clear'].map(q=>`<button>${q}</button>`).join('')}</div>
+       </div>
+       <div id="tabDf" ${PTAB==='df'?'':'hidden'}>${dfPanel()}</div>
+     </section>
+   </div></div>`;
+  app.querySelectorAll('.tabs [data-tab]').forEach(b=>b.onclick=()=>{PTAB=b.dataset.tab;app.querySelectorAll('.tabs [data-tab]').forEach(x=>x.classList.toggle('cur',x===b));document.getElementById('tabTerm').hidden=PTAB!=='term';document.getElementById('tabDf').hidden=PTAB!=='df';if(PTAB==='term')document.getElementById('xinput').focus();});
+  document.getElementById('resetSim').onclick=()=>{SIM=freshSim();saveSim();seenIds=new Set();const x=document.getElementById('xout');x.innerHTML='';xprint([{t:'Sandbox reset — everything removed. Challenge progress is kept.',c:'dim'}]);renderWorld();};
+  const inp=document.getElementById('xinput');let hi=HIST.length;
+  inp.onkeydown=e=>{
+    if(e.key==='Enter'){const v=inp.value;inp.value='';hi=HIST.length+1;submit(v);}
+    else if(e.key==='ArrowUp'){if(hi>0){hi--;inp.value=HIST[hi]||'';}e.preventDefault();}
+    else if(e.key==='ArrowDown'){if(hi<HIST.length){hi++;inp.value=HIST[hi]||'';}e.preventDefault();}
+    else if(e.key==='Tab'){e.preventDefault();inp.value=complete(inp.value);}
+  };
+  document.getElementById('xterm').onclick=e=>{if(!e.target.closest('button')&&!window.getSelection().toString())inp.focus();};
+  document.getElementById('quick').onclick=e=>{const b=e.target.closest('button');if(b)submit(b.textContent);};
+  wireDf();
+  const x=document.getElementById('xout');
+  xprint([{t:'Docker 27 simulator — type help to see what works. Try: docker run hello-world',c:'dim'}]);
+  renderWorld(true);renderChallenges();
+  if(pendingCmd){inp.value=pendingCmd;pendingCmd=null;}
+  window.scrollTo(0,0);
+}
+function complete(v){
+  const words=['docker','run','ps','images','pull','build','stop','start','rm','rmi','logs','exec','inspect','network','volume','create','ls','connect','tag','push','restart','pause','unpause','kill','port','curl','clear','help','history','system','prune','--name','--network','--rm','-d','-p','-v','-e'];
+  const names=SIM.containers.map(c=>c.name).concat(Object.keys(SIM.networks),Object.keys(SIM.volumes),Object.keys(SIM.images));
+  const parts=v.split(' ');const last=parts.pop();if(!last)return v;
+  const hit=words.concat(names).filter(w=>w.startsWith(last));
+  return hit.length===1?[...parts,hit[0]].join(' ')+' ':v;
+}
+function xprint(lines){const x=document.getElementById('xout');if(!x)return;
+  x.insertAdjacentHTML('beforeend',lines.map(l=>`<div class="${l.c||''}">${esc(l.t)||'&nbsp;'}</div>`).join(''));
+  const term=document.getElementById('xterm');term.scrollTop=term.scrollHeight;}
+function submit(v){
+  v=v.trim();if(!v)return;
+  if(v==='clear'){document.getElementById('xout').innerHTML='';return;}
+  if(v==='reset'){document.getElementById('resetSim').click();return;}
+  HIST.push(v);HIST=HIST.slice(-100);try{localStorage.setItem('lbl-hist',JSON.stringify(HIST))}catch(e){}
+  xprint([{t:v,c:'cmd'}]);
+  xprint(runLine(v));
+  renderWorld();checkChallenges();
+  const df=document.getElementById('dfOut');if(df&&/docker build/.test(v)&&PG.lastResult)showBuild(PG.lastResult);
+}
+function renderWorld(first){
+  const el=document.getElementById('world');if(!el)return;
+  const fresh=id=>{const f=!first&&!seenIds.has(id);seenIds.add(id);return f?' new':'';};
+  const card=c=>{const st=c.status==='exited'&&c.exit?'bad':c.status;
+    const ips=c.nets.filter(n=>n.ip).map(n=>n.ip).join(' · ');
+    const badges=[...c.ports.map(p=>`<span class="bp">:${p[0]}→${p[1]}</span>`),...c.vols.map(v=>`<span class="bv">${v.type==='bind'?'📁 '+esc(v.src):v.type==='tmpfs'?'tmpfs':v.type==='anon'?'anon vol':'🛢 '+esc(v.src)}</span>`)].join('');
+    return `<div class="ctr st-${st}${fresh(c.id)}" title="${esc(c.image)}"><div class="ctop"><i></i><b>${esc(c.name)}</b></div><small>${esc(parseRef(c.image).repo.split('/').pop())}:${esc(parseRef(c.image).tag)}</small><small class="mono">${c.status==='exited'?'exited ('+c.exit+')':c.status}${ips?' · '+ips:''}</small>${badges?`<div class="bdg">${badges}</div>`:''}</div>`;};
+  const nets=Object.keys(SIM.networks).filter(k=>!SIM.networks[k].builtin||SIM.containers.some(c=>c.nets.some(m=>m.net===k)));
+  const lone=SIM.containers.filter(c=>!c.nets.length);
+  const ports=SIM.containers.filter(c=>c.status==='running'||c.status==='paused').flatMap(c=>c.ports.map(p=>`<span class="hp">localhost:${p[0]} → ${esc(c.name)}:${p[1]}</span>`));
+  el.innerHTML=`<div class="wl">DOCKER HOST <span>${SIM.containers.filter(c=>c.status==='running').length} running</span></div>
+   ${ports.length?`<div class="hports">${ports.join('')}</div>`:''}
+   ${!SIM.containers.length&&nets.length===0?`<div class="empty">No containers yet.<br>Try <code>docker run hello-world</code></div>`:''}
+   ${nets.map(k=>{const n=SIM.networks[k];const cs=SIM.containers.filter(c=>c.nets.some(m=>m.net===k));
+     return `<div class="lane ${n.builtin?'builtin':'user'}${fresh('net-'+k)}"><div class="lh"><b>${esc(k)}</b><span>${n.driver==='bridge'?`172.${n.o}.0.0/16${n.builtin?' · default, no DNS':' · DNS by name'}`:n.driver}</span></div><div class="cs">${cs.length?cs.map(card).join(''):'<em>no containers</em>'}</div></div>`;}).join('')}
+   ${lone.length?`<div class="lane"><div class="lh"><b>(no network)</b></div><div class="cs">${lone.map(card).join('')}</div></div>`:''}
+   <div class="shelf"><div class="sh-h">Images</div><div>${Object.keys(SIM.images).length?Object.keys(SIM.images).map(k=>`<span class="im${fresh('img-'+k)}${SIM.images[k].kind==='app'?' mine':''}">${esc(k.startsWith('<none>')?'<none>':k)} <small>${fmtSize(SIM.images[k].size)}</small></span>`).join(''):'<em>none — they arrive with docker pull / run / build</em>'}</div></div>
+   <div class="shelf"><div class="sh-h">Volumes</div><div>${Object.keys(SIM.volumes).length?Object.keys(SIM.volumes).map(k=>`<span class="vo${fresh('vol-'+k)}${SIM.containers.some(c=>c.vols.some(v=>v.src===k))?' used':''}">🛢 ${esc(SIM.volumes[k].anon?k.slice(0,12)+'…':k)}</span>`).join(''):'<em>none</em>'}</div></div>`;
+}
+function renderChallenges(flash){
+  const el=document.getElementById('chList');if(!el)return;const n=Object.keys(CH).length;
+  document.getElementById('chCount').textContent=`${n} / ${CHALLENGES.length}`;
+  app.querySelector('.chbar i').style.width=(n/CHALLENGES.length*100)+'%';
+  const firstOpen=CHALLENGES.find(c=>!CH[c.id]);
+  el.innerHTML=CHALLENGES.map((c,i)=>`<details class="ch${CH[c.id]?' done':''}${flash&&flash.includes(c.id)?' flash':''}" ${c===firstOpen?'open':''}>
+    <summary><span class="cn">${CH[c.id]?'✓':i+1}</span><span>${esc(c.t)}</span></summary>
+    <p>${esc(val(c.g))}</p>
+    <details class="hint2"><summary>Hint</summary><p>${esc(val(c.h))}</p></details>
+    <details class="hint2"><summary>Show a solution</summary><code>${esc(c.sol())}</code>${/^\(/.test(c.sol())?'':`<button class="tryit" data-cmd="${esc(c.sol())}">paste into terminal</button>`}</details>
+  </details>`).join('')+`<button class="ghostbtn small" id="chReset">reset challenge progress</button>`;
+  el.querySelectorAll('.tryit').forEach(b=>b.onclick=()=>{document.querySelector('[data-tab=term]').click();const i=document.getElementById('xinput');i.value=b.dataset.cmd;i.focus();});
+  document.getElementById('chReset').onclick=()=>{CH={};try{localStorage.removeItem('lbl-ch')}catch(e){}SIM.flags={};saveSim();renderChallenges();updateProg();};
+}
+
+/* ----- Dockerfile tab ----- */
+function dfPanel(){
+  const mf=S.manifest.split(' and ')[0];
+  return `<div class="dfbar">
+     <span class="lab">Template</span><button class="ghostbtn" data-tpl="single">Single-stage</button><button class="ghostbtn" data-tpl="multi">Multi-stage</button>
+     <span class="spacer"></span>
+     <label class="tagin">-t <input id="dfTag" value="myapp:1.0" spellcheck="false"></label>
+     <button class="cbtn primary" id="dfBuild">▶ Build</button></div>
+   <div class="dfgrid">
+     <div><div class="edhead"><span>Dockerfile · ${S.name}</span><span id="dfDirty"></span></div>
+       <textarea id="dfText" spellcheck="false" autocapitalize="off" autocomplete="off">${esc(pgText())}</textarea>
+       <div class="dfedit"><span class="lab">Simulate a change:</span><button class="ghostbtn" id="edSrc">✎ Edit ${esc(S.src)}</button><button class="ghostbtn" id="edMan">✎ Edit ${esc(mf)}</button><button class="ghostbtn" id="edClear" title="Forget every cached layer">🧹 Clear build cache</button></div>
+       <div class="pending" id="dfPending"></div></div>
+     <div class="dfout" id="dfOut"><div class="empty">Press <b>Build</b> to see the build log, layers, image size and tips.<br><br>Then press “Edit ${esc(S.src)}” and build again to watch the cache work.</div></div>
+   </div>`;
+}
+function pendingText(){const p=[];if(PG.last&&PG.srcVer!==PG.builtSrc)p.push(`${S.src} changed`);if(PG.last&&PG.manVer!==PG.builtMan)p.push(`${S.manifest.split(' and ')[0]} changed`);
+  return p.length?'Since the last build: '+p.join(', ')+' → rebuild to see which layers survive':'';}
+function wireDf(){
+  const ta=document.getElementById('dfText');if(!ta)return;
+  ta.oninput=()=>{PG.texts[S.id]=ta.value;savePG();};
+  ta.onkeydown=e=>{if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart;ta.setRangeText('  ',s,ta.selectionEnd,'end');ta.oninput();}
+    if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();document.getElementById('dfBuild').click();}};
+  app.querySelectorAll('[data-tpl]').forEach(b=>b.onclick=()=>{ta.value=b.dataset.tpl==='multi'?MSFILE[S.id]:singleFile(S);ta.oninput();});
+  const pend=()=>{document.getElementById('dfPending').textContent=pendingText();};pend();
+  document.getElementById('edSrc').onclick=()=>{PG.srcVer++;savePG();pend();toast(`✎ ${S.src} edited`);};
+  document.getElementById('edMan').onclick=()=>{PG.manVer++;savePG();pend();toast(`✎ ${S.manifest.split(' and ')[0]} edited`);};
+  document.getElementById('edClear').onclick=()=>{PG.cache=[];PG.last=null;savePG();pend();toast('Build cache cleared');};
+  document.getElementById('dfBuild').onclick=()=>{const tag=document.getElementById('dfTag').value.trim()||null;const r=pgBuild(tag);PG.lastResult=r;showBuild(r);pend();renderWorld();checkChallenges();};
+  if(PG.lastResult&&PG.lastResult.stack===S.id)showBuild(PG.lastResult);
+}
+function showBuild(r){
+  const el=document.getElementById('dfOut');if(!el)return;r.stack=S.id;PG.lastResult=r;
+  if(r.error){el.innerHTML=`<pre class="blog">${r.log.map(l=>esc(l)).join('\n')}${r.log.length?'\n':''}<span class="e">${esc(r.error)}</span></pre>`;return;}
+  const max=Math.max(...r.layers.map(l=>l.size),1);
+  const delta=r.prevSize!=null?r.size-r.prevSize:null;
+  el.innerHTML=`<div class="bsum"><div><b>${esc(r.tag||'<untagged>')}</b><span>${fmtSize(r.size)} · built in ${r.time.toFixed(1)}s</span></div>${delta!=null&&Math.abs(delta)>=0.5?`<em class="${delta<0?'good':'bad'}">${delta<0?'▼':'▲'} ${fmtSize(Math.abs(delta))} vs previous build</em>`:''}</div>
+   <pre class="blog">${r.log.map(l=>/CACHED/.test(l)?`<span class="c">${esc(l)}</span>`:/\d\.\ds$/.test(l)&&!/exporting/.test(l)?`<span class="m">${esc(l)}</span>`:esc(l)).join('\n')}</pre>
+   <div class="layers"><div class="sh-h">Final image layers</div>${r.layers.slice().reverse().map(l=>`<div class="lyr${l.base?' base':''}"><div class="lt"><span>${esc(l.label.length>48?l.label.slice(0,47)+'…':l.label)}</span><span class="mono">${l.base?'':l.cached?'<i class="cc">CACHED</i> ':''}${fmtSize(l.size)}</span></div><div class="lb"><i style="width:${Math.max(1.5,l.size/max*100)}%"></i></div></div>`).join('')}</div>
+   <div class="tips">${r.tips.map(([k,t])=>`<div class="tip ${k}">${k==='warn'?'⚠':k==='ok'?'✓':'ℹ'} ${esc(t)}</div>`).join('')}</div>
+   ${r.tag?`<div class="next">Now run it in the Terminal tab: <code>docker run -d -p 8080:${S.port} ${esc(r.tag)}</code></div>`:''}`;
+}
+
 /* ---------- stack picker ---------- */
 const menu=document.getElementById('stackMenu');
 function paintStackBtn(){
@@ -816,7 +1659,7 @@ function setStack(id){
   S=STACKS[id];
   try{localStorage.setItem('lbl-stack',id)}catch(e){}
   paintStackBtn();
-  if(state.lesson)renderLesson(state.lesson,state.step);else renderHome();
+  if(state.lesson)renderLesson(state.lesson,state.step);else if(location.hash==='#practice')renderPractice();else renderHome();
   const t=document.createElement('div');t.className='toast';t.textContent=`Examples switched to ${S.name}`;document.body.appendChild(t);setTimeout(()=>t.remove(),2300);
 }
 
@@ -832,7 +1675,8 @@ document.addEventListener('keydown',e=>{
 function route(){
   const id=location.hash.slice(1);
   const l=LESSONS.find(x=>x.id===id);
-  if(l)renderLesson(l);else{state.lesson=null;renderHome();window.scrollTo(0,0);}
+  document.getElementById('navPractice').classList.toggle('cur',id==='practice');
+  if(l)renderLesson(l);else if(id==='practice')renderPractice();else{state.lesson=null;renderHome();window.scrollTo(0,0);}
 }
 window.addEventListener('hashchange',route);
 paintStackBtn();updateProg();route();

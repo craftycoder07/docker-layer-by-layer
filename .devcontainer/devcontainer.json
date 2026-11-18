@@ -1,0 +1,12 @@
+{
+  "name": "Layer by Layer — real Docker practice",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "forwardPorts": [8080],
+  "postCreateCommand": "docker --version",
+  "customizations": {
+    "codespaces": { "openFiles": ["practice/README.md"] }
+  }
+}
