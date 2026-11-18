@@ -136,6 +136,29 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var
 .hl{transform-box:fill-box;transform-origin:center;animation:pop .55s ease}
 @keyframes pop{0%{transform:scale(1.06)}100%{transform:none}}
 
+
+/* stack picker */
+.stackpick{position:relative}
+.stackbtn{display:flex;align-items:center;gap:8px;padding:6px 12px;border:2px solid var(--ink);border-radius:10px;background:var(--card);font-weight:600;font-size:14px;box-shadow:3px 3px 0 var(--ink)}
+.stackbtn b{font-size:11px}
+.sdot{display:inline-block;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink);flex:none}
+.stackmenu{position:absolute;right:0;top:calc(100% + 10px);width:250px;background:var(--card);border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink);padding:6px;z-index:30}
+.stackmenu[hidden]{display:none}
+.stackmenu button{display:flex;width:100%;align-items:center;gap:10px;padding:8px 10px;border:0;background:none;border-radius:8px;text-align:left;font-weight:600;font-size:14.5px}
+.stackmenu button:hover,.stackmenu button.cur{background:var(--paper2)}
+.stackmenu small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.stackmenu button b{margin-left:auto;color:var(--green)}
+.stackrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 26px}
+.stackrow>span{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.schip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:2px solid var(--ink);border-radius:20px;background:var(--card);font-weight:600;font-size:14px;transition:transform .1s}
+.schip:hover{transform:translateY(-1px)}
+.schip.cur{background:var(--ink);color:var(--paper)}
+.stackinline{display:inline-flex;align-items:center;gap:6px;border:1.5px dashed var(--ink);background:none;border-radius:20px;padding:2px 10px;font-size:12.5px;font-weight:600}
+.stackinline.neutral{color:var(--muted);font-weight:500}
+.term .f{color:#f0c38e}
+.toast{position:fixed;bottom:22px;left:50%;background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;box-shadow:4px 4px 0 var(--orange);animation:toast 2.2s ease forwards;pointer-events:none}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,8px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
+
 @media (max-width:900px){
   .hero{grid-template-columns:1fr}
   .hero-art{max-width:380px}
@@ -147,6 +170,11 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var
   .main{padding:22px 16px 60px}
   .top{padding:10px 16px}
   .prog .bar{width:60px}
+  #progTxt{display:none}
+  .logo{font-size:18px}
+  .top{gap:10px}
+  .stackbtn{padding:5px 9px;font-size:13px}
+  .crumb{flex-wrap:wrap}
   .caption{padding:16px 16px 4px;gap:12px}
   .controls{padding:10px 16px 16px}
   .dots{margin-left:0;width:100%}
@@ -162,6 +190,7 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var
     Layer by Layer
   </a>
   <span class="spacer"></span>
+  <div class="stackpick"><button class="stackbtn" id="stackBtn" aria-haspopup="true" aria-expanded="false"><i class="sdot" id="stackDot"></i><span id="stackName">Node.js</span><b>▾</b></button><div class="stackmenu" id="stackMenu" hidden></div></div>
   <div class="prog"><span id="progTxt">0 / 10</span><span class="bar"><i id="progBar" style="width:0"></i></span></div>
 </header>
 <div id="app"></div>
@@ -216,7 +245,7 @@ function CY(x,y,w,h,label,o={}){
 function hilite(t){
   let s=esc(t);
   if(/^\s*#/.test(t))return `<tspan style="fill:#8a7d70">${s}</tspan>`;
-  s=s.replace(/^(\s*)(FROM|WORKDIR|COPY|RUN|CMD|USER|ENV|EXPOSE)\b/,'$1<tspan style="fill:#f0a272">$2</tspan>');
+  s=s.replace(/^(\s*)(FROM|WORKDIR|COPY|RUN|CMD|ENTRYPOINT|USER|ENV|EXPOSE|ARG|HEALTHCHECK)\b/,'$1<tspan style="fill:#f0a272">$2</tspan>');
   s=s.replace(/^(\s*-?\s*)([\w_]+):/,'$1<tspan style="fill:#8fb4f5">$2</tspan>:');
   return s;
 }
@@ -239,10 +268,95 @@ function XM(cx,cy,s,o={}){
 const LY=(x,y,w,label,c,o={})=>B(x,y,w,26,label,Object.assign({c,fs:12,noshadow:1,r:5},o));
 const DEFS=`<defs>${Object.entries(SOL).map(([k,v])=>`<marker id="ah-${k}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${v}"/></marker>`).join('')}</defs>`;
 
-/* ---------- lessons ---------- */
+/* ---------- tech stacks ---------- */
+const STACKS={
+node:{id:'node',name:'Node.js',sub:'Express · Node 20',dot:'#3d8a5a',
+  base:'node:20-alpine',baseDesc:'Alpine Linux + Node 20',heroBase:'FROM node:20',depsShort:'RUN npm ci',
+  manifest:'package*.json',src:'server.js',comment:'//',cmdKw:'CMD',compiled:false,
+  l2:[['FROM node:20-alpine',1,'base: node:20-alpine','48 MB','gray'],['WORKDIR /app',2,'WORKDIR /app','0 B','blue'],['COPY package*.json ./',2,'package*.json','4 KB','blue'],['RUN npm ci --omit=dev',3,'node_modules','38 MB','purple'],['COPY . .',4,'app source','1.2 MB','yellow'],['CMD ["node", "server.js"]',5]],
+  l2total:'87 MB',
+  cache:{bad:['FROM node:20-alpine','WORKDIR /app','COPY . .','RUN npm ci'],good:['FROM node:20-alpine','WORKDIR /app','COPY package*.json ./','RUN npm ci','COPY . .'],
+    badOut:'=> [4/4] RUN npm ci                 47.9s',goodOut:'=> CACHED [4/5] RUN npm ci',badT:'48 s',goodT:'2 s',cascade:'npm ci reinstalls every package',ignore:['node_modules','.git','.env'],note:''},
+  sigterm:'In Node, handle process.on(\'SIGTERM\') and close the server before exiting.',
+  dev:{mount:'./src:/app/src',host:'~/project/src',target:'/app/src',reload:'node --watch',cmd:'docker run -d -v ./src:/app/src myapp:dev \\\n  node --watch src/server.js'},
+  port:3000,health:'/healthz',conn:'postgres://db:5432/app',env:'DATABASE_URL: postgres://db:5432/app',
+  ms:{from1:'FROM node:20 AS build',tools:['npm + devDeps','TypeScript (tsc)','source (.ts)','npm cache'],out:'/app/dist',from2:'FROM node:20-alpine',rt:['Node runtime','prod deps only'],dest:'/app/dist',user:'USER node',fat:1100,slim:160,artifact:'plain JavaScript in dist/ (TypeScript compiled away)',runtime:'Alpine + the Node runtime'},
+  reg:['app source','node_modules','node:20-alpine']},
+
+dotnet:{id:'dotnet',name:'.NET',sub:'ASP.NET Core 9',dot:'#7a5ccc',
+  base:'mcr.microsoft.com/dotnet/sdk:9.0',baseDesc:'the full .NET 9 SDK',heroBase:'FROM dotnet/sdk',depsShort:'RUN dotnet restore',
+  manifest:'*.csproj',src:'Program.cs',comment:'//',cmdKw:'ENTRYPOINT',compiled:true,buildVerb:'dotnet publish',
+  l2:[['FROM mcr.microsoft.com/dotnet/sdk:9.0',1,'base: dotnet/sdk:9.0','880 MB','gray'],['WORKDIR /src',2,'WORKDIR /src','0 B','blue'],['COPY *.csproj ./',2,'Api.csproj','2 KB','blue'],['RUN dotnet restore',3,'NuGet packages','24 MB','purple'],['COPY . .',4,'app source','0.4 MB','yellow'],['RUN dotnet publish -c Release -o /app',4,'publish output','11 MB','green'],['ENTRYPOINT ["dotnet", "/app/Api.dll"]',5]],
+  l2total:'915 MB',
+  cache:{bad:['FROM …/dotnet/sdk:9.0','WORKDIR /src','COPY . .','RUN dotnet restore','RUN dotnet publish -c Release'],good:['FROM …/dotnet/sdk:9.0','WORKDIR /src','COPY *.csproj ./','RUN dotnet restore','COPY . .','RUN dotnet publish -c Release'],
+    badOut:'=> [4/5] RUN dotnet restore          36.2s',goodOut:'=> CACHED [4/6] RUN dotnet restore',badT:'58 s',goodT:'9 s',cascade:'dotnet restore re-downloads every NuGet package',ignore:['bin/','obj/','.git'],note:' With several projects, copy each .csproj (and the .sln) before restoring.'},
+  sigterm:'ASP.NET Core’s generic host handles SIGTERM for you — hook cleanup into IHostApplicationLifetime.ApplicationStopping.',
+  dev:{mount:'.:/src',host:'~/project',target:'/src',reload:'dotnet watch',cmd:'docker run -d -v .:/src -w /src \\\n  mcr.microsoft.com/dotnet/sdk:9.0 dotnet watch run'},
+  port:8080,health:'/health',conn:'Host=db;Port=5432;Database=app',env:'ConnectionStrings__Db: Host=db;Database=app',
+  ms:{from1:'FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build',tools:['.NET SDK','NuGet cache','source (.cs)','obj/ files'],out:'/out',from2:'FROM mcr.microsoft.com/dotnet/aspnet:9.0',rt:['ASP.NET runtime','ICU · tzdata'],dest:'/app',user:'USER $APP_UID',fat:880,slim:230,artifact:'a framework-dependent publish in /out',runtime:'just the ASP.NET Core runtime, no SDK'},
+  reg:['/app (publish)','ASP.NET runtime','debian-slim']},
+
+python:{id:'python',name:'Python',sub:'FastAPI · Python 3.12',dot:'#2f6fdb',
+  base:'python:3.12-slim',baseDesc:'Debian slim + Python 3.12',heroBase:'FROM python:3.12',depsShort:'RUN pip install',
+  manifest:'requirements.txt',src:'main.py',comment:'#',cmdKw:'CMD',compiled:false,
+  l2:[['FROM python:3.12-slim',1,'base: python:3.12-slim','125 MB','gray'],['WORKDIR /app',2,'WORKDIR /app','0 B','blue'],['COPY requirements.txt ./',2,'requirements.txt','1 KB','blue'],['RUN pip install -r requirements.txt',3,'site-packages','46 MB','purple'],['COPY . .',4,'app source','0.3 MB','yellow'],['CMD ["fastapi", "run", "main.py"]',5]],
+  l2total:'171 MB',
+  cache:{bad:['FROM python:3.12-slim','WORKDIR /app','COPY . .','RUN pip install -r requirements.txt'],good:['FROM python:3.12-slim','WORKDIR /app','COPY requirements.txt ./','RUN pip install -r requirements.txt','COPY . .'],
+    badOut:'=> [4/4] RUN pip install -r requirements.txt   41.3s',goodOut:'=> CACHED [4/5] RUN pip install -r requirements.txt',badT:'41 s',goodT:'1 s',cascade:'pip reinstalls every package',ignore:['__pycache__/','.venv/','.git'],note:''},
+  sigterm:'uvicorn (behind fastapi run) handles SIGTERM for you — just keep the exec-form CMD so it really is PID 1.',
+  dev:{mount:'./app:/code/app',host:'~/project/app',target:'/code/app',reload:'fastapi dev',cmd:'docker run -d -v ./app:/code/app myapp:dev \\\n  fastapi dev app/main.py --host 0.0.0.0'},
+  port:8000,health:'/health',conn:'postgresql://db:5432/app',env:'DATABASE_URL: postgresql://db:5432/app',
+  ms:{from1:'FROM python:3.12 AS build',tools:['gcc · headers','pip + wheel','source','pip cache'],out:'/opt/venv',from2:'FROM python:3.12-slim',rt:['Python 3.12','libpq only'],dest:'/opt/venv',user:'USER app',fat:1050,slim:185,artifact:'a virtualenv with every wheel already compiled',runtime:'Debian slim + Python, no compilers'},
+  reg:['app source','/opt/venv','python:3.12-slim']},
+
+java:{id:'java',name:'Java',sub:'Spring Boot 3 · JDK 21',dot:'#e0703a',
+  base:'maven:3.9-eclipse-temurin-21',baseDesc:'Maven + a full JDK 21',heroBase:'FROM maven',depsShort:'RUN mvn package',
+  manifest:'pom.xml',src:'OrderController.java',comment:'//',cmdKw:'CMD',compiled:true,buildVerb:'mvn package',
+  l2:[['FROM maven:3.9-eclipse-temurin-21',1,'base: maven + JDK 21','520 MB','gray'],['WORKDIR /app',2,'WORKDIR /app','0 B','blue'],['COPY pom.xml ./',2,'pom.xml','3 KB','blue'],['RUN mvn dependency:go-offline',3,'~/.m2 repository','85 MB','purple'],['COPY src ./src',4,'app source','0.3 MB','yellow'],['RUN mvn -o package -DskipTests',4,'target/app.jar','38 MB','green'],['CMD ["java", "-jar", "target/app.jar"]',5]],
+  l2total:'643 MB',
+  cache:{bad:['FROM maven:3.9-eclipse-temurin-21','WORKDIR /app','COPY . .','RUN mvn dependency:go-offline','RUN mvn -o package -DskipTests'],good:['FROM maven:3.9-eclipse-temurin-21','WORKDIR /app','COPY pom.xml ./','RUN mvn dependency:go-offline','COPY src ./src','RUN mvn -o package -DskipTests'],
+    badOut:'=> [4/5] RUN mvn dependency:go-offline   78.4s',goodOut:'=> CACHED [4/6] RUN mvn dependency:go-offline',badT:'95 s',goodT:'12 s',cascade:'Maven re-downloads the whole dependency tree',ignore:['target/','.git','.idea/'],note:''},
+  sigterm:'Set server.shutdown=graceful so Spring Boot finishes in-flight requests when SIGTERM arrives.',
+  dev:{mount:'./src:/app/src',host:'~/project/src',target:'/app/src',reload:'devtools',cmd:'docker run -d -v ./src:/app/src myapp:dev \\\n  mvn spring-boot:run'},
+  port:8080,health:'/actuator/health',conn:'jdbc:postgresql://db:5432/app',env:'SPRING_DATASOURCE_URL: jdbc:postgresql://db/app',
+  ms:{from1:'FROM maven:3.9-eclipse-temurin-21 AS build',tools:['JDK 21 + Maven','~/.m2 repository','source (.java)','target/ classes'],out:'app.jar',from2:'FROM eclipse-temurin:21-jre-alpine',rt:['JRE 21','CA certs'],dest:'/app/app.jar',user:'USER 1000',fat:640,slim:195,artifact:'one runnable fat JAR',runtime:'Alpine + a JRE — no JDK, no Maven'},
+  reg:['app.jar','JRE 21','alpine']},
+
+go:{id:'go',name:'Go',sub:'net/http · Go 1.23',dot:'#29a3c4',
+  base:'golang:1.23-alpine',baseDesc:'Alpine + the Go 1.23 toolchain',heroBase:'FROM golang',depsShort:'RUN go mod download',
+  manifest:'go.mod and go.sum',src:'main.go',comment:'//',cmdKw:'CMD',compiled:true,buildVerb:'go build',
+  l2:[['FROM golang:1.23-alpine',1,'base: golang:1.23-alpine','260 MB','gray'],['WORKDIR /app',2,'WORKDIR /app','0 B','blue'],['COPY go.mod go.sum ./',2,'go.mod + go.sum','2 KB','blue'],['RUN go mod download',3,'module cache','55 MB','purple'],['COPY . .',4,'app source','0.2 MB','yellow'],['RUN go build -o /bin/app .',4,'binary + build cache','140 MB','green'],['CMD ["/bin/app"]',5]],
+  l2total:'455 MB',
+  cache:{bad:['FROM golang:1.23-alpine','WORKDIR /app','COPY . .','RUN go mod download','RUN go build -o /bin/app .'],good:['FROM golang:1.23-alpine','WORKDIR /app','COPY go.mod go.sum ./','RUN go mod download','COPY . .','RUN go build -o /bin/app .'],
+    badOut:'=> [4/5] RUN go mod download          31.0s',goodOut:'=> CACHED [4/6] RUN go mod download',badT:'47 s',goodT:'6 s',cascade:'go mod download fetches every module again',ignore:['.git','bin/','.env'],note:''},
+  sigterm:'Use signal.NotifyContext(ctx, syscall.SIGTERM) and call srv.Shutdown(ctx) to drain connections.',
+  dev:{mount:'.:/app',host:'~/project',target:'/app',reload:'air',cmd:'docker run -d -v .:/app -w /app myapp:dev air'},
+  port:8080,health:'/healthz',conn:'postgres://db:5432/app',env:'DATABASE_URL: postgres://db:5432/app',
+  ms:{from1:'FROM golang:1.23 AS build',tools:['Go compiler','git · make · gcc','source code','module cache'],out:'/out/app',from2:'FROM gcr.io/distroless/static',rt:['CA certs','tzdata'],dest:'/app',user:'USER nonroot',fat:912,slim:12,artifact:'one static binary',runtime:'distroless — no shell, no package manager'},
+  reg:['/app binary','CA certs','distroless']},
+
+rust:{id:'rust',name:'Rust',sub:'Axum · Rust 1.82',dot:'#b7410e',
+  base:'rust:1.82',baseDesc:'Debian + the full Rust toolchain',heroBase:'FROM rust:1.82',depsShort:'RUN cargo build',
+  manifest:'Cargo.toml and Cargo.lock',src:'src/main.rs',comment:'//',cmdKw:'CMD',compiled:true,buildVerb:'cargo build',
+  l2:[['FROM rust:1.82',1,'base: rust:1.82','1.4 GB','gray'],['WORKDIR /app',2,'WORKDIR /app','0 B','blue'],['COPY Cargo.toml Cargo.lock ./',2,'Cargo.toml + .lock','3 KB','blue'],['RUN cargo fetch',3,'crate sources','90 MB','purple'],['COPY . .',4,'app source','0.1 MB','yellow'],['RUN cargo build --release',4,'target/ (release)','420 MB','green'],['CMD ["./target/release/app"]',5]],
+  l2total:'1.9 GB',
+  cache:{bad:['FROM rust:1.82','WORKDIR /app','COPY . .','RUN cargo build --release'],good:['FROM rust:1.82','WORKDIR /app','COPY Cargo.toml Cargo.lock ./','RUN cargo build -r # stub main','COPY . .','RUN cargo build --release'],
+    badOut:'=> [4/4] RUN cargo build --release   241.7s',goodOut:'=> CACHED [4/6] RUN cargo build -r # stub main',badT:'4 min',goodT:'25 s',cascade:'cargo recompiles every crate from scratch',ignore:['target/','.git','.env'],note:' Cargo has no “just build my dependencies” command, so the usual trick is building once with a stub main.rs (or using cargo-chef).'},
+  sigterm:'Wire tokio::signal into axum’s with_graceful_shutdown so open requests finish first.',
+  dev:{mount:'.:/app',host:'~/project',target:'/app',reload:'cargo watch',cmd:'docker run -d -v .:/app -w /app rust:1.82 \\\n  cargo watch -x run'},
+  port:3000,health:'/health',conn:'postgres://db:5432/app',env:'DATABASE_URL: postgres://db:5432/app',
+  ms:{from1:'FROM rust:1.82 AS build',tools:['rustc + cargo','crate registry','source (.rs)','target/ deps'],out:'release/app',from2:'FROM gcr.io/distroless/cc-debian12',rt:['glibc','CA certs'],dest:'/app',user:'USER nonroot',fat:1650,slim:34,artifact:'one optimized release binary',runtime:'distroless with just glibc'},
+  reg:['/app binary','glibc + certs','distroless/cc']}
+};
+const STACK_ORDER=['node','dotnet','python','java','go','rust'];
+let S=STACKS.node;
+try{const k=localStorage.getItem('lbl-stack');if(STACKS[k])S=STACKS[k];}catch(e){}
+const mb=n=>n>=1000?(n/1000).toFixed(1)+' GB':n+' MB';
+
+/* ---------- lessons (scene and steps are functions of the stack S) ---------- */
 const LESSONS=[
-{id:'containers-vs-vms',title:'Containers vs VMs',tag:'Foundations',lede:'Why containers took over: the same isolation idea as a virtual machine, at a fraction of the weight.',
-scene(){let s='';
+{id:'containers-vs-vms',title:'Containers vs VMs',tag:'Foundations',neutral:true,lede:'Why containers took over: the same isolation idea as a virtual machine, at a fraction of the weight.',
+scene(S){let s='';
   s+=T(205,40,'Virtual machines',{fs:18,w:700,a:'middle'})+T(595,40,'Containers',{fs:18,w:700,a:'middle'});
   s+=`<line x1="400" y1="22" x2="400" y2="445" class="divider"/>`;
   [30,420].forEach(x0=>{s+=B(x0,402,350,40,'Hardware',{c:'gray'});s+=B(x0,354,350,40,'Host OS · kernel',{c:'gray',hl:x0===420?4:null});});
@@ -256,7 +370,7 @@ scene(){let s='';
   s+=BD(430,118,'namespaces → isolation (pid, net, mnt…)',{in:4,c:'purple'});
   s+=BD(430,152,'cgroups → limits (cpu, memory)',{in:4,c:'orange'});
   return s;},
-steps:[
+steps:S=>[
  {t:'Same hardware, two strategies',d:'Every server has hardware and a host operating system with one kernel. The question is how to isolate many apps on top of it.',cmd:'docker version'},
  {t:'VMs virtualize the hardware',d:'A hypervisor carves the machine into virtual machines. Each VM boots a full guest OS and kernel just to run one app.'},
  {t:'Containers virtualize the OS',d:'A container is an isolated process. The Docker Engine starts it straight on the host — no guest OS, no boot.',cmd:'docker run --rm hello-world'},
@@ -265,56 +379,62 @@ steps:[
 ]},
 
 {id:'images-and-layers',title:'Images & layers',tag:'Build',lede:'What an image really is: a stack of read-only filesystem diffs, plus a little metadata.',
-scene(){let s='';
-  s+=CODE(30,40,330,[{t:'FROM node:20-alpine',hl:1},{t:'WORKDIR /app',hl:2},{t:'COPY package*.json ./',hl:2},{t:'RUN npm ci --omit=dev',hl:3},{t:'COPY . .',hl:4},{t:'CMD ["node", "server.js"]',hl:5}],{title:'Dockerfile',lh:30,fs:13.5});
-  const L=[[400,'gray','base: node:20-alpine','48 MB',1,1],[356,'blue','WORKDIR /app','0 B',2,2],[312,'blue','package*.json','4 KB',2,2],[268,'purple','node_modules','38 MB',3,3],[224,'yellow','app source','1.2 MB',4,4]];
-  L.forEach(([y,c,l,sz,i,h])=>{s+=B(430,y,300,38,l,{c,left:1,fs:14,in:i,hl:h,extra:`<text x="718" y="${y+24}" text-anchor="end" font-size="12" class="mono muted">${sz}</text>`});});
-  s+=`<g data-in="5"><path d="M744 226 h10 v212 h-10" fill="none" stroke="#1f1a17" stroke-width="1.6"/></g>`;
-  s+=T(774,332,'read-only image',{in:5,a:'middle',fs:12.5,w:700,rot:90});
-  s+=BD(30,296,'myapp:1.0 → sha256:9f3c…',{in:5,mono:1,c:'ink'});
-  s+=T(30,346,'CMD only sets metadata — 0 B, no layer.',{in:5,fs:13,cls:'muted'});
-  s+=T(580,150,'copy-on-write: writes land here, image untouched',{in:6,a:'middle',fs:12.5,cls:'muted'});
-  s+=B(430,164,145,46,'container A',{c:'orange',sub:'writable layer',in:6,hl:6,fs:14,sfs:11});
-  s+=B(585,164,145,46,'container B',{c:'orange',sub:'writable layer',in:7,hl:7,fs:14,sfs:11});
-  s+=T(30,392,'2 containers → the 87 MB of image layers\nare stored once and shared by both.',{in:7,fs:14,w:600});
+scene(S){let s='';const L=S.l2,lh=28,codeH=L.length*lh+50;
+  s+=CODE(30,40,330,L.map(x=>({t:x[0],hl:x[1]})),{title:'Dockerfile',lh,fs:13});
+  const layers=L.filter(x=>x[2]),n=layers.length,top=402-(n-1)*42;
+  layers.forEach((x,i)=>{const y=402-i*42;s+=B(430,y,300,36,x[2],{c:x[4],left:1,fs:14,in:x[1],hl:x[1],extra:`<text x="718" y="${y+23}" text-anchor="end" font-size="12" class="mono muted">${x[3]}</text>`});});
+  s+=`<g data-in="5"><path d="M744 ${top+2} h10 v${438-top-2} h-10" fill="none" stroke="#1f1a17" stroke-width="1.6"/></g>`;
+  s+=T(774,(top+438)/2,'read-only image',{in:5,a:'middle',fs:12.5,w:700,rot:90});
+  const cy=40+codeH+16;
+  s+=BD(30,cy,'myapp:1.0 → sha256:9f3c…',{in:5,mono:1,c:'ink'});
+  s+=T(30,cy+46,`${S.cmdKw} only sets metadata — 0 B, no layer.`,{in:5,fs:13,cls:'muted'});
+  const ct=top-56;
+  s+=T(580,ct-12,'copy-on-write: writes land here, image untouched',{in:6,a:'middle',fs:12.5,cls:'muted'});
+  s+=B(430,ct,145,44,'container A',{c:'orange',sub:'writable layer',in:6,hl:6,fs:14,sfs:11});
+  s+=B(585,ct,145,44,'container B',{c:'orange',sub:'writable layer',in:7,hl:7,fs:14,sfs:11});
+  s+=T(30,cy+86,`2 containers → the ${S.l2total} of image layers\nare stored once and shared by both.`,{in:7,fs:14,w:600});
   return s;},
-steps:[
+steps:S=>{const dep=S.l2.find(x=>x[1]===3);return[
  {t:'A Dockerfile is a recipe',d:'Instructions run top to bottom, and most of them produce a filesystem layer. The finished stack of layers is your image.',cmd:'cat Dockerfile'},
- {t:'FROM: start from a base',d:'The base image (Alpine Linux + Node 20) is itself a stack someone else built. Docker pulls it once and reuses it everywhere.',cmd:'docker pull node:20-alpine'},
- {t:'WORKDIR & COPY add thin layers',d:'Each layer records only what changed — a new directory, a couple of files. Layers are diffs, not full copies.',cmd:'docker build -t myapp:1.0 .'},
- {t:'RUN bakes in dependencies',d:'RUN executes a command at build time and snapshots the result. The installed node_modules become a 38 MB layer.'},
- {t:'COPY your source last',d:'Application code goes on top. It changes most often, so keeping it high in the stack matters — that’s the next lesson.'},
- {t:'CMD is metadata',d:'CMD just sets the default start command. The finished read-only stack gets a tag and a content digest that identifies it exactly.',cmd:'docker history myapp:1.0'},
+ {t:'FROM: start from a base',d:`The base image (${S.baseDesc}) is itself a stack of layers someone else built. Docker pulls it once and reuses it everywhere.`,cmd:`docker pull ${S.base}`},
+ {t:'WORKDIR & COPY add thin layers',d:`Copying just ${S.manifest} records only what changed — a directory and a few kilobytes. Layers are diffs, not full copies.`,cmd:'docker build -t myapp:1.0 .'},
+ {t:'RUN bakes in dependencies',d:`RUN executes a command at build time and snapshots the result. The downloaded dependencies (${dep[2]}) end up in a ${dep[3]} layer.`},
+ S.compiled?{t:'COPY the source, then compile',d:`Source goes on top, then ${S.buildVerb} adds the build output as one more layer. Source changes most often, so it sits high in the stack — that’s the next lesson.`}
+           :{t:'COPY your source last',d:'Application code goes on top. It changes most often, so keeping it high in the stack matters — that’s the next lesson.'},
+ {t:`${S.cmdKw} is metadata`,d:`${S.cmdKw} just sets the default start command. The finished read-only stack gets a tag and a content digest that identifies it exactly.`,cmd:'docker history myapp:1.0'},
  {t:'Run it: a writable layer on top',d:'A container is the image layers plus one thin writable layer. Changes are copy-on-write, so the image underneath never changes.',cmd:'docker run -d --name a myapp:1.0'},
  {t:'Many containers, one image',d:'A second container gets its own writable layer but shares every image layer. Ten containers don’t cost ten copies.',cmd:'docker run -d --name b myapp:1.0\ndocker ps --size'}
-]},
+]}},
 
-{id:'build-cache',title:'The build cache',tag:'Build',lede:'Why the order of your Dockerfile decides whether a rebuild takes 2 seconds or 50.',
-scene(){let s='';
-  s+=BD(400,14,'✎  you changed one line in server.js',{a:'middle',c:'orange',fs:13});
+{id:'build-cache',title:'The build cache',tag:'Build',h:500,lede:'Why the order of your Dockerfile decides whether a rebuild takes seconds or minutes.',
+scene(S){let s='';const C=S.cache,P=46;
+  s+=BD(400,14,`✎  you changed one line in ${S.src}`,{a:'middle',c:'orange',fs:13});
   s+=T(205,80,'✗  Copy everything, then install',{a:'middle',fs:15.5,w:700,fill:SOL.red});
-  s+=T(595,80,'✓  Install deps, then copy source',{a:'middle',fs:15.5,w:700,fill:SOL.green});
-  const row=(x,w,y,label,ok,step)=>B(x,y,w,40,label,{c:'white',left:1,mono:1,fs:13,w:500,hl:ok?null:step,
-     extra:`<g data-in="${step}">${BD(x+w-12,y+8,ok?'CACHED':'REBUILD',{a:'end',c:ok?'green':'orange',fs:11})}</g>`});
-  [['FROM node:20-alpine',1,1],['WORKDIR /app',1,1],['COPY . .',0,1],['RUN npm ci',0,2]].forEach(([l,ok,st],i)=>s+=row(30,350,100+i*50,l,ok,st));
-  s+=A('M22 232 C 8 250, 8 264, 22 278',{in:2,c:'red'});
-  s+=BD(205,312,'⏱  48 s rebuild',{a:'middle',c:'red',in:2,fs:14});
-  [['FROM node:20-alpine',1],['WORKDIR /app',1],['COPY package*.json ./',1],['RUN npm ci',1],['COPY . .',0]].forEach(([l,ok],i)=>s+=row(420,350,100+i*50,l,ok,3));
-  s+=BD(595,362,'⏱  2 s rebuild',{a:'middle',c:'green',in:3,fs:14});
-  s+=CODE(30,350,350,['# .dockerignore','node_modules','.git','.env'],{in:4,lh:20,fs:12.5});
-  s+=T(595,420,'smaller build context → faster builds,\nno secrets baked into layers',{in:4,a:'middle',fs:13,cls:'muted'});
+  s+=T(595,80,'✓  Dependencies first, then source',{a:'middle',fs:15.5,w:700,fill:SOL.green});
+  const row=(x,y,label,ok,step,hl)=>B(x,y,350,38,label,{c:'white',left:1,mono:1,fs:12,w:500,hl,
+     extra:`<g data-in="${step}">${BD(x+338,y+8,ok?'CACHED':'REBUILD',{a:'end',c:ok?'green':'orange',fs:10})}</g>`});
+  C.bad.forEach((l,i)=>s+=row(30,100+i*P,l,i<2,i<=2?1:2,i===2?1:i>2?2:null));
+  const nb=C.bad.length,ng=C.good.length;
+  s+=A(`M22 ${100+2*P+19} C 6 ${100+2*P+40}, 6 ${100+(nb-1)*P}, 22 ${100+(nb-1)*P+19}`,{in:2,c:'red'});
+  const bt=100+nb*P+4;
+  s+=BD(205,bt,`⏱  ${C.badT} rebuild`,{a:'middle',c:'red',in:2,fs:14});
+  C.good.forEach((l,i)=>s+=row(420,100+i*P,l,i<4,3,i>=4?3:null));
+  const gt=100+ng*P+4;
+  s+=BD(595,gt,`⏱  ${C.goodT} rebuild`,{a:'middle',c:'green',in:3,fs:14});
+  s+=CODE(30,bt+44,350,['# .dockerignore',...C.ignore],{in:4,lh:20,fs:12.5});
+  s+=T(595,gt+66,'smaller build context → faster builds,\nno secrets baked into layers',{in:4,a:'middle',fs:13,cls:'muted'});
   return s;},
-steps:[
- {t:'One tiny edit, then rebuild',d:'Docker reuses a cached layer only if the instruction and its inputs are unchanged. For COPY, the inputs are the checksums of the files being copied.',cmd:'echo "// tweak" >> server.js'},
+steps:S=>{const C=S.cache;return[
+ {t:'One tiny edit, then rebuild',d:'Docker reuses a cached layer only if the instruction and its inputs are unchanged. For COPY, the inputs are the checksums of the files being copied.',cmd:`echo "${S.comment} tweak" >> ${S.src}`},
  {t:'COPY . . sees a change',d:'Your edit changes the checksum of everything in COPY . . — so that layer has to be rebuilt.',cmd:'docker build -t myapp .'},
- {t:'Misses cascade downward',d:'Once one layer is rebuilt, every layer after it is too. npm ci reinstalls every dependency even though package.json never changed.',cmd:'> => [4/4] RUN npm ci          47.9s'},
- {t:'Reorder: dependencies first',d:'Copy only the manifest, install, then copy the source. A code edit now invalidates just the last layer; npm ci stays cached.',cmd:'docker build -t myapp .\n> => CACHED [4/5] RUN npm ci\n> => [5/5] COPY . .              0.3s'},
- {t:'Trim the build context',d:'A .dockerignore keeps node_modules, .git and secrets out of the build context: less to upload, less to checksum, nothing sensitive in a layer.',cmd:'printf "node_modules\\n.git\\n.env\\n" > .dockerignore'}
-]},
+ {t:'Misses cascade downward',d:`Once one layer is rebuilt, every layer after it is too: ${C.cascade}, even though ${S.manifest} never changed.`,cmd:'> '+C.badOut},
+ {t:'Reorder: dependencies first',d:`Copy only ${S.manifest} first, restore dependencies, then copy the source. An edit now invalidates only the layers after the source copy${S.compiled?' — the compile still runs, but against cached dependencies':''}.${C.note}`,cmd:'docker build -t myapp .\n> '+C.goodOut},
+ {t:'Trim the build context',d:`A .dockerignore keeps ${C.ignore.join(', ')} and secrets out of the build context: less to upload, less to checksum, nothing sensitive in a layer.`,cmd:`printf "${C.ignore.join('\\n')}\\n" > .dockerignore`}
+]}},
 
 {id:'lifecycle',title:'Container lifecycle',tag:'Run',lede:'create, start, stop, rm — and what actually happens at each step.',
-scene(){let s='';
-  s+=B(30,200,120,60,'Image',{c:'gray',sub:'nginx:1.27',smono:1,hl:0});
+scene(S){let s='';
+  s+=B(30,200,120,60,'Image',{c:'gray',sub:'myapp:1.0',smono:1,hl:0});
   s+=A('M150 230 L196 230',{in:1,label:'create',lx:173,ly:220});
   s+=B(200,200,130,60,'Created',{c:'blue',in:1,hl:1});
   s+=A('M330 230 L386 230',{in:2,label:'start',lx:358,ly:220});
@@ -330,50 +450,50 @@ scene(){let s='';
   s+=A('M690 260 L690 366',{in:6,label:'rm',lx:700,ly:318,la:'start'});
   s+=B(600,370,140,60,'Removed',{c:'red',sub:'writable layer gone',in:6,hl:6});
   return s;},
-steps:[
- {t:'Start with an image',d:'An image is an inert template: layers plus a default command. Nothing is running yet.',cmd:'docker image ls nginx'},
- {t:'create: prepare a container',d:'Docker allocates the writable layer, network settings and config — but starts no process.',cmd:'docker create --name web nginx:1.27'},
- {t:'start: your process becomes PID 1',d:'The image’s command runs inside its namespaces as PID 1. When that process exits, the container exits.',cmd:'docker start web'},
- {t:'pause / unpause',d:'The cgroup freezer suspends every process in place — memory kept, CPU released.',cmd:'docker pause web && docker unpause web'},
- {t:'stop: graceful, then forced',d:'Docker sends SIGTERM, waits 10 s, then SIGKILL. Handle SIGTERM to shut down cleanly; exit code 137 means it was killed.',cmd:'docker stop web\ndocker ps -a'},
- {t:'Restart policies',d:'With --restart unless-stopped (or on-failure), the daemon brings a crashed container straight back to Running.',cmd:'docker update --restart unless-stopped web'},
- {t:'rm: gone for good',d:'Removing a container deletes its writable layer. Anything not in a volume is lost — which is exactly the next lesson.',cmd:'docker rm web'}
+steps:S=>[
+ {t:'Start with an image',d:`An image is an inert template: your ${S.name} app’s layers plus a default command. Nothing is running yet.`,cmd:'docker image ls myapp'},
+ {t:'create: prepare a container',d:'Docker allocates the writable layer, network settings and config — but starts no process.',cmd:'docker create --name api myapp:1.0'},
+ {t:'start: your process becomes PID 1',d:'The image’s start command runs inside its namespaces as PID 1. When that process exits, the container exits.',cmd:'docker start api'},
+ {t:'pause / unpause',d:'The cgroup freezer suspends every process in place — memory kept, CPU released.',cmd:'docker pause api && docker unpause api'},
+ {t:'stop: graceful, then forced',d:`Docker sends SIGTERM, waits 10 s, then SIGKILL (exit code 137). ${S.sigterm}`,cmd:'docker stop api\ndocker ps -a'},
+ {t:'Restart policies',d:'With --restart unless-stopped (or on-failure), the daemon brings a crashed container straight back to Running.',cmd:'docker update --restart unless-stopped api'},
+ {t:'rm: gone for good',d:'Removing a container deletes its writable layer. Anything not in a volume is lost — which is exactly the next lesson.',cmd:'docker rm api'}
 ]},
 
 {id:'volumes',title:'Volumes & storage',tag:'Run',lede:'Containers are disposable. Your data shouldn’t be.',
-scene(){let s='';
+scene(S){let s='';const D=S.dev;
   s+=FR(20,30,760,420,'DOCKER HOST');
-  s+=B(60,70,270,150,'',{head:'postgres · container #1',in:0,out:2,extra:B(80,130,230,64,'writable layer',{c:'orange',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
+  const pg=n=>B(60,70,270,150,'',{head:`postgres · container #${n}`,in:n===1?0:n,out:n===1?2:n===2?3:null,extra:B(80,130,230,64,n===1?'writable layer':'mount point',{c:n===1?'orange':'white',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
+  s+=pg(1);
   s+=XM(195,150,46,{in:1,out:2});
   s+=T(195,252,'docker rm → data lost',{in:1,out:2,a:'middle',fill:SOL.red,w:700,fs:15});
-  s+=B(60,70,270,150,'',{head:'postgres · container #2',in:2,out:3,extra:B(80,130,230,64,'mount point',{c:'white',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
-  s+=B(60,70,270,150,'',{head:'postgres · container #3',in:3,extra:B(80,130,230,64,'mount point',{c:'white',sub:'/var/lib/postgresql/data',smono:1,sfs:11,noshadow:1})});
+  s+=pg(2)+pg(3);
   s+=A('M195 198 L195 286',{in:2,c:'blue',both:1,dash:1});
   s+=BD(210,234,'data still there ✓',{c:'green',in:3});
   s+=CY(105,290,180,120,'pgdata',{c:'blue',sub:'named volume',in:2,hl:[2,3]});
   s+=T(195,432,'/var/lib/docker/volumes/pgdata',{in:2,a:'middle',cls:'mono muted',fs:11});
-  s+=B(450,70,300,160,'',{head:'web · dev container',in:4,extra:B(470,140,130,44,'/app/src',{c:'white',mono:1,fs:13,noshadow:1})});
+  s+=B(450,70,300,160,'',{head:`api · ${S.name} dev container`,in:4,extra:B(470,140,130,44,D.target,{c:'white',mono:1,fs:13,noshadow:1})});
   s+=B(614,140,118,44,'tmpfs /tmp',{c:'purple',mono:1,fs:12.5,noshadow:1,in:5,hl:5});
   s+=T(673,206,'RAM only, gone on stop',{in:5,a:'middle',fs:11,cls:'muted'});
-  s+=B(450,330,300,70,'~/project/src',{c:'yellow',mono:1,fs:14,sub:'your editor saves here',in:4});
-  s+=A('M535 326 L535 192',{in:4,both:1,c:'orange',dash:1,label:'-v ./src:/app/src',lx:548,ly:282,la:'start',mono:1});
+  s+=B(450,330,300,70,D.host,{c:'yellow',mono:1,fs:14,sub:`${D.reload} reloads on save`,in:4});
+  s+=A('M535 326 L535 192',{in:4,both:1,c:'orange',dash:1,label:'-v '+D.mount,lx:548,ly:282,la:'start',mono:1});
   return s;},
-steps:[
+steps:S=>[
  {t:'Containers write to their own layer',d:'By default Postgres stores its data files inside the container’s writable layer.',cmd:'docker run -d --name db -e POSTGRES_PASSWORD=pw postgres:16'},
  {t:'Remove the container, lose the data',d:'The writable layer lives and dies with the container. docker rm takes your database with it.',cmd:'docker rm -f db'},
  {t:'Named volumes live outside',d:'A volume is storage managed by Docker on the host. Mount it at the data path and writes go there instead.',cmd:'docker run -d --name db -e POSTGRES_PASSWORD=pw \\\n  -v pgdata:/var/lib/postgresql/data postgres:16'},
  {t:'Containers are disposable, volumes are not',d:'Delete and recreate the container — say, to upgrade the image. Mount the same volume and the data is right where you left it.',cmd:'docker rm -f db\ndocker run -d --name db -e POSTGRES_PASSWORD=pw \\\n  -v pgdata:/var/lib/postgresql/data postgres:16'},
- {t:'Bind mounts for development',d:'A bind mount maps a host folder straight into the container. Edit in your IDE and see the change live — no rebuild.',cmd:'docker run -d -v ./src:/app/src myapp:dev'},
+ {t:'Bind mounts for development',d:`A bind mount maps a host folder straight into the container. Run ${S.dev.reload} inside it, edit in your IDE, and the app reloads — no image rebuild.`,cmd:S.dev.cmd},
  {t:'tmpfs for scratch & secrets',d:'A tmpfs mount lives only in memory: never written to disk, gone when the container stops.',cmd:'docker run -d --tmpfs /tmp myapp'}
 ]},
 
 {id:'networking',title:'Networking',tag:'Run',lede:'Private IPs, published ports, and finding other containers by name.',
-scene(){let s='';
+scene(S){let s='';
   s+=B(10,195,100,62,'Browser',{c:'white',sub:'your laptop'});
   s+=FR(170,30,610,420,'DOCKER HOST · 203.0.113.5');
   s+=FR(260,140,505,150,'NETWORK appnet · 172.18.0.0/16',{c:'blue'});
   s+=B(280,180,140,70,'web',{c:'green',sub:'172.18.0.2 :80',smono:1,hl:2});
-  s+=B(445,180,140,70,'api',{c:'green',sub:'172.18.0.3 :3000',smono:1,hl:3});
+  s+=B(445,180,140,70,'api',{c:'green',sub:`172.18.0.3 :${S.port}`,smono:1,hl:3});
   s+=B(610,180,140,70,'db',{c:'green',sub:'172.18.0.4 :5432',smono:1,hl:[3,4]});
   s+=A('M110 238 L274 238',{in:1,out:2,c:'red',dash:1});
   s+=XM(190,238,13,{in:1,out:2});
@@ -386,87 +506,91 @@ scene(){let s='';
   s+=A('M515 176 L515 120',{in:3,c:'purple',dash:1,both:1,label:'db → 172.18.0.4',lx:526,ly:154,la:'start',mono:1,fs:11.5});
   s+=A('M585 215 L606 215',{in:3});
   s+=P('M585 215 L610 215',{in:3,dur:'.8s',c:'green',r:5});
+  s+=T(515,348,S.conn,{in:3,out:4,a:'middle',cls:'mono',fs:12.5,w:600});
+  s+=T(515,330,`${S.name} api connects with`,{in:3,out:4,a:'middle',fs:12,cls:'muted'});
   s+=BD(350,302,'published :8080',{a:'middle',c:'orange',in:4});
   s+=BD(680,302,'no -p → private',{a:'middle',c:'ink',in:4});
   s+=T(475,380,'Only what you publish is reachable from outside.\nEverything else talks over the private network.',{in:4,a:'middle',fs:14,w:600});
   return s;},
-steps:[
+steps:S=>[
  {t:'Every container gets its own network stack',d:'On a user-defined network, each container gets a private IP, its own ports, and a virtual link to a bridge on the host.',cmd:'docker network create appnet\ndocker run -d --name web --network appnet nginx'},
  {t:'Private by default',d:'Those 172.18.x.x addresses exist only inside the host. Your browser can’t reach the container’s port 80 directly.',cmd:'curl http://172.18.0.2      # from your laptop\n> curl: (28) Connection timed out'},
  {t:'Publish a port',d:'-p 8080:80 tells Docker to forward traffic hitting the host on 8080 into the container on port 80.',cmd:'docker run -d --name web --network appnet -p 8080:80 nginx'},
- {t:'Containers find each other by name',d:'Docker’s embedded DNS resolves container names on user-defined networks. The api connects to db:5432 — no hard-coded IPs.',cmd:'docker exec api getent hosts db\n> 172.18.0.4      db'},
- {t:'Expose only the front door',d:'Publish only what users need. The database has no -p, so only containers on appnet can reach it.',cmd:'docker port web\n> 80/tcp -> 0.0.0.0:8080'}
+ {t:'Containers find each other by name',d:`Docker’s embedded DNS resolves container names on user-defined networks. The ${S.name} api uses “db” as the host — ${S.conn} — no hard-coded IPs.`,cmd:`docker run -d --name api --network appnet myapp:1.0\ndocker exec api getent hosts db\n> 172.18.0.4      db`},
+ {t:'Expose only the front door',d:`Publish only what users need. The api listens on ${S.port} and the database on 5432, but neither has -p, so only containers on appnet can reach them.`,cmd:'docker port web\n> 80/tcp -> 0.0.0.0:8080'}
 ]},
 
 {id:'compose',title:'Docker Compose',tag:'Ship',lede:'Describe a multi-container app in one file and bring it up with one command.',
-scene(){let s='';
-  s+=CODE(20,24,350,[
+scene(S){let s='';
+  s+=CODE(10,16,374,[
     'services:',{t:'  web:',hl:4},{t:'    build: ./web',hl:4},{t:'    ports: ["8080:80"]',hl:4},{t:'    depends_on: [api]',hl:4},
-    {t:'  api:',hl:4},{t:'    build: ./api',hl:4},{t:'    depends_on:',hl:4},{t:'      db: { condition: service_healthy }',hl:4},
+    {t:'  api:',hl:4},{t:'    build: ./api',hl:4},{t:'    environment:',hl:4},{t:'      '+S.env,hl:4},{t:'    depends_on:',hl:4},{t:'      db: { condition: service_healthy }',hl:4},
     {t:'  db:',hl:3},{t:'    image: postgres:16',hl:3},{t:'    volumes:',hl:2},{t:'      - dbdata:/var/lib/postgresql/data',hl:2},
-    {t:'    healthcheck:',hl:3},{t:'      test: ["CMD", "pg_isready"]',hl:3},{t:'volumes:',hl:2},{t:'  dbdata:',hl:2}],{title:'compose.yaml',lh:21,fs:12});
-  s+=FR(390,24,390,420,'PROJECT · shop',{in:1});
-  s+=FR(405,62,190,350,'shop_default',{c:'blue',in:1,out:5});
-  s+=B(420,100,160,58,'web',{c:'green',sub:'shop-web-1',smono:1,in:4,out:5,hl:4});
-  s+=A('M500 162 L500 196',{in:4,out:5});
-  s+=B(420,200,160,58,'api',{c:'green',sub:'shop-api-1',smono:1,in:4,out:5,hl:4});
-  s+=A('M500 262 L500 296',{in:4,out:5});
-  s+=B(420,300,160,58,'db',{c:'green',sub:'shop-db-1',smono:1,in:3,out:5,hl:3});
-  s+=BD(500,372,'healthy ✓',{a:'middle',c:'green',in:3,out:5,fs:11});
-  s+=CY(620,290,140,104,'dbdata',{c:'blue',sub:'shop_dbdata',smono:1,in:2,hl:[2,5]});
-  s+=A('M584 330 L616 336',{in:3,out:5,c:'blue',dash:1,both:1});
-  s+=B(620,106,140,46,':8080 → web:80',{c:'orange',mono:1,fs:12,in:4,out:5});
-  s+=A('M616 129 L584 129',{in:4,out:5});
-  s+=T(500,170,'containers & network\nremoved',{in:5,a:'middle',fs:15,w:700});
-  s+=T(690,430,'volume kept · down -v deletes it',{in:5,a:'middle',fs:12,cls:'muted'});
+    {t:'    healthcheck:',hl:3},{t:'      test: ["CMD", "pg_isready"]',hl:3},{t:'volumes:',hl:2},{t:'  dbdata:',hl:2}],{title:'compose.yaml',lh:20,fs:11});
+  s+=FR(396,24,384,420,'PROJECT · shop',{in:1});
+  s+=FR(408,62,188,350,'shop_default',{c:'blue',in:1,out:5});
+  s+=B(422,100,160,58,'web',{c:'green',sub:'nginx :80',smono:1,in:4,out:5,hl:4});
+  s+=A('M502 162 L502 196',{in:4,out:5});
+  s+=B(422,200,160,58,'api',{c:'green',sub:`${S.name} :${S.port}`,smono:1,in:4,out:5,hl:4});
+  s+=A('M502 262 L502 296',{in:4,out:5});
+  s+=B(422,300,160,58,'db',{c:'green',sub:'postgres :5432',smono:1,in:3,out:5,hl:3});
+  s+=BD(502,372,'healthy ✓',{a:'middle',c:'green',in:3,out:5,fs:11});
+  s+=CY(624,290,140,104,'dbdata',{c:'blue',sub:'shop_dbdata',smono:1,in:2,hl:[2,5]});
+  s+=A('M586 330 L620 336',{in:3,out:5,c:'blue',dash:1,both:1});
+  s+=B(624,106,140,46,':8080 → web:80',{c:'orange',mono:1,fs:12,in:4,out:5});
+  s+=A('M620 129 L586 129',{in:4,out:5});
+  s+=T(502,170,'containers & network\nremoved',{in:5,a:'middle',fs:15,w:700});
+  s+=T(694,430,'volume kept · down -v deletes it',{in:5,a:'middle',fs:12,cls:'muted'});
   return s;},
-steps:[
- {t:'One file, the whole app',d:'compose.yaml declares the services, how they depend on each other, and the storage they need. It replaces a page of docker run flags.',cmd:'cat compose.yaml'},
+steps:S=>[
+ {t:'One file, the whole app',d:`compose.yaml declares the services, how they depend on each other, and the storage they need. Here the api is your ${S.name} service, reading its connection string from the environment.`,cmd:'cat compose.yaml'},
  {t:'up: create the network',d:'Compose namespaces everything with the project name and creates a private network every service joins automatically.',cmd:'docker compose up -d\n> ✔ Network shop_default      Created'},
  {t:'Create named volumes',d:'Declared volumes are created once and reused on every up.',cmd:'> ✔ Volume "shop_dbdata"     Created'},
  {t:'Start in dependency order',d:'db starts first. Because api waits on service_healthy, Compose holds off until pg_isready passes.',cmd:'> ✔ Container shop-db-1      Healthy'},
- {t:'Then the rest',d:'api starts, then web, which publishes port 8080. Services reach each other by service name — api connects to db:5432.',cmd:'> ✔ Container shop-api-1     Started\n> ✔ Container shop-web-1     Started\ndocker compose ps'},
+ {t:'Then the rest',d:`api starts (listening on ${S.port}), then web, which publishes 8080. Services reach each other by service name — that’s why the connection string just says “db”.`,cmd:'> ✔ Container shop-api-1     Started\n> ✔ Container shop-web-1     Started\ndocker compose ps'},
  {t:'down: tear it all down',d:'Containers and the network are removed; the volume stays so your data survives. Add -v to wipe it too.',cmd:'docker compose down'}
 ]},
 
-{id:'multi-stage',title:'Multi-stage builds',tag:'Ship',lede:'Ship the binary, not the toolchain.',
-scene(){let s='';
+{id:'multi-stage',title:'Multi-stage builds',tag:'Ship',lede:'Ship the app, not the toolchain.',
+scene(S){let s='';const M=S.ms;
+  const fromT=(x,t,o={})=>T(x,74,t,Object.assign({cls:'mono',fs:Math.min(12.5,300/(t.length*.6)),w:600},o));
   s+=FR(30,30,330,250,'STAGE 1 · build',{c:'orange'});
-  s+=T(46,74,'FROM golang:1.23 AS build',{cls:'mono',fs:12.5,w:600});
-  s+=B(48,92,140,40,'Go compiler',{fs:13,hl:1});s+=B(202,92,140,40,'git · make · gcc',{fs:13});
-  s+=B(48,144,140,40,'source code',{fs:13,hl:1});s+=B(202,144,140,40,'module cache',{fs:13});
-  s+=B(115,208,160,46,'/out/app',{c:'green',mono:1,fs:14,in:1,hl:1});
+  s+=fromT(46,M.from1);
+  s+=B(48,92,140,40,M.tools[0],{fs:13,hl:1});s+=B(202,92,140,40,M.tools[1],{fs:13});
+  s+=B(48,144,140,40,M.tools[2],{fs:13,hl:1});s+=B(202,144,140,40,M.tools[3],{fs:13});
+  s+=B(115,208,160,46,M.out,{c:'green',mono:1,fs:14,in:1,hl:1});
   s+=`<g data-in="3"><rect x="30" y="30" width="330" height="250" rx="12" fill="#fbf6ef" fill-opacity=".78"/></g>`;
   s+=T(195,175,'NOT SHIPPED',{in:3,a:'middle',fs:32,w:800,fill:SOL.red,rot:-11,cls:'lbl'});
   s+=FR(440,30,330,250,'STAGE 2 · runtime',{c:'green',in:2});
-  s+=T(456,74,'FROM gcr.io/distroless/static',{in:2,cls:'mono',fs:12.5,w:600});
-  s+=B(458,92,140,40,'CA certs',{fs:13,in:2});s+=B(612,92,140,40,'tzdata',{fs:13,in:2});
-  s+=B(458,144,140,40,'USER nonroot',{c:'purple',mono:1,fs:12,in:4,hl:4});s+=B(612,144,140,40,'@sha256 pinned',{c:'purple',mono:1,fs:12,in:4,hl:4});
-  s+=B(525,208,160,46,'/app',{c:'green',mono:1,fs:14,in:2,hl:2});
+  s+=fromT(456,M.from2,{in:2});
+  s+=B(458,92,140,40,M.rt[0],{fs:13,in:2});s+=B(612,92,140,40,M.rt[1],{fs:13,in:2});
+  s+=B(458,144,140,40,M.user,{c:'purple',mono:1,fs:12,in:4,hl:4});s+=B(612,144,140,40,'@sha256 pinned',{c:'purple',mono:1,fs:12,in:4,hl:4});
+  s+=B(525,208,160,46,M.dest,{c:'green',mono:1,fs:14,in:2,hl:2});
   s+=A('M279 231 L519 231',{in:2,label:'COPY --from=build',lx:400,ly:221,mono:1,fs:12});
   s+=P('M279 231 L521 231',{in:2,sq:1,c:'green',dur:'1.6s'});
+  const sw=Math.max(12,Math.round(700*M.slim/M.fat));
   s+=T(30,322,'single-stage image',{fs:13,w:600});
-  s+=`<rect x="30" y="330" width="700" height="26" rx="5" fill="${COL.red}" stroke="#1f1a17" stroke-width="1.5"/><text x="718" y="348" text-anchor="end" font-size="13" font-weight="700" class="mono">912 MB</text>`;
+  s+=`<rect x="30" y="330" width="700" height="26" rx="5" fill="${COL.red}" stroke="#1f1a17" stroke-width="1.5"/><text x="718" y="348" text-anchor="end" font-size="13" font-weight="700" class="mono">${mb(M.fat)}</text>`;
   s+=T(30,388,'multi-stage image',{in:3,fs:13,w:600});
-  s+=`<g data-in="3"><rect x="30" y="396" width="12" height="26" rx="4" fill="${COL.green}" stroke="#1f1a17" stroke-width="1.5"/><text x="52" y="414" font-size="13" font-weight="700" class="mono">12 MB</text></g>`;
-  s+=T(450,414,'≈ 75× smaller · faster pulls · fewer CVEs',{in:3,a:'middle',fs:14,w:700,fill:SOL.green});
+  s+=`<g data-in="3"><rect x="30" y="396" width="${sw}" height="26" rx="4" fill="${COL.green}" stroke="#1f1a17" stroke-width="1.5"/><text x="${sw>90?18+sw:40+sw}" y="414" font-size="13" font-weight="700" class="mono"${sw>90?' text-anchor="end"':''}>${mb(M.slim)}</text></g>`;
+  s+=T(sw>300?400:Math.max(450,sw+290),sw>300?452:414,`≈ ${Math.round(M.fat/M.slim)}× smaller · faster pulls · fewer CVEs`,{in:3,a:'middle',fs:14,w:700,fill:SOL.green});
   return s;},
-steps:[
- {t:'The fat image problem',d:'Build in a single stage and the final image carries the whole toolchain — compiler, git, sources, caches — none of which you need at runtime.',cmd:'docker images myapp:fat\n> myapp   fat   912MB'},
- {t:'Stage 1 compiles',d:'The build stage has every tool it needs and produces one static binary.',cmd:'docker build --target build -t myapp:build .'},
- {t:'Stage 2 copies just the artifact',d:'A fresh, minimal base. COPY --from=build brings over /out/app and nothing else from stage 1.',cmd:'docker build -t myapp:slim .'},
- {t:'Only the last stage ships',d:'Earlier stages are build-time scaffolding. The image you push is just the final runtime stage.',cmd:'docker images myapp\n> myapp   slim   12.4MB\n> myapp   fat    912MB'},
- {t:'Harden while you’re here',d:'Run as a non-root user, pin the base image by digest, and scan what you ship.',cmd:'docker scout cves myapp:slim'}
-]},
+steps:S=>{const M=S.ms;return[
+ {t:'The fat image problem',d:'Build in a single stage and the final image carries the whole toolchain — compilers, package managers, sources, caches — none of which you need at runtime.',cmd:`docker images myapp:fat\n> myapp   fat    ${mb(M.fat).replace(' ','')}`},
+ {t:'Stage 1 builds',d:`The build stage has every tool it needs and produces ${M.artifact}.`,cmd:'docker build --target build -t myapp:build .'},
+ {t:'Stage 2 copies just the artifact',d:`A fresh, minimal base: ${M.runtime}. COPY --from=build brings over ${M.out} and nothing else from stage 1.`,cmd:'docker build -t myapp:slim .'},
+ {t:'Only the last stage ships',d:'Earlier stages are build-time scaffolding. The image you push is just the final runtime stage.',cmd:`docker images myapp\n> myapp   slim   ${mb(M.slim).replace(' ','')}\n> myapp   fat    ${mb(M.fat).replace(' ','')}`},
+ {t:'Harden while you’re here',d:`Run as a non-root user (${M.user}), pin the base image by digest, and scan what you ship.`,cmd:'docker scout cves myapp:slim'}
+]}},
 
 {id:'registries',title:'Registries, tags & digests',tag:'Ship',lede:'How an image travels from your laptop to every server that runs it.',
-scene(){let s='';
-  const stack=(x,y,o1,o2)=>LY(x,y,140,'app',  'orange',o1)+LY(x,y+32,140,'deps','blue',o1)+LY(x,y+64,140,'base','gray',o2||o1);
+scene(S){let s='';const R=S.reg;
+  const stack=(x,y,o1,o2)=>LY(x,y,140,R[0],'orange',o1)+LY(x,y+32,140,R[1],'blue',o1)+LY(x,y+64,140,R[2],'gray',o2||o1);
   s+=B(20,130,180,190,'',{head:'💻 laptop',extra:stack(40,190,{})});
   s+=BD(110,334,'myapp:1.0',{a:'middle',mono:1,out:1,fs:11});
   s+=BD(110,334,'ghcr.io/acme/myapp:1.0',{a:'middle',mono:1,in:1,hl:1,fs:11});
   s+=CY(300,110,200,230,'Registry',{c:'purple',sub:'ghcr.io · Docker Hub',ty:160,ry:14});
-  s+=LY(330,200,140,'app','orange',{in:2})+LY(330,232,140,'deps','blue',{in:2})+LY(330,264,140,'base','gray',{});
+  s+=LY(330,200,140,R[0],'orange',{in:2})+LY(330,232,140,R[1],'blue',{in:2})+LY(330,264,140,R[2],'gray',{});
   s+=BD(400,298,'base: already exists ✓',{a:'middle',c:'green',in:2,out:4,fs:10.5});
   s+=A('M204 228 L296 228',{in:2,label:'push',lx:250,ly:218});
   s+=P('M180 203 L340 213',{in:2,out:3,sq:1,c:'orange'});s+=P('M180 235 L340 245',{in:2,out:3,sq:1,c:'blue',begin:'-.9s'});
@@ -478,16 +602,16 @@ scene(){let s='';
   s+=BD(400,366,':1.0 → sha256:4be1c9…',{a:'middle',mono:1,in:4,hl:4,c:'ink',fs:11.5});
   s+=T(290,440,'tag = movable pointer · digest = exact bytes',{in:4,a:'middle',fs:13,w:700});
   return s;},
-steps:[
- {t:'Images start on your machine',d:'You’ve built myapp:1.0 — three layers stored locally. Nobody else can run it yet.',cmd:'docker build -t myapp:1.0 .'},
+steps:S=>[
+ {t:'Images start on your machine',d:`You’ve built myapp:1.0 from the ${S.name} multi-stage Dockerfile — a few layers stored locally. Nobody else can run it yet.`,cmd:'docker build -t myapp:1.0 .'},
  {t:'Tag it with an address',d:'A full image name is registry/namespace/repo:tag. Tagging just adds another name pointing at the same image.',cmd:'docker tag myapp:1.0 ghcr.io/acme/myapp:1.0'},
- {t:'push uploads only what’s missing',d:'Layers are content-addressed. The registry already has the base layer, so only your deps and app layers travel.',cmd:'docker push ghcr.io/acme/myapp:1.0\n> 3f2a9c1e: Layer already exists\n> 9b1d77a0: Pushed'},
+ {t:'push uploads only what’s missing',d:`Layers are content-addressed. The registry already has the ${S.reg[2]} base, so only the layers above it travel.`,cmd:'docker push ghcr.io/acme/myapp:1.0\n> 3f2a9c1e: Layer already exists\n> 9b1d77a0: Pushed'},
  {t:'pull anywhere',d:'Any machine can pull the image. Each layer is verified against its sha256 digest, so what runs is exactly what you built.',cmd:'docker pull ghcr.io/acme/myapp:1.0'},
  {t:'Tags move, digests don’t',d:'Anyone can re-push :1.0 or :latest to point at a different image. A digest always means the same bytes — pin it in production.',cmd:'docker pull ghcr.io/acme/myapp@sha256:4be1c9…'}
 ]},
 
 {id:'scaling',title:'Scaling out',tag:'Scale',lede:'Replicas, load balancing and health checks — the road to Kubernetes.',
-scene(){let s='';
+scene(S){let s='';
   s+=B(20,196,100,68,'Users',{c:'white',sub:'requests'});
   s+=A('M120 230 L416 230',{out:2});
   s+=P('M120 230 L420 230',{out:2,dur:'1.6s'});
@@ -499,12 +623,14 @@ scene(){let s='';
   s+=A('M315 230 L416 230',{in:2,out:3});s+=A('M315 230 L416 230',{in:4,c:'green'});
   s+=P('M315 212 L420 95',{in:2,dur:'1.4s'});s+=P('M315 248 L420 365',{in:2,dur:'1.4s',begin:'-.7s'});
   s+=P('M315 230 L420 230',{in:2,out:3,dur:'1.4s',begin:'-.35s'});s+=P('M315 230 L420 230',{in:4,dur:'1.4s',c:'green'});
-  s+=B(420,60,160,70,'api · 1',{c:'green',sub:'healthy',in:1});
-  s+=B(420,195,160,70,'api · 2',{c:'green',sub:'healthy',out:3});
+  const sub=`${S.name} :${S.port}`;
+  s+=B(420,60,160,70,'api · 1',{c:'green',sub,smono:1,in:1});
+  s+=B(420,195,160,70,'api · 2',{c:'green',sub,smono:1,out:3});
   s+=B(420,195,160,70,'api · 2',{c:'red',sub:'unhealthy',in:3,out:4,hl:3});
   s+=XM(558,214,9,{in:3,out:4});
+  s+=T(500,290,`GET ${S.health} → 503`,{in:3,out:4,a:'middle',cls:'mono',fs:12,w:600,fill:SOL.red});
   s+=B(420,195,160,70,'api · 2',{c:'green',sub:'replacement',in:4,hl:4});
-  s+=B(420,330,160,70,'api · 3',{c:'green',sub:'healthy',in:1});
+  s+=B(420,330,160,70,'api · 3',{c:'green',sub,smono:1,in:1});
   s+=B(640,175,140,110,'Orchestrator',{c:'yellow',sub:'desired 3\nactual 3',smono:1,fs:14,in:1,out:3});
   s+=B(640,175,140,110,'Orchestrator',{c:'yellow',sub:'desired 3\nactual 2',smono:1,fs:14,in:3,out:4,hl:3});
   s+=B(640,175,140,110,'Orchestrator',{c:'yellow',sub:'desired 3\nactual 3',smono:1,fs:14,in:4,hl:4});
@@ -512,11 +638,11 @@ scene(){let s='';
   s+=A('M636 240 L584 240',{in:4,c:'green',label:'replace',lx:610,ly:262});
   s+=BD(400,424,'same loop across many machines → Kubernetes / Swarm',{a:'middle',c:'ink',in:5});
   return s;},
-steps:[
- {t:'One container hits a ceiling',d:'A single replica means one crash takes you down, and throughput is capped at what one container can do.',cmd:'docker run -d -p 8080:3000 api'},
+steps:S=>[
+ {t:'One container hits a ceiling',d:'A single replica means one crash takes you down, and throughput is capped at what one container can do.',cmd:`docker run -d -p 8080:${S.port} myapp:1.0`},
  {t:'Run replicas',d:'Declare how many copies you want. Replicas are identical and stateless — state lives in the database or a volume.',cmd:'docker compose up -d --scale api=3'},
  {t:'Spread the load',d:'A load balancer (nginx, Traefik, or the orchestrator’s built-in one) sends each request to a replica.',cmd:'docker compose ps     # 3 × api running'},
- {t:'A replica goes bad',d:'Its HEALTHCHECK starts failing. Traffic stops flowing to it, and the orchestrator notices actual ≠ desired.',cmd:'docker inspect -f "{{.State.Health.Status}}" shop-api-2\n> unhealthy'},
+ {t:'A replica goes bad',d:`Its HEALTHCHECK against ${S.health} starts failing. Traffic stops flowing to it, and the orchestrator notices actual ≠ desired.`,cmd:`# in the Dockerfile:\n| HEALTHCHECK CMD wget -qO- localhost:${S.port}${S.health} || exit 1\ndocker inspect -f "{{.State.Health.Status}}" shop-api-2\n> unhealthy`},
  {t:'Reconcile to desired state',d:'The orchestrator replaces the unhealthy replica and traffic reaches all three again — nobody gets paged.',cmd:'docker service ps api     # swarm: 3/3 running'},
  {t:'Next stop: orchestration',d:'Kubernetes and Swarm run this same declare-and-reconcile loop across a whole cluster of machines. You now have the mental model.',cmd:'kubectl scale deployment/api --replicas=10'}
 ]}
@@ -531,13 +657,14 @@ function updateProg(){const n=LESSONS.filter(l=>done[l.id]).length;document.getE
 
 /* ---------- views ---------- */
 const app=document.getElementById('app');
-let state={lesson:null,step:0,timer:null,typer:null};
+let state={lesson:null,step:0,steps:[],timer:null,typer:null};
 
 function heroArt(){
-  const iso=(cy,fill,label,i)=>{const cx=200,w=250,h=110,d=24;
-    return `<g class="lay"><polygon points="${cx-w/2},${cy} ${cx},${cy+h/2} ${cx},${cy+h/2+d} ${cx-w/2},${cy+d}" fill="${fill}" stroke="#1f1a17" stroke-width="2" style="filter:brightness(.88)"/><polygon points="${cx},${cy+h/2} ${cx+w/2},${cy} ${cx+w/2},${cy+d} ${cx},${cy+h/2+d}" fill="${fill}" stroke="#1f1a17" stroke-width="2" style="filter:brightness(.76)"/><polygon points="${cx},${cy-h/2} ${cx+w/2},${cy} ${cx},${cy+h/2} ${cx-w/2},${cy}" fill="${fill}" stroke="#1f1a17" stroke-width="2"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" font-weight="600" fill="#1f1a17" transform="rotate(0)">${label}</text></g>`;};
-  return `<svg viewBox="0 0 400 440">${iso(345,'#e6dccd','FROM alpine',0)}${iso(253,'#d3e1fb','RUN npm ci',1)}${iso(161,'#f6e3ad','COPY . .',2)}${iso(69,'#f8d6c1','container (rw)',3)}</svg>`;
+  const iso=(cy,fill,label)=>{const cx=200,w=250,h=110,d=24;
+    return `<g class="lay"><polygon points="${cx-w/2},${cy} ${cx},${cy+h/2} ${cx},${cy+h/2+d} ${cx-w/2},${cy+d}" fill="${fill}" stroke="#1f1a17" stroke-width="2" style="filter:brightness(.88)"/><polygon points="${cx},${cy+h/2} ${cx+w/2},${cy} ${cx+w/2},${cy+d} ${cx},${cy+h/2+d}" fill="${fill}" stroke="#1f1a17" stroke-width="2" style="filter:brightness(.76)"/><polygon points="${cx},${cy-h/2} ${cx+w/2},${cy} ${cx},${cy+h/2} ${cx-w/2},${cy}" fill="${fill}" stroke="#1f1a17" stroke-width="2"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="${label.length>17?12.5:14}" font-weight="600" fill="#1f1a17">${esc(label)}</text></g>`;};
+  return `<svg viewBox="0 0 400 440">${iso(345,'#e6dccd',S.heroBase)}${iso(253,'#d3e1fb',S.depsShort)}${iso(161,'#f6e3ad','COPY . .')}${iso(69,'#f8d6c1','container (rw)')}</svg>`;
 }
+const stackChips=()=>STACK_ORDER.map(k=>{const x=STACKS[k];return `<button class="schip${x===S?' cur':''}" data-stack="${k}"><i class="sdot" style="background:${x.dot}"></i>${x.name}</button>`}).join('');
 
 function renderHome(){
   stopPlay();
@@ -548,40 +675,42 @@ function renderHome(){
        <div class="eyebrow">An interactive Docker course</div>
        <h1>Learn Docker,<br><em>layer by layer.</em></h1>
        <p>Ten animated diagrams that take you from “what is a container?” to replicas behind a load balancer. Step through each one, watch it change, and copy the real commands as you go.</p>
+       <div class="stackrow"><span>Examples in</span>${stackChips()}</div>
        <a class="btn" href="#${first.id}">${Object.keys(done).length?'Continue':'Start'} with ${first.title} →</a>
        <a class="btn ghost" href="#${LESSONS[0].id}" style="margin-left:10px">From the top</a>
      </div>
      <div class="hero-art">${heroArt()}</div>
    </section>
-   <div class="section-h"><h2>The course</h2><span>${LESSONS.reduce((a,l)=>a+l.steps.length,0)} steps · ~40 minutes</span></div>
-   <div class="grid">${LESSONS.map(l=>`<a class="card" href="#${l.id}"><div class="num">${String(l.n).padStart(2,'0')}</div><h3>${l.title}</h3><p>${l.lede}</p><div class="meta"><span class="tag t-${l.tag}">${l.tag}</span>${done[l.id]?'<span class="done-badge">✓ done</span>':`<span class="mono" style="color:var(--muted)">${l.steps.length} steps</span>`}</div></a>`).join('')}</div>
+   <div class="section-h"><h2>The course</h2><span>${LESSONS.reduce((a,l)=>a+l.steps(S).length,0)} steps · ~40 minutes · ${S.name} examples</span></div>
+   <div class="grid">${LESSONS.map(l=>`<a class="card" href="#${l.id}"><div class="num">${String(l.n).padStart(2,'0')}</div><h3>${l.title}</h3><p>${l.lede}</p><div class="meta"><span class="tag t-${l.tag}">${l.tag}</span>${done[l.id]?'<span class="done-badge">✓ done</span>':`<span class="mono" style="color:var(--muted)">${l.steps(S).length} steps</span>`}</div></a>`).join('')}</div>
    <div class="howto">
+     <div><b>Pick your stack</b><p>Node.js, .NET, Python, Java, Go or Rust — Dockerfiles, ports, build caching and multi-stage examples all follow your choice.</p></div>
      <div><b>Step, don’t scroll</b><p>Each lesson is one diagram that evolves. Use <kbd>←</kbd> <kbd>→</kbd> or the buttons, or hit Play.</p></div>
      <div><b>Real commands</b><p>Every step pairs with the command that does it. Copy them into your own terminal and try it.</p></div>
-     <div><b>Build a mental model</b><p>Images → containers → storage → networks → Compose → registries → scale. Each idea builds on the last.</p></div>
    </div></div>`;
-  window.scrollTo(0,0);
+  app.querySelectorAll('.stackrow [data-stack]').forEach(b=>b.onclick=()=>setStack(b.dataset.stack));
 }
 
-function renderLesson(l){
+function renderLesson(l,keepStep){
   stopPlay();
-  state.lesson=l;state.step=0;
+  state.lesson=l;state.steps=l.steps(S);
   const prev=LESSONS[l.n-2],next=LESSONS[l.n];
   app.innerHTML=`<div class="lesson">
    <nav class="side"><h4>Lessons</h4>${LESSONS.map(x=>`<a href="#${x.id}" class="${x===l?'cur':''}"><span class="n">${String(x.n).padStart(2,'0')}</span><span>${x.title}</span>${done[x.id]?'<span class="ck">✓</span>':''}</a>`).join('')}</nav>
    <main class="main">
-     <div class="crumb"><span class="tag t-${l.tag}">${l.tag}</span><span class="mono" style="font-size:12px;color:var(--muted)">LESSON ${String(l.n).padStart(2,'0')} / ${LESSONS.length}</span></div>
+     <div class="crumb"><span class="tag t-${l.tag}">${l.tag}</span><span class="mono" style="font-size:12px;color:var(--muted)">LESSON ${String(l.n).padStart(2,'0')} / ${LESSONS.length}</span>
+       ${l.neutral?`<span class="stackinline neutral">same for every stack</span>`:`<button class="stackinline" id="crumbStack"><i class="sdot" style="background:${S.dot}"></i>${S.name} examples ▾</button>`}</div>
      <h1>${l.title}</h1>
      <p class="lede">${l.lede}</p>
      <div class="stage">
-       <div class="canvas" id="canvas"><button class="zoombtn" id="bZoom">⤢ zoom</button><svg viewBox="0 0 800 460" role="img" aria-label="${l.title} diagram">${DEFS}${l.scene()}</svg></div>
+       <div class="canvas" id="canvas"><button class="zoombtn" id="bZoom">⤢ zoom</button><svg viewBox="0 0 800 ${l.h||460}" role="img" aria-label="${l.title} diagram">${DEFS}${l.scene(S)}</svg></div>
        <div class="caption"><div class="stepno" id="stepno"></div><div id="captxt"></div></div>
        <div class="controls">
          <button class="cbtn" id="bPrev">← Back</button>
          <button class="cbtn primary" id="bNext">Next →</button>
          <button class="cbtn" id="bPlay">▶ Play</button>
          <button class="cbtn" id="bReset" title="Restart">↺</button>
-         <div class="dots" id="dots">${l.steps.map((_,i)=>`<button aria-label="Step ${i+1}" data-i="${i}"></button>`).join('')}</div>
+         <div class="dots" id="dots">${state.steps.map((_,i)=>`<button aria-label="Step ${i+1}" data-i="${i}"></button>`).join('')}</div>
        </div>
      </div>
      <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>~/demo — zsh</span><button class="copy" id="bCopy">copy</button></div><pre id="term"></pre></div>
@@ -595,16 +724,17 @@ function renderLesson(l){
   document.getElementById('dots').onclick=e=>{const i=e.target.dataset.i;if(i!=null){stopPlay();go(+i)}};
   document.getElementById('bCopy').onclick=copyCmds;
   document.getElementById('bZoom').onclick=()=>{const c=document.getElementById('canvas');const z=c.classList.toggle('zoom');document.getElementById('bZoom').textContent=z?'⤡ fit':'⤢ zoom';};
-  window.scrollTo(0,0);
-  go(0,true);
+  const cs=document.getElementById('crumbStack');if(cs)cs.onclick=e=>{e.stopPropagation();toggleMenu();};
+  if(keepStep==null)window.scrollTo(0,0);
+  go(keepStep||0,true);
 }
 
 function go(i,first){
   const l=state.lesson;if(!l)return;
-  i=Math.max(0,Math.min(l.steps.length-1,i));
+  const steps=state.steps;
+  i=Math.max(0,Math.min(steps.length-1,i));
   state.step=i;
   const svg=app.querySelector('.canvas svg');
-  // reflow so entrance transitions play on first paint
   if(first)void svg.getBoundingClientRect();
   svg.querySelectorAll('[data-in],[data-out]').forEach(el=>{
     const a=+(el.dataset.in||0),b=el.dataset.out!=null?+el.dataset.out:1e9;
@@ -612,63 +742,88 @@ function go(i,first){
   });
   svg.querySelectorAll('[data-hl]').forEach(el=>{
     const on=el.dataset.hl.split(' ').map(Number).includes(i);
-    if(on&&!el.classList.contains('hl')){el.classList.add('hl');}else if(!on)el.classList.remove('hl');
+    if(on&&!el.classList.contains('hl'))el.classList.add('hl');else if(!on)el.classList.remove('hl');
   });
-  const st=l.steps[i];
-  document.getElementById('stepno').innerHTML=`${i+1}<small>of ${l.steps.length}</small>`;
-  document.getElementById('captxt').innerHTML=`<div class="fade"><h3>${st.t}</h3><p>${st.d}</p></div>`;
+  const st=steps[i];
+  document.getElementById('stepno').innerHTML=`${i+1}<small>of ${steps.length}</small>`;
+  document.getElementById('captxt').innerHTML=`<div class="fade"><h3>${esc(st.t)}</h3><p>${esc(st.d)}</p></div>`;
   document.getElementById('bPrev').disabled=i===0;
-  const last=i===l.steps.length-1;
-  const bn=document.getElementById('bNext');bn.disabled=last;
+  const last=i===steps.length-1;
+  document.getElementById('bNext').disabled=last;
   [...document.querySelectorAll('#dots button')].forEach((b,k)=>{b.className=k<i?'past':k===i?'cur':''});
   renderTerm(i);
   if(last&&!done[l.id]){done[l.id]=1;saveDone();const a=app.querySelector(`.side a[href="#${l.id}"]`);if(a&&!a.querySelector('.ck'))a.insertAdjacentHTML('beforeend','<span class="ck">✓</span>');}
 }
 
+/* terminal line kinds: "> " output, "# " comment, "| " file content, otherwise a shell command */
 function lineHTML(line){
   if(line.startsWith('> '))return `<span class="o">${esc(line.slice(2))}</span>`;
+  if(line.startsWith('#'))return `<span class="c">${esc(line)}</span>`;
+  if(line.startsWith('| '))return `<span class="f">${esc(line.slice(2))}</span>`;
   const m=line.match(/^(.*?)(\s+#.*)?$/);
   return `<span class="p">$</span> ${esc(m[1])}${m[2]?`<span class="c">${esc(m[2])}</span>`:''}`;
 }
+const isCmd=x=>!/^(> |#|\| )/.test(x);
 function renderTerm(i){
   clearInterval(state.typer);
-  const l=state.lesson,term=document.getElementById('term');
-  const prevLines=[];l.steps.slice(0,i).forEach(s=>{if(s.cmd)prevLines.push(...s.cmd.split('\n'))});
-  const cur=l.steps[i].cmd?l.steps[i].cmd.split('\n'):[];
+  const steps=state.steps,term=document.getElementById('term');
+  const prevLines=[];steps.slice(0,i).forEach(s=>{if(s.cmd)prevLines.push(...s.cmd.split('\n'))});
+  const cur=steps[i].cmd?steps[i].cmd.split('\n'):[];
   const old=prevLines.slice(-8).map(x=>`<div class="old">${lineHTML(x)}</div>`).join('');
-  if(!cur.length){term.innerHTML=old+`<div><span class="p">$</span> <span class="cursor"></span></div>`;term.scrollTop=term.scrollHeight;return;}
-  // type the first command line, then reveal the rest
-  const firstCmdIdx=cur.findIndex(x=>!x.startsWith('> '));
-  if(firstCmdIdx<0){term.innerHTML=old+cur.map(x=>`<div>${lineHTML(x)}</div>`).join('');term.scrollTop=term.scrollHeight;return;}
-  const before=cur.slice(0,firstCmdIdx).map(x=>`<div>${lineHTML(x)}</div>`).join('');
-  const full=cur[firstCmdIdx],after=cur.slice(firstCmdIdx+1).map(x=>`<div>${lineHTML(x)}</div>`).join('');
+  const k=cur.findIndex(isCmd);
+  if(k<0){term.innerHTML=old+cur.map(x=>`<div>${lineHTML(x)}</div>`).join('')+(cur.length?'':`<div><span class="p">$</span> <span class="cursor"></span></div>`);term.scrollTop=term.scrollHeight;return;}
+  const before=cur.slice(0,k).map(x=>`<div>${lineHTML(x)}</div>`).join('');
+  const full=cur[k],after=cur.slice(k+1).map(x=>`<div>${lineHTML(x)}</div>`).join('');
   let n=0;
   const tick=()=>{
     n=Math.min(full.length,n+2);
-    const done=n>=full.length;
-    term.innerHTML=old+before+`<div>${done?lineHTML(full):`<span class="p">$</span> ${esc(full.slice(0,n))}<span class="cursor"></span>`}</div>`+(done?after:'');
+    const fin=n>=full.length;
+    term.innerHTML=old+before+`<div>${fin?lineHTML(full):`<span class="p">$</span> ${esc(full.slice(0,n))}<span class="cursor"></span>`}</div>`+(fin?after:'');
     term.scrollTop=term.scrollHeight;
-    if(done)clearInterval(state.typer);
+    if(fin)clearInterval(state.typer);
   };
   tick();state.typer=setInterval(tick,22);
 }
 function copyCmds(){
-  const st=state.lesson.steps[state.step];const b=document.getElementById('bCopy');
-  const txt=(st.cmd||'').split('\n').filter(x=>!x.startsWith('> ')).join('\n');
-  if(!txt){b.textContent='nothing to copy';setTimeout(()=>b.textContent='copy',1200);return;}
-  try{navigator.clipboard.writeText(txt).then(()=>{b.textContent='copied ✓';setTimeout(()=>b.textContent='copy',1200)},()=>{b.textContent='copy blocked';setTimeout(()=>b.textContent='copy',1400)})}catch(e){b.textContent='copy blocked'}
+  const st=state.steps[state.step];const b=document.getElementById('bCopy');
+  const txt=(st.cmd||'').split('\n').filter(isCmd).join('\n');
+  const say=(t,ms)=>{b.textContent=t;setTimeout(()=>b.textContent='copy',ms||1200)};
+  if(!txt){say('nothing to copy');return;}
+  try{navigator.clipboard.writeText(txt).then(()=>say('copied ✓'),()=>say('copy blocked',1400))}catch(e){say('copy blocked',1400)}
 }
 function togglePlay(){
   if(state.timer){stopPlay();return;}
-  const l=state.lesson;if(state.step>=l.steps.length-1)go(0);
+  const n=state.steps.length;if(state.step>=n-1)go(0);
   document.getElementById('bPlay').textContent='❚❚ Pause';
-  state.timer=setInterval(()=>{if(state.step>=l.steps.length-1){stopPlay();return;}go(state.step+1)},3600);
+  state.timer=setInterval(()=>{if(state.step>=n-1){stopPlay();return;}go(state.step+1)},3600);
 }
 function stopPlay(){clearInterval(state.timer);state.timer=null;const b=document.getElementById('bPlay');if(b)b.textContent='▶ Play';}
 
+/* ---------- stack picker ---------- */
+const menu=document.getElementById('stackMenu');
+function paintStackBtn(){
+  document.getElementById('stackDot').style.background=S.dot;
+  document.getElementById('stackName').textContent=S.name;
+  menu.innerHTML=STACK_ORDER.map(k=>{const x=STACKS[k];return `<button data-stack="${k}" class="${x===S?'cur':''}"><i class="sdot" style="background:${x.dot}"></i><span>${x.name}<small>${x.sub}</small></span>${x===S?'<b>✓</b>':''}</button>`}).join('');
+}
+function toggleMenu(force){const open=force!=null?force:menu.hidden;menu.hidden=!open;document.getElementById('stackBtn').setAttribute('aria-expanded',open);}
+document.getElementById('stackBtn').onclick=e=>{e.stopPropagation();toggleMenu();};
+menu.onclick=e=>{const b=e.target.closest('[data-stack]');if(b)setStack(b.dataset.stack);};
+document.addEventListener('click',e=>{if(!menu.hidden&&!e.target.closest('.stackpick'))toggleMenu(false);});
+function setStack(id){
+  toggleMenu(false);
+  if(!STACKS[id]||STACKS[id]===S)return;
+  S=STACKS[id];
+  try{localStorage.setItem('lbl-stack',id)}catch(e){}
+  paintStackBtn();
+  if(state.lesson)renderLesson(state.lesson,state.step);else renderHome();
+  const t=document.createElement('div');t.className='toast';t.textContent=`Examples switched to ${S.name}`;document.body.appendChild(t);setTimeout(()=>t.remove(),2300);
+}
+
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')toggleMenu(false);
   if(!state.lesson||!document.getElementById('bNext'))return;
-  if(e.target.closest&&e.target.closest('input,textarea'))return;
+  if(e.target.closest&&e.target.closest('input,textarea,button'))return;
   if(e.key==='ArrowRight'){stopPlay();go(state.step+1);e.preventDefault();}
   else if(e.key==='ArrowLeft'){stopPlay();go(state.step-1);e.preventDefault();}
   else if(e.key===' '){togglePlay();e.preventDefault();}
@@ -677,10 +832,11 @@ document.addEventListener('keydown',e=>{
 function route(){
   const id=location.hash.slice(1);
   const l=LESSONS.find(x=>x.id===id);
-  if(l)renderLesson(l);else{state.lesson=null;renderHome();}
+  if(l)renderLesson(l);else{state.lesson=null;renderHome();window.scrollTo(0,0);}
 }
 window.addEventListener('hashchange',route);
-updateProg();route();
+paintStackBtn();updateProg();route();
 </script>
+
 </body>
 </html>
