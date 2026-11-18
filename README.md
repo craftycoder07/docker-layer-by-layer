@@ -10,6 +10,10 @@ Single self-contained `index.html` — no build step. Deployed to GitHub Pages b
 
 `#practice` on the site is a browser-only Docker simulator (terminal + live diagram), a Dockerfile playground that simulates layer caching and image size, and 11 auto-checked challenges. For real Docker, the repo ships a dev container: **Code → Codespaces → Create codespace**, then follow `practice/README.md`.
 
+## Accounts
+
+Optional sign-in (GitHub, Google, Microsoft, email magic link) syncs lesson and challenge progress through Firebase. It stays hidden until `FIREBASE_CONFIG` in `index.html` is set. See [docs/firebase-setup.md](docs/firebase-setup.md).
+
 ## Run locally
 
 Open `index.html` in a browser, or:

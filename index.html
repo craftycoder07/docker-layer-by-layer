@@ -254,6 +254,40 @@ details.ch.flash{animation:flash 1.4s ease}
 .practice-cta .btn{background:var(--paper);color:var(--ink);box-shadow:4px 4px 0 var(--orange)}
 .side .practice-link{margin-top:14px;border:1.5px dashed var(--ink)}
 @media (max-width:1100px){.sbox{grid-template-columns:1fr}.xterm{height:380px}.world{height:auto}.dfgrid{grid-template-columns:1fr}}
+/* ---------- accounts ---------- */
+.acct{position:relative}
+.acct[hidden]{display:none}
+.signin{border:2px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:10px;padding:6px 12px;font-weight:600;font-size:14px;box-shadow:3px 3px 0 var(--orange)}
+.acct-load{font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:.1em}
+.avatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--ink);background:var(--yellow);color:var(--ink);font-weight:700;font-size:13px;padding:0;overflow:hidden;box-shadow:2px 2px 0 var(--ink);display:grid;place-items:center}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.acctmenu{position:absolute;right:0;top:calc(100% + 10px);width:270px;background:var(--card);border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink);padding:14px;z-index:30}
+.acctmenu[hidden]{display:none}
+.am-who b{display:block;font-size:15px}.am-who small{color:var(--muted);font-size:12px;word-break:break-all}
+.am-prog{display:grid;gap:8px;margin:12px 0 8px}
+.am-prog>div{display:grid;grid-template-columns:1fr auto;gap:3px 8px;font-size:13px}
+.am-prog i{grid-column:1/-1;height:7px;border:1.5px solid var(--ink);border-radius:5px;overflow:hidden}.am-prog em{display:block;height:100%;background:var(--green)}
+.am-sync{font-size:12px;color:var(--green);font-weight:600;margin-bottom:10px}
+.am-link{display:block;font-size:13.5px;font-weight:600;text-decoration:none;margin-bottom:10px}
+.am-out{width:100%;border:1.5px solid var(--ink);background:none;border-radius:8px;padding:6px;font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(31,26,23,.45);display:grid;place-items:center;z-index:60;padding:16px}
+.modal[hidden]{display:none}
+.mbox{position:relative;width:min(420px,100%);background:var(--card);border:2px solid var(--ink);border-radius:16px;box-shadow:8px 8px 0 var(--ink);padding:26px 24px 20px;animation:fadeIn .25s ease}
+.mbox h2{font-family:'Fraunces',serif;font-size:28px;margin:0 0 6px;line-height:1.1}
+.mbox p{margin:0 0 18px;color:#4a4039;font-size:14.5px}
+.mclose{position:absolute;top:10px;right:12px;border:0;background:none;font-size:18px;color:var(--muted)}
+.pbtns{display:grid;gap:10px}
+.pbtn{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;border:2px solid var(--ink);border-radius:10px;background:#fffaf3;font-weight:600;font-size:15px;box-shadow:3px 3px 0 var(--ink);transition:transform .1s}
+.pbtn:hover{transform:translate(-1px,-1px)}
+.pbtn i{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--ink)}
+.p-github i{background:#1f1a17}.p-google i{background:#2f6fdb}.p-microsoft i{background:#e0703a}
+.or{display:flex;align-items:center;gap:10px;margin:18px 0 12px;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.or::before,.or::after{content:'';flex:1;border-top:1.5px dashed #cbbda9}
+.emailrow{display:flex;gap:8px}
+.emailrow input{flex:1;min-width:0;border:2px solid var(--ink);border-radius:10px;padding:9px 12px;font:inherit;font-size:15px;background:#fffaf3}
+.amsg{margin-top:12px;font-size:13.5px;min-height:18px;color:var(--muted)}.amsg.err{color:var(--red);font-weight:600}.amsg.ok{color:var(--green);font-weight:600}
+@media (max-width:560px){body.has-acct .prog{display:none}.signin{padding:5px 9px;font-size:13px}}
+
 @media (max-width:900px){.pgrid{grid-template-columns:1fr}.pmain{order:1}.chal{order:2;position:static;max-height:none}.phead{grid-template-columns:1fr}.practice{padding:20px 16px 60px}.practice-cta{grid-template-columns:1fr}}
 @media (max-width:560px){.logo .logo-t{display:none}.navlink{padding:5px 8px;font-size:13.5px}}
 
@@ -290,9 +324,11 @@ details.ch.flash{animation:flash 1.4s ease}
   <span class="spacer"></span>
   <a class="navlink" href="#practice" id="navPractice">Practice</a>
   <div class="stackpick"><button class="stackbtn" id="stackBtn" aria-haspopup="true" aria-expanded="false"><i class="sdot" id="stackDot"></i><span id="stackName">Node.js</span><b>▾</b></button><div class="stackmenu" id="stackMenu" hidden></div></div>
+  <div class="acct" id="acct" hidden></div>
   <div class="prog"><span id="progTxt">0 / 10</span><span class="bar"><i id="progBar" style="width:0"></i></span></div>
 </header>
 <div id="app"></div>
+<div class="modal" id="authModal" hidden></div>
 
 <script>
 /* ---------- palette ---------- */
@@ -751,7 +787,7 @@ LESSONS.forEach((l,i)=>l.n=i+1);
 /* ---------- progress ---------- */
 let done={};
 try{done=JSON.parse(localStorage.getItem('lbl-done')||'{}')}catch(e){}
-function saveDone(){try{localStorage.setItem('lbl-done',JSON.stringify(done))}catch(e){}updateProg();}
+function saveDone(){try{localStorage.setItem('lbl-done',JSON.stringify(done))}catch(e){}updateProg();cloudSave();}
 function updateProg(){const n=LESSONS.filter(l=>done[l.id]).length;document.getElementById('progTxt').textContent=`${n} / ${LESSONS.length} done`;document.getElementById('progBar').style.width=(n/LESSONS.length*100)+'%';}
 
 /* ---------- views ---------- */
@@ -771,7 +807,7 @@ function renderHome(){
   app.innerHTML=`<div class="home">
    <section class="hero">
      <div>
-       <div class="eyebrow">An interactive Docker course</div>
+       <div class="eyebrow">${USER?`Welcome back${USER.displayName?', '+esc(USER.displayName.split(' ')[0]):''} · ${Object.keys(done).length}/${LESSONS.length} lessons · ${Object.keys(CH).length}/${CHALLENGES.length} challenges`:'An interactive Docker course'}</div>
        <h1>Learn Docker,<br><em>layer by layer.</em></h1>
        <p>Ten animated diagrams that take you from “what is a container?” to replicas behind a load balancer. Step through each one, watch it change, and copy the real commands as you go.</p>
        <div class="stackrow"><span>Examples in</span>${stackChips()}</div>
@@ -1495,7 +1531,7 @@ let CH={};try{CH=JSON.parse(localStorage.getItem('lbl-ch')||'{}')}catch(e){}
 const val=v=>typeof v==='function'?v():v;
 function checkChallenges(){
   const newly=[];CHALLENGES.forEach(c=>{if(!CH[c.id]&&c.ok()){CH[c.id]=1;newly.push(c);}});
-  if(newly.length){try{localStorage.setItem('lbl-ch',JSON.stringify(CH))}catch(e){}
+  if(newly.length){try{localStorage.setItem('lbl-ch',JSON.stringify(CH))}catch(e){}cloudSave();
     newly.forEach(c=>toast(`✓ Challenge complete: ${c.t}`));renderChallenges(newly.map(c=>c.id));updateProg();}
 }
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2300);}
@@ -1596,7 +1632,7 @@ function renderChallenges(flash){
     <details class="hint2"><summary>Show a solution</summary><code>${esc(c.sol())}</code>${/^\(/.test(c.sol())?'':`<button class="tryit" data-cmd="${esc(c.sol())}">paste into terminal</button>`}</details>
   </details>`).join('')+`<button class="ghostbtn small" id="chReset">reset challenge progress</button>`;
   el.querySelectorAll('.tryit').forEach(b=>b.onclick=()=>{document.querySelector('[data-tab=term]').click();const i=document.getElementById('xinput');i.value=b.dataset.cmd;i.focus();});
-  document.getElementById('chReset').onclick=()=>{CH={};try{localStorage.removeItem('lbl-ch')}catch(e){}SIM.flags={};saveSim();renderChallenges();updateProg();};
+  document.getElementById('chReset').onclick=()=>{CH={};try{localStorage.removeItem('lbl-ch')}catch(e){}SIM.flags={};saveSim();renderChallenges();updateProg();cloudSave();};
 }
 
 /* ----- Dockerfile tab ----- */
@@ -1642,6 +1678,152 @@ function showBuild(r){
    ${r.tag?`<div class="next">Now run it in the Terminal tab: <code>docker run -d -p 8080:${S.port} ${esc(r.tag)}</code></div>`:''}`;
 }
 
+/* =====================================================================
+   ACCOUNTS — Firebase Auth + Firestore progress sync.
+   Paste the web-app config from the Firebase console into FIREBASE_CONFIG.
+   While it is null, sign-in stays hidden and progress lives in this browser only.
+   ===================================================================== */
+const FIREBASE_CONFIG=null;
+const AUTH_PROVIDERS=['github','google','microsoft','email']; // remove any you haven't enabled in Firebase
+const FB_VER='10.14.1';
+let FB=null,USER=null,AUTH_STATE='off',cloudTimer=null,lastSync=null;
+const PROVIDER_LABEL={github:'GitHub',google:'Google',microsoft:'Microsoft'};
+
+async function initCloud(){
+  if(!FIREBASE_CONFIG){renderAcct();return;}
+  AUTH_STATE='loading';renderAcct();
+  try{
+    const base=`https://www.gstatic.com/firebasejs/${FB_VER}/`;
+    const [appM,A,F]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
+    const app=appM.initializeApp(FIREBASE_CONFIG);
+    FB={auth:A.getAuth(app),db:F.getFirestore(app),A,F};
+    if(A.isSignInWithEmailLink(FB.auth,location.href)){
+      let email=null;try{email=localStorage.getItem('lbl-email')}catch(e){}
+      if(email)await finishEmailLink(email);else openAuth('confirm');
+    }
+    A.onAuthStateChanged(FB.auth,async u=>{
+      USER=u;AUTH_STATE=u?'in':'out';
+      if(u){try{await cloudLoad();}catch(e){console.error(e);toast('Signed in, but progress couldn’t sync — check Firestore rules');}}
+      renderAcct();
+    });
+  }catch(e){console.error(e);AUTH_STATE='error';renderAcct();}
+}
+
+/* ---------- sign-in flows ---------- */
+async function signInWith(kind){
+  const {A,auth}={A:FB.A,auth:FB.auth};
+  const p=kind==='github'?new A.GithubAuthProvider():kind==='google'?new A.GoogleAuthProvider():new A.OAuthProvider('microsoft.com');
+  if(kind==='microsoft')p.setCustomParameters({prompt:'select_account'});
+  authMsg(`Opening ${PROVIDER_LABEL[kind]}…`);
+  try{await A.signInWithPopup(auth,p);closeAuth();}
+  catch(e){
+    if(e.code==='auth/popup-blocked'){authMsg('Popup blocked — redirecting instead…');return A.signInWithRedirect(auth,p);}
+    if(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request')return authMsg('');
+    authMsg(authError(e),'err');
+  }
+}
+async function sendMagicLink(email){
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return authMsg('Enter a valid email address.','err');
+  authMsg('Sending…');
+  try{
+    await FB.A.sendSignInLinkToEmail(FB.auth,email,{url:location.origin+location.pathname+location.hash,handleCodeInApp:true});
+    try{localStorage.setItem('lbl-email',email)}catch(e){}
+    authMsg(`Check ${email} for a sign-in link (look in spam too). Open it on this device.`,'ok');
+  }catch(e){authMsg(authError(e),'err');}
+}
+async function finishEmailLink(email){
+  try{
+    await FB.A.signInWithEmailLink(FB.auth,email,location.href);
+    try{localStorage.removeItem('lbl-email')}catch(e){}
+    history.replaceState(null,'',location.pathname+location.hash);closeAuth();
+  }catch(e){openAuth();authMsg(authError(e),'err');}
+}
+function authError(e){
+  const m={'auth/account-exists-with-different-credential':'That email already has an account with a different sign-in method — use the one you used before.',
+    'auth/unauthorized-domain':'This website isn’t on Firebase’s authorized-domains list yet.',
+    'auth/operation-not-allowed':'This sign-in method isn’t enabled in Firebase yet.',
+    'auth/invalid-action-code':'That sign-in link has expired or was already used — request a new one.',
+    'auth/invalid-email':'That email address doesn’t look right.',
+    'auth/network-request-failed':'Network error — check your connection and try again.'};
+  return m[e.code]||e.message||'Sign-in failed.';
+}
+function signOutNow(){if(FB)FB.A.signOut(FB.auth);toggleAcct(false);toast('Signed out — progress stays saved in your account');}
+
+/* ---------- progress sync ---------- */
+async function cloudLoad(){
+  const {F,db}=FB;const ref=F.doc(db,'users',USER.uid);const snap=await F.getDoc(ref);
+  let fresh=false;
+  if(snap.exists()){const d=snap.data();
+    const before=Object.keys(done).length+Object.keys(CH).length;
+    Object.keys(d.done||{}).forEach(k=>done[k]=1);Object.keys(d.ch||{}).forEach(k=>CH[k]=1);
+    fresh=Object.keys(done).length+Object.keys(CH).length>before;
+    if(d.stack&&STACKS[d.stack]&&STACKS[d.stack]!==S){S=STACKS[d.stack];try{localStorage.setItem('lbl-stack',S.id)}catch(e){}paintStackBtn();fresh=true;}
+    try{localStorage.setItem('lbl-done',JSON.stringify(done));localStorage.setItem('lbl-ch',JSON.stringify(CH))}catch(e){}
+  }
+  await cloudWrite();
+  updateProg();
+  const nm=(USER.displayName||'').split(' ')[0];
+  toast(snap.exists()?`Welcome back${nm?', '+nm:''} — progress synced`:'Signed in — your progress now follows you across devices');
+  if(fresh||!state.lesson)rerender();
+}
+async function cloudWrite(){
+  if(!USER||!FB)return;
+  const {F,db}=FB;
+  await F.setDoc(F.doc(db,'users',USER.uid),{done,ch:CH,stack:S.id,name:USER.displayName||'',updatedAt:F.serverTimestamp()});
+  lastSync=Date.now();const t=document.getElementById('syncTxt');if(t)t.textContent='Synced just now';
+}
+function cloudSave(){if(!USER)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>cloudWrite().catch(e=>{console.error(e);const t=document.getElementById('syncTxt');if(t)t.textContent='Sync failed — will retry on next change';}),800);}
+function rerender(){if(state.lesson)renderLesson(state.lesson,state.step);else if(location.hash==='#practice')renderPractice();else renderHome();}
+
+/* ---------- UI ---------- */
+const initials=n=>(n||'?').split(/[\s@.]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+function renderAcct(){
+  const el=document.getElementById('acct');
+  if(!FIREBASE_CONFIG){el.hidden=true;document.body.classList.remove('has-acct');return;}
+  el.hidden=false;document.body.classList.add('has-acct');
+  if(AUTH_STATE==='loading'){el.innerHTML='<span class="acct-load" aria-label="Loading sign-in">···</span>';return;}
+  if(!USER){el.innerHTML=`<button class="signin" id="signinBtn">Sign in</button>`;document.getElementById('signinBtn').onclick=e=>{e.stopPropagation();AUTH_STATE==='error'?toast('Sign-in couldn’t load — try reloading the page'):openAuth();};return;}
+  const nm=USER.displayName||USER.email||'You';const lessons=Object.keys(done).length,chs=Object.keys(CH).length;
+  const via=(USER.providerData[0]||{}).providerId||'';const viaTxt=via.includes('github')?'GitHub':via.includes('google')?'Google':via.includes('microsoft')?'Microsoft':'email link';
+  el.innerHTML=`<button class="avatar" id="avBtn" aria-haspopup="true" title="${esc(nm)}">${USER.photoURL?`<img src="${esc(USER.photoURL)}" alt="" referrerpolicy="no-referrer">`:esc(initials(nm))}</button>
+   <div class="acctmenu" id="acctMenu" hidden>
+     <div class="am-who"><b>${esc(nm)}</b><small>${esc(USER.email||'')} · via ${viaTxt}</small></div>
+     <div class="am-prog"><div><span>Lessons</span><b>${lessons} / ${LESSONS.length}</b><i><em style="width:${lessons/LESSONS.length*100}%"></em></i></div>
+       <div><span>Challenges</span><b>${chs} / ${CHALLENGES.length}</b><i><em style="width:${chs/CHALLENGES.length*100}%"></em></i></div></div>
+     <div class="am-sync" id="syncTxt">${lastSync?'Synced '+ago(lastSync)+' ago':'Synced'}</div>
+     <a class="am-link" href="#practice">Open the practice area →</a>
+     <button class="am-out" id="signOutBtn">Sign out</button>
+   </div>`;
+  document.getElementById('avBtn').onclick=e=>{e.stopPropagation();toggleAcct();};
+  document.getElementById('signOutBtn').onclick=signOutNow;
+}
+function toggleAcct(force){const m=document.getElementById('acctMenu');if(!m)return;const open=force!=null?force:m.hidden;
+  if(open)renderAcct();const mm=document.getElementById('acctMenu');if(mm)mm.hidden=!open;}
+function openAuth(mode){
+  const m=document.getElementById('authModal');
+  const btns=AUTH_PROVIDERS.filter(p=>p!=='email').map(p=>`<button class="pbtn p-${p}" data-prov="${p}"><i></i>Continue with ${PROVIDER_LABEL[p]}</button>`).join('');
+  const emailBlock=AUTH_PROVIDERS.includes('email')?`${btns?'<div class="or"><span>or get a magic link</span></div>':''}
+     <form id="emailForm" class="emailrow"><input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" required><button class="cbtn primary" type="submit">${mode==='confirm'?'Finish sign-in':'Send link'}</button></form>`:'';
+  m.innerHTML=`<div class="mbox" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+     <button class="mclose" aria-label="Close">✕</button>
+     <h2 id="authTitle">${mode==='confirm'?'Confirm your email':'Save your progress'}</h2>
+     <p>${mode==='confirm'?'You opened a sign-in link on a different device or browser. Re-enter the email it was sent to.':'Sign in to keep your lessons, challenges and stack in sync across devices. We store only your progress — nothing else.'}</p>
+     ${mode==='confirm'?'':`<div class="pbtns">${btns}</div>`}
+     ${emailBlock}
+     <div class="amsg" id="authMsg"></div>
+   </div>`;
+  m.hidden=false;
+  m.querySelector('.mclose').onclick=closeAuth;
+  m.onclick=e=>{if(e.target===m)closeAuth();};
+  m.querySelectorAll('[data-prov]').forEach(b=>b.onclick=()=>signInWith(b.dataset.prov));
+  const f=document.getElementById('emailForm');
+  if(f)f.onsubmit=e=>{e.preventDefault();const v=document.getElementById('authEmail').value.trim();mode==='confirm'?finishEmailLink(v):sendMagicLink(v);};
+}
+function closeAuth(){const m=document.getElementById('authModal');if(m){m.hidden=true;m.innerHTML='';}}
+function authMsg(t,cls){const el=document.getElementById('authMsg');if(el){el.textContent=t;el.className='amsg'+(cls?' '+cls:'');}}
+document.addEventListener('click',e=>{const m=document.getElementById('acctMenu');if(m&&!m.hidden&&!e.target.closest('.acct'))m.hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();toggleAcct(false);}});
+
 /* ---------- stack picker ---------- */
 const menu=document.getElementById('stackMenu');
 function paintStackBtn(){
@@ -1658,7 +1840,7 @@ function setStack(id){
   if(!STACKS[id]||STACKS[id]===S)return;
   S=STACKS[id];
   try{localStorage.setItem('lbl-stack',id)}catch(e){}
-  paintStackBtn();
+  paintStackBtn();cloudSave();
   if(state.lesson)renderLesson(state.lesson,state.step);else if(location.hash==='#practice')renderPractice();else renderHome();
   const t=document.createElement('div');t.className='toast';t.textContent=`Examples switched to ${S.name}`;document.body.appendChild(t);setTimeout(()=>t.remove(),2300);
 }
@@ -1679,7 +1861,7 @@ function route(){
   if(l)renderLesson(l);else if(id==='practice')renderPractice();else{state.lesson=null;renderHome();window.scrollTo(0,0);}
 }
 window.addEventListener('hashchange',route);
-paintStackBtn();updateProg();route();
+paintStackBtn();updateProg();route();initCloud();
 </script>
 
 </body>
